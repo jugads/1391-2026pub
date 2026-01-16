@@ -10,19 +10,19 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.util.Limelight;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class TrackFuel extends Command {
   /** Creates a new TrackFuel. */
   CommandSwerveDrivetrain drive;
-  VisionSubsystem vision;
+  Limelight intakeLL;
   PIDController txController = new PIDController(0.1, 0, 0);
   PIDController tyController = new PIDController(0.1, 0, 0);
-  public TrackFuel(CommandSwerveDrivetrain drive, VisionSubsystem vision) {
+  public TrackFuel(CommandSwerveDrivetrain drive, Limelight intakeLL) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drive = drive;
-    this.vision = vision;
+    this.intakeLL = intakeLL;
     SmartDashboard.putData("PIDX", txController);
     SmartDashboard.putData("PIDY", tyController);
     addRequirements(this.drive);
@@ -41,11 +41,11 @@ public class TrackFuel extends Command {
   @Override
   public void execute() {
     drive.setControl(new SwerveRequest.RobotCentric()
-    .withVelocityX(-tyController.calculate(vision.getIntakeTY()))
-    .withVelocityY(txController.calculate(vision.getIntakeTX()))
+    .withVelocityX(-tyController.calculate(intakeLL.getTY()))
+    .withVelocityY(txController.calculate(intakeLL.getTX()))
     .withRotationalRate(0)
     );
-    System.out.println("Calculated: " + txController.calculate(vision.getIntakeTX()) + ", " + tyController.calculate(vision.getIntakeTY()));
+    System.out.println("Calculated: " + txController.calculate(intakeLL.getTX()) + ", " + tyController.calculate(intakeLL.getTY()));
   }
 
   // Called once the command ends or is interrupted.
