@@ -6,7 +6,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.util.LimelightHelpers.PoseEstimate;
-
 import java.util.Optional;
 
 public class Limelight {
@@ -41,5 +40,26 @@ public class Limelight {
 
   public void setThrottle(double throttle) {
     table.getEntry("throttle_set").setDouble(throttle);
+  }
+
+  /**
+   * @param mode operating mode selection:
+   *             <ul>
+   *               <li><b>Mode 1: EXTERNAL_SEED</b> — Uses the robot's external gyro
+   *               (via {@code SetRobotOrientation}) and calibrates/seeds the internal
+   *               IMU to match it each frame.</li>
+   *               <li><b>Mode 2: INTERNAL_ONLY</b> — Relies solely on the Limelight's
+   *               internal IMU fused yaw. No external input is required.</li>
+   *               <li><b>Mode 3: INTERNAL_MT1_ASSIST</b> — Fuses the internal IMU with
+   *               MegaTag1 vision data. Uses the camera pose to correct IMU drift
+   *               over time.</li>
+   *               <li><b>Mode 4: INTERNAL_EXTERNAL_ASSIST</b> — Recommended and most
+   *               stable mode. Fuses the internal 1kHz IMU with the external gyro
+   *               (from {@code SetRobotOrientation}) for low-drift, high-rate data.</li>
+   *             </ul>
+   */
+
+  public void setIMUMode(int mode) {
+    LimelightHelpers.SetIMUMode(this.name, mode);
   }
 }

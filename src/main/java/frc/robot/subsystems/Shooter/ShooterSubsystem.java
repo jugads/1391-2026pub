@@ -42,7 +42,7 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
-
+    io.refreshData();
     SystemState newState = handleStateTransition();
     if (newState != systemState) {
       systemState = newState;
