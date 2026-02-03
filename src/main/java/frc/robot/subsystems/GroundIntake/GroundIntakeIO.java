@@ -13,7 +13,7 @@ public interface GroundIntakeIO {
 
   default void updateInputs(GroundIntakeIOInputs inputs) {}
 
-  default void setPositionSetpoint(double setpoint) {}
+  default void runIntakePivotToSetpoint(double setpoint) {}
 
   default void refreshData() {}
 
@@ -21,7 +21,7 @@ public interface GroundIntakeIO {
 
   default void setPivotSpeed(double speed) {}
 
-  default double getEncoderVal() {
+  default double getIntakePosition() {
     return 0;
   }
 }
