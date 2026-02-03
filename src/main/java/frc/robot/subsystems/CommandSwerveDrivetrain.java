@@ -8,6 +8,11 @@ import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -59,6 +64,8 @@ public class CommandSwerveDrivetrain
     new SwerveRequest.SysIdSwerveSteerGains();
   private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization =
     new SwerveRequest.SysIdSwerveRotation();
+  private final SwerveRequest.ApplyRobotSpeeds m_ApplyRobotSpeeds =
+    new SwerveRequest.ApplyRobotSpeeds();
   private final SwerveDrivePoseEstimator globalPose =
     new SwerveDrivePoseEstimator(
       getKinematics(),
@@ -150,6 +157,7 @@ public class CommandSwerveDrivetrain
     if (Utils.isSimulation()) {
       startSimThread();
     }
+     configureAutoBuilder();
   }
 
   /**
@@ -174,6 +182,7 @@ public class CommandSwerveDrivetrain
     if (Utils.isSimulation()) {
       startSimThread();
     }
+     configureAutoBuilder();
   }
 
   /**
@@ -212,6 +221,7 @@ public class CommandSwerveDrivetrain
     if (Utils.isSimulation()) {
       startSimThread();
     }
+     configureAutoBuilder();
   }
 
   /**
@@ -388,4 +398,49 @@ public class CommandSwerveDrivetrain
   ) {
     globalPose.addVisionMeasurement(visionMeasurements, timestamp);
   }
+  
+  private void configureAutoBuilder() {
+    try {
+      var config = RobotConfig.fromGUISettings();
+      AutoBuilder.configure(
+        () -> getGlobalPose(),
+        this::resetGlobalPose,
+        () -> getState().Speeds,
+        (speeds, feedforwards) ->
+          setControl(
+            m_ApplyRobotSpeeds
+              .withSpeeds(speeds)
+              .withWheelForceFeedforwardsX(
+                feedforwards.robotRelativeForcesXNewtons()
+              )
+              .withWheelForceFeedforwardsY(
+                feedforwards.robotRelativeForcesYNewtons()
+              )
+          ),
+        new PPHolonomicDriveController(
+          // PPHolonomicController is the built in path following controller for holonomic drive trains
+          new PIDConstants(5.25, 0.0, 0.0), // Translation PID constants
+          new PIDConstants(3.7, 0.0, 0.5)
+        ),
+        config,
+        () -> {
+          // Boolean supplier that controls when the path will be mirrored for the red alliance
+          // This will flip the path being followed to the red side of the field.
+          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+          var alliance = DriverStation.getAlliance();
+          if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+          }
+          return false;
+        },
+        this
+      );
+      System.out.println("CONFIGURED SUCCESSFULLY");
+    } catch (Exception ex) {
+      System.out.println("Error" + ex.getStackTrace().toString() + ex.getMessage());
+    }
+  }
+
+  
 }
