@@ -20,6 +20,7 @@ public class Constants {
     public static final double kP = 0.0;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
+    public static final double kA = 0.0;
 
     public double intakeSpeed = 0.0;
     public double encoderPosition = 0.0;
