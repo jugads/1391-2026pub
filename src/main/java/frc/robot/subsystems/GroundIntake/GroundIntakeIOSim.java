@@ -90,7 +90,7 @@ public class GroundIntakeIOSim implements GroundIntakeIO {
   }
 
   @Override
-  public void setPositionSetpoint(double setpoint) {
+  public void runIntakePivotToSetpoint(double setpoint) {
     // closed-loop mode (mimics your real IO behavior) :contentReference[oaicite:2]{index=2}
     closedLoop = true;
     positionSetpoint = setpoint;
@@ -100,7 +100,7 @@ public class GroundIntakeIOSim implements GroundIntakeIO {
   }
 
   @Override
-  public double getEncoderVal() {
+  public double getIntakePosition() {
     // This should behave like: encoder.get() - kENCODER_OFFSET :contentReference[oaicite:3]{index=3}
     return encoderPosFromAngle(pivotSim.getAngleRads());
   }
@@ -114,7 +114,7 @@ public class GroundIntakeIOSim implements GroundIntakeIO {
 
     // Closed-loop pivot control: PID on encoderPosition units (same as your real code)
     if (closedLoop) {
-      double currentPos = getEncoderVal();
+      double currentPos = getIntakePosition();
       double out = positionPid.calculate(currentPos);
       pivotPercent = MathUtil.clamp(out, -1.0, 1.0);
     }
@@ -130,14 +130,14 @@ public class GroundIntakeIOSim implements GroundIntakeIO {
 
     // Publish inputs expected by subsystem :contentReference[oaicite:4]{index=4}
     inputs.intakeSpeed = intakePercent;          // matches TalonFX.get() style :contentReference[oaicite:5]{index=5}
-    inputs.encoderPosition = getEncoderVal();    // matches encoder.get()-offset :contentReference[oaicite:6]{index=6}
+    inputs.encoderPosition = getIntakePosition();    // matches encoder.get()-offset :contentReference[oaicite:6]{index=6}
   }
 
   @Override
   public void refreshData() {
     SmartDashboard.putNumber("GroundIntakeSim/IntakePercent", intakePercent);
     SmartDashboard.putNumber("GroundIntakeSim/PivotPercent", pivotPercent);
-    SmartDashboard.putNumber("GroundIntakeSim/EncoderPosition", getEncoderVal());
+    SmartDashboard.putNumber("GroundIntakeSim/EncoderPosition", getIntakePosition());
     SmartDashboard.putNumber("GroundIntakeSim/PivotAngleDeg", Math.toDegrees(pivotSim.getAngleRads()));
     SmartDashboard.putNumber("GroundIntakeSim/PivotCurrentA", pivotSim.getCurrentDrawAmps());
     SmartDashboard.putNumber("GroundIntakeSim/RollerRPM", rollerSim.getAngularVelocityRadPerSec() * 60.0 / (2.0 * Math.PI));

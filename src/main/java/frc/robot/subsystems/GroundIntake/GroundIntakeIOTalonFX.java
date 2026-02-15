@@ -25,7 +25,6 @@ public class GroundIntakeIOTalonFX implements GroundIntakeIO {
     slot0Configs.kD = kD;
     slot0Configs.kG = kG;
     slot0Configs.kV = kV;
-    slot0Configs.kA = kA;
     pivotMotor.getConfigurator().apply(slot0Configs);
   }
 
