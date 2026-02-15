@@ -9,6 +9,7 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
@@ -21,7 +22,13 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.TrackFuel;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.GroundIntake.GroundIntakeIOSim;
+import frc.robot.subsystems.GroundIntake.GroundIntakeSubsystem;
+import frc.robot.subsystems.GroundIntake.GroundIntakeSubsystem.WantedState;
+import frc.robot.subsystems.Shooter.ShooterIOSim;
+import frc.robot.subsystems.Shooter.ShooterSubsystem;
 import frc.robot.util.Limelight;
+import org.littletonrobotics.junction.Logger;
 
 public class RobotContainer {
 
@@ -37,13 +44,16 @@ public class RobotContainer {
       .withDeadband(MaxSpeed * 0.1)
       .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+
   private final SwerveRequest.RobotCentric driveRR =
     new SwerveRequest.RobotCentric()
       .withDeadband(MaxSpeed * 0.1)
       .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+
   private final SwerveRequest.SwerveDriveBrake brake =
     new SwerveRequest.SwerveDriveBrake();
+
   private final SwerveRequest.PointWheelsAt point =
     new SwerveRequest.PointWheelsAt();
 
@@ -53,7 +63,17 @@ public class RobotContainer {
 
   public final CommandSwerveDrivetrain drivetrain =
     TunerConstants.createDrivetrain();
+
+  private final ShooterSubsystem shooter = new ShooterSubsystem(
+    new ShooterIOSim()
+  );
+
+  private final GroundIntakeSubsystem groundIntake = new GroundIntakeSubsystem(
+    new GroundIntakeIOSim()
+  );
+
   private final Limelight tagLimelight = new Limelight("limelight-intake");
+
   StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
     .getStructTopic("Global Pose", Pose2d.struct)
     .publish();
@@ -70,8 +90,8 @@ public class RobotContainer {
       drivetrain.applyRequest(
         () ->
           drive
-            .withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-            .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+            .withVelocityX(joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+            .withVelocityY(joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
             .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
       )
     );
@@ -168,6 +188,11 @@ public class RobotContainer {
     SmartDashboard.putNumber(
       "Angle to Hub",
       drivetrain.getAngleToHub().getDegrees()
+    );
+
+    Logger.recordOutput(
+      "Robot/ComponentPoses",
+      new Pose3d[] { shooter.getShooterPose(), groundIntake.getIntakePose() }
     );
   }
 }

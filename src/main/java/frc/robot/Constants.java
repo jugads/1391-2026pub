@@ -15,18 +15,16 @@ public class Constants {
     public static final double kS = 0.0;
     public static final double kG = 0.0;
     public static final double kV = 0.0;
-    public static final double kP = 0.0;
+    public static final double kP = 2.2;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
 
-    public double intakeSpeed = 0.0;
-    public double encoderPosition = 0.0;
 
     public static final double MIN_WHEEL_SPEED = 0;
     public static final double MIN_PIVOT_SPEED = 0;
     public static final double feedingIntakeSpeed = 0.5;
     public static final double kINTAKING_POSITION_SETPOINT = 0.0;
-    public static final double kIDLED_POSITION_SETPOINT = 0.0;
+    public static final double kIDLED_POSITION_SETPOINT = 0.5;
     public static final double kENCODER_OFFSET = 0.0;
     public static final int kENCODER_ID = 0;
     public static final int kPIVOT_ID = 0;
@@ -69,4 +67,10 @@ public class Constants {
       4.029
     );
   }
+   public class TidalLockConstants {
+        public static final double kP = 0.15;
+        public static final double kI = 0.1;
+        public static final double kD = 0.0;
+        public static final double kVELOCITY_MULTIPLIER = 0.1;
+    }
 }

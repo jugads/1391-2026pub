@@ -2,6 +2,8 @@ package frc.robot.subsystems.Shooter;
 
 import static frc.robot.Constants.ShoooterConstants.*;
 
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -42,7 +44,7 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
-
+    io.refreshData();
     SystemState newState = handleStateTransition();
     if (newState != systemState) {
       systemState = newState;
@@ -54,18 +56,18 @@ public class ShooterSubsystem extends SubsystemBase {
         break;
       case SHOOTING_AT_HUB:
         io.setShooterSpeed(motorsSetpoint);
-        io.setWheelSpeed(motorsSetpoint);
-        io.setBeltSpeed(motorsSetpoint);
+        io.setMiddleSpeed(motorsSetpoint);
+        io.setFeederSpeed(motorsSetpoint);
         break;
       case LOADING:
-        io.setBeltSpeed(motorsSetpoint);
-        io.setWheelSpeed(motorsSetpoint);
+        io.setFeederSpeed(motorsSetpoint);
+        io.setMiddleSpeed(motorsSetpoint);
         io.setShooterSpeed(motorsSetpoint);
         break;
       case REVERSING:
         io.setShooterSpeed(kREVERSING_SPEED);
-        io.setWheelSpeed(kREVERSING_SPEED);
-        io.setBeltSpeed(kREVERSING_SPEED);
+        io.setMiddleSpeed(kREVERSING_SPEED);
+        io.setFeederSpeed(kREVERSING_SPEED);
         break;
       case IDLED:
       default:
@@ -134,7 +136,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean isUpToSpeed() {
-    if (Math.abs(shooterSpeedSetpoint - inputs.wheelSpeed) < 0.02) { //may change to rpm
+    if (Math.abs(shooterSpeedSetpoint - inputs.middleMotorSpeed) < 0.02) { //may change to rpm
       return true;
     } else {
       return false;
@@ -149,5 +151,11 @@ public class ShooterSubsystem extends SubsystemBase {
   public boolean hasBall() {
     // Replace with sensor or switch input
     return true;
+  }
+
+  public Pose3d getShooterPose() {
+    return new Pose3d(
+      0,0,0, new Rotation3d()
+    );
   }
 }

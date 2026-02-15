@@ -7,6 +7,9 @@ import com.ctre.phoenix6.hardware.*;
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -43,7 +46,7 @@ public class GroundIntakeSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     io.updateInputs(inputs);
-
+    io.refreshData();
     SystemState newState = handleStateTransition();
     if (newState != systemState) {
       systemState = newState;
@@ -100,6 +103,15 @@ public class GroundIntakeSubsystem extends SubsystemBase {
 
   public Command setWantedStateCommand(WantedState state) {
     return new InstantCommand(() -> setWantedState(state));
+  }
+
+  public Pose3d getIntakePose() {
+    return new Pose3d(
+      0.0,
+      0.0,
+      0.0,
+      new Rotation3d(0,-inputs.encoderPosition,0)
+    );
   }
 }
 /* public enum GroundIntakeSubsystem {

@@ -6,13 +6,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class ShooterIOTalonFX implements ShooterIO {
 
   private final TalonFX shooterMotor;
-  private final TalonFX wheelMotor;
-  private final TalonFX beltMotor;
+  private final TalonFX middleMotor;
+  private final TalonFX feederMotor;
 
-  public ShooterIOTalonFX(int motorID, int wheelID, int beltID) {
-    shooterMotor = new TalonFX(motorID);
-    wheelMotor = new TalonFX(wheelID);
-    beltMotor = new TalonFX(beltID);
+  public ShooterIOTalonFX(int shooterID, int middleMotorID,  int feederID) {
+    shooterMotor = new TalonFX(shooterID);
+    middleMotor = new TalonFX(middleMotorID);
+    feederMotor = new TalonFX(feederID);
   }
 
   @Override
@@ -21,12 +21,12 @@ public class ShooterIOTalonFX implements ShooterIO {
   }
 
   @Override
-  public void setWheelSpeed(double speed) {
-    shooterMotor.set(speed);
+  public void setMiddleSpeed(double speed) {
+    middleMotor.set(speed);
   }
 
   @Override
-  public void setBeltSpeed(double speed) {
+  public void setFeederSpeed(double speed) {
     shooterMotor.set(speed);
   }
 
@@ -38,15 +38,15 @@ public class ShooterIOTalonFX implements ShooterIO {
   @Override
   public void updateInputs(shooterIOInputs inputs) {
     inputs.shooterSpeed = shooterMotor.get();
-    inputs.wheelSpeed = wheelMotor.get();
-    inputs.beltSpeed = beltMotor.get();
+    inputs.middleMotorSpeed = middleMotor.get();
+    inputs.feederSpeed = feederMotor.get();
   }
 
   @Override
   public void refreshData() {
     // Not required for Spark MAX, but useful for manual telemetry push or debug logging
     SmartDashboard.putNumber("Shooter/Shooter Speed", shooterMotor.get());
-    SmartDashboard.putNumber("Shooter/Wheel Speed", wheelMotor.get());
-    SmartDashboard.putNumber("Shooter/Belt Speed", beltMotor.get());
+    SmartDashboard.putNumber("Shooter/Wheel Speed", middleMotor.get());
+    SmartDashboard.putNumber("Shooter/Belt Speed", feederMotor.get());
   }
 }
