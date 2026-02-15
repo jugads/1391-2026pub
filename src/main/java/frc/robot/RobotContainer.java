@@ -5,6 +5,7 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
+import static frc.robot.Constants.MotorIDConstants.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -19,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.commands.Autos;
 import frc.robot.commands.TrackFuel;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -92,6 +94,8 @@ public class RobotContainer {
           drive
             .withVelocityX(joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
             .withVelocityY(joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+            .withVelocityX(joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+            .withVelocityY(joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
             .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
       )
     );
@@ -115,21 +119,8 @@ public class RobotContainer {
     // Run SysId routines when holding back/start and X/Y.
     // Note that each routine should be run exactly once in a single log.
     joystick
-      .back()
-      .and(joystick.y())
-      .whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-    joystick
-      .back()
-      .and(joystick.x())
-      .whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-    joystick
-      .start()
-      .and(joystick.y())
-      .whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-    joystick
-      .start()
-      .and(joystick.x())
-      .whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+      .y()
+      .whileTrue(shooter.setWantedStateCommand(WantedState.SHOOT_AT_HUB));
     joystick
       .povUp()
       .whileTrue(drivetrain.applyRequest(() -> driveRR.withVelocityX(1)));
@@ -152,20 +143,7 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     // Simple drive forward auton
-    final var idle = new SwerveRequest.Idle();
-    return Commands.sequence(
-      // Reset our field centric heading to match the robot
-      // facing away from our alliance station wall (0 deg).
-      drivetrain.runOnce(() -> drivetrain.seedFieldCentric(Rotation2d.kZero)),
-      // Then slowly drive forward (away from us) for 5 seconds.
-      drivetrain
-        .applyRequest(() ->
-          drive.withVelocityX(0.5).withVelocityY(0).withRotationalRate(0)
-        )
-        .withTimeout(5.0),
-      // Finally idle for the rest of auton
-      drivetrain.applyRequest(() -> idle)
-    );
+    return Commands.none();
   }
 
   public void dashboardUpdates() {

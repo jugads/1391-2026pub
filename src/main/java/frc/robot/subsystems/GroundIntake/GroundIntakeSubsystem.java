@@ -24,14 +24,14 @@ public class GroundIntakeSubsystem extends SubsystemBase {
   public enum WantedState {
     IDLE,
     INTAKE,
-    RETRACT,
+    HOLD_AT_DEFAULT,
     REVERSE,
   }
 
   private enum SystemState {
     IDLED,
     INTAKING,
-    RETRACTING,
+    HOLDING_AT_DEFAULT,
     REVERSING,
   }
 
@@ -56,14 +56,14 @@ public class GroundIntakeSubsystem extends SubsystemBase {
     switch (systemState) {
       case INTAKING:
         io.setIntakeSpeed(1.0);
-        io.setPositionSetpoint(kINTAKING_POSITION_SETPOINT);
+        io.runIntakePivotToSetpoint(kINTAKING_POSITION_SETPOINT);
         break;
       case REVERSING:
         io.setIntakeSpeed(-1.0);
         break;
-      case RETRACTING:
+      case HOLDING_AT_DEFAULT:
         io.setIntakeSpeed(0.0);
-        io.setPositionSetpoint(kIDLED_POSITION_SETPOINT);
+        io.runIntakePivotToSetpoint(kIDLED_POSITION_SETPOINT);
         break;
       case IDLED:
       default:
@@ -79,8 +79,8 @@ public class GroundIntakeSubsystem extends SubsystemBase {
         return SystemState.INTAKING;
       case REVERSE:
         return SystemState.REVERSING;
-      case RETRACT:
-        return SystemState.RETRACTING;
+      case HOLD_AT_DEFAULT:
+        return SystemState.HOLDING_AT_DEFAULT;
       case IDLE:
       default:
         return SystemState.IDLED;

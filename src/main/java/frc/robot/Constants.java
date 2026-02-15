@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 
@@ -18,6 +20,7 @@ public class Constants {
     public static final double kP = 2.2;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
+    public static final double kA = 0.0;
 
 
     public static final double MIN_WHEEL_SPEED = 0;
@@ -27,13 +30,11 @@ public class Constants {
     public static final double kIDLED_POSITION_SETPOINT = 0.5;
     public static final double kENCODER_OFFSET = 0.0;
     public static final int kENCODER_ID = 0;
-    public static final int kPIVOT_ID = 0;
-    public static final int kINTAKE_ID = 0;
   }
 
   public class ShoooterConstants {
 
-    public static final double kSHOOTER_SPEED_AT_HUB = 0.0;
+    public static final double kSHOOTER_SPEED_AT_HUB = 1.0;
     public static final double kREVERSING_SPEED = 0.0;
     public static final InterpolatingDoubleTreeMap kSHOOTER_SPEEDS =
       new InterpolatingDoubleTreeMap();

@@ -2,34 +2,37 @@ package frc.robot.subsystems.GroundIntake;
 
 import static frc.robot.Constants.GroundIntakeConstants.*;
 
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.*;
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
-//import com.revrobotics.spark.SparkLowLevel.MotorType;
-//import com.revrobotics.spark.SparkMax;
-//import com.revrobotics.AbsoluteEncoder;
-//import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.GroundIntakeConstants;
 
 public class GroundIntakeIOTalonFX implements GroundIntakeIO {
 
   private final TalonFX pivotMotor;
   private final TalonFX intakeMotor;
-  private final DutyCycleEncoder encoder;
-  PIDController controller = new PIDController(kP, kI, kD);
+  private final TalonFX intakeMotorFollower;
+  MotionMagicVoltage motionMagicVoltage = new MotionMagicVoltage(0).withSlot(0);
 
-  public GroundIntakeIOTalonFX(int pivotID, int intakeID) {
+  public GroundIntakeIOTalonFX(int pivotID, int intakeID, int followerID) {
     this.pivotMotor = new TalonFX(pivotID);
     this.intakeMotor = new TalonFX(intakeID);
-    encoder = new DutyCycleEncoder(kENCODER_ID);
+    this.intakeMotorFollower = new TalonFX(followerID);
+    pivotMotor.setPosition(0);
+    Slot0Configs slot0Configs = new Slot0Configs();
+    slot0Configs.kP = kP;
+    slot0Configs.kI = kI;
+    slot0Configs.kD = kD;
+    slot0Configs.kG = kG;
+    slot0Configs.kV = kV;
+    slot0Configs.kA = kA;
+    pivotMotor.getConfigurator().apply(slot0Configs);
   }
 
   @Override
   public void setIntakeSpeed(double speed) {
     this.intakeMotor.set(speed);
+    this.intakeMotorFollower.set(speed);
   }
 
   @Override
@@ -42,7 +45,7 @@ public class GroundIntakeIOTalonFX implements GroundIntakeIO {
     //SPARK MAX VERSION: inputs.intakeSpeed = intakeMotor.getAppliedOutput() * intakeMotor.getBusVoltage();
     inputs.intakeSpeed = intakeMotor.get();
     //SPARK MAX VERSION: inputs.encoderPosition = pivotMotor.getOutputCurrent();
-    inputs.encoderPosition = encoder.get() - kENCODER_OFFSET;
+    inputs.encoderPosition = pivotMotor.getPosition().getValueAsDouble();
   }
 
   @Override
@@ -51,7 +54,10 @@ public class GroundIntakeIOTalonFX implements GroundIntakeIO {
     //SPARK MAX VERSION: SmartDashboard.putNumber("GroundIntake/WheelSpeed", intakeMotor.getAppliedOutput() * intakeMotor.getBusVoltage());
     //SPARK MAX VERSION: SmartDashboard.putNumber("GroundIntake/EncoderPosition", pivotMotor.getAppliedOutput() * pivotMotor.getBusVoltage());
     SmartDashboard.putNumber("GroundIntake/WheelSpeed", intakeMotor.get());
-    SmartDashboard.putNumber("GroundIntake/EncoderPosition", getEncoderVal());
+    SmartDashboard.putNumber(
+      "GroundIntake/EncoderPosition",
+      getIntakePosition()
+    );
   }
 
   /* @Override
@@ -60,18 +66,13 @@ public class GroundIntakeIOTalonFX implements GroundIntakeIO {
     } */
 
   @Override
-  public double getEncoderVal() {
+  public double getIntakePosition() {
     // getPosition() returns a StatusSignal; getValueAsDouble() converts it to a numeric value.
-    return encoder.get() - kENCODER_OFFSET;
+    return pivotMotor.getPosition().getValueAsDouble();
   }
 
   @Override
-  public void setPositionSetpoint(double setpoint) {
-    controller.setSetpoint(setpoint);
-
-    double currentPosition = getEncoderVal(); // same as in updateInputs()
-    double output = controller.calculate(currentPosition);
-
-    pivotMotor.set(output); // same direction for both
+  public void runIntakePivotToSetpoint(double setpoint) {
+    pivotMotor.setControl(motionMagicVoltage.withPosition(setpoint));
   }
 }
