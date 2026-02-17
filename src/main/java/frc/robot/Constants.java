@@ -87,10 +87,12 @@ public class Constants {
 
   public class MotorIDConstants {
     public static final int kPIVOT_ID = 0;
-    public static final int kINTAKE_ID = 0;
+    public static final int kINTAKE_ID1 = 0;
+    public static final int kINTAKE_ID2 = 0;
     public static final int kHOP_ID = 0;
     public static final int kSHOOTER_ID = 0;
     public static final int kLOADER_ID = 0;
-    public static final int kBELT_ID = 0;
+    public static final int kMIDDLE_ID = 0;
+    
   }
 }
