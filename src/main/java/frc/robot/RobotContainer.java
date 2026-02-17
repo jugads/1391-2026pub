@@ -137,7 +137,8 @@ public class RobotContainer {
     joystick
       .leftBumper()
       .onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-
+    joystick.x().whileTrue(groundIntake.setWantedStateCommand(WantedState.INTAKE));
+    joystick.y().whileTrue(groundIntake.setWantedStateCommand(WantedState.HOLD_AT_DEFAULT));
     drivetrain.registerTelemetry(logger::telemeterize);
   }
 
