@@ -19,16 +19,14 @@ public class ShooterSubsystem extends SubsystemBase {
     IDLE,
     REV_TO_SPEED,
     SHOOT_AT_HUB,
-    REVERSE,
-    LOAD,
+    REVERSE
   }
 
   private enum SystemState {
     IDLED,
     REVVING_TO_SPEED,
     SHOOTING_AT_HUB,
-    REVERSING,
-    LOADING,
+    REVERSING
   }
 
   private WantedState wantedState = WantedState.IDLE;
@@ -52,17 +50,12 @@ public class ShooterSubsystem extends SubsystemBase {
 
     switch (systemState) {
       case REVVING_TO_SPEED:
-        io.setShooterSpeed(kSHOOTER_SPEED_AT_HUB);
+        io.setShooterSpeed(motorsSetpoint);
         break;
       case SHOOTING_AT_HUB:
         io.setShooterSpeed(motorsSetpoint);
-        io.setMiddleSpeed(motorsSetpoint);
-        io.setFeederSpeed(motorsSetpoint);
-        break;
-      case LOADING:
-        io.setFeederSpeed(motorsSetpoint);
-        io.setMiddleSpeed(motorsSetpoint);
-        io.setShooterSpeed(motorsSetpoint);
+        io.setMiddleSpeed(motorsSetpoint * 0.83);
+        io.setFeederSpeed(motorsSetpoint * 0.83 * 0.83);
         break;
       case REVERSING:
         io.setShooterSpeed(kREVERSING_SPEED);
@@ -72,6 +65,8 @@ public class ShooterSubsystem extends SubsystemBase {
       case IDLED:
       default:
         io.setShooterSpeed(0.0);
+        io.setMiddleSpeed(0.0);
+        io.setFeederSpeed(0.0);
         break;
     }
   }
@@ -84,15 +79,13 @@ public class ShooterSubsystem extends SubsystemBase {
         return SystemState.SHOOTING_AT_HUB;
       case REVERSE:
         return SystemState.REVERSING;
-      case LOAD:
-        return SystemState.LOADING;
       case IDLE:
       default:
         return SystemState.IDLED;
     }
   }
 
-  public Command shoot(double shooterSpeed) {
+  public Command shootCommand(double shooterSpeed) {
     this.motorsSetpoint = shooterSpeed;
     return new InstantCommand(() -> setWantedState(WantedState.REV_TO_SPEED));
   }

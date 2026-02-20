@@ -3,45 +3,77 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.645,
-        "y": 3.38
+        "x": 7.604866666666666,
+        "y": 3.1481555555555554
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.666922902280675,
-        "y": 3.629036917655981
+        "x": 7.626789568947341,
+        "y": 3.3971924732115366
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "End of RS-getFuel2"
     },
     {
       "anchor": {
-        "x": 5.317211111111111,
-        "y": 2.392322222222223
+        "x": 6.7281,
+        "y": 3.833444444444444
       },
       "prevControl": {
-        "x": 5.619570322504667,
-        "y": 2.3511156805568447
+        "x": 6.947628360706249,
+        "y": 4.045402861678062
       },
       "nextControl": {
-        "x": 5.0689782027461865,
-        "y": 2.426152247224978
+        "x": 6.435844444444444,
+        "y": 3.551266666666667
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.039633333333333,
-        "y": 2.7349666666666668
+        "x": 5.9118,
+        "y": 2.614033333333333
       },
       "prevControl": {
-        "x": 3.606606936082528,
-        "y": 2.5920297078515517
+        "x": 6.842331624767572,
+        "y": 1.7589502186820503
+      },
+      "nextControl": {
+        "x": 5.538922222222222,
+        "y": 2.956677777777778
+      },
+      "isLocked": false,
+      "linkedName": "End of RS-returnToAllianceZone"
+    },
+    {
+      "anchor": {
+        "x": 2.838077777777778,
+        "y": 2.614033333333333
+      },
+      "prevControl": {
+        "x": 3.5724621512342374,
+        "y": 1.8231578542263827
+      },
+      "nextControl": {
+        "x": 2.667965002935958,
+        "y": 2.797231706239907
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.2512666666666665,
+        "y": 3.5815
+      },
+      "prevControl": {
+        "x": 2.3650767340206293,
+        "y": 3.218237982518443
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "End of RS-returnToAllianceZone"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -58,13 +90,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 40.135485562239445
+    "rotation": 13.736268305622524
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
-    "velocity": 0,
-    "rotation": 0.0
+    "velocity": 1.0,
+    "rotation": 90.0
   },
   "useDefaultConstraints": false
 }

@@ -22,6 +22,6 @@ public class HopperIOTalonFX implements HopperIO {
   @Override
   public void refreshData() {
     // Not required for Spark MAX, but useful for manual telemetry push or debug logging
-    SmartDashboard.putNumber("Hopper Speed", beltMotor.get());
+    SmartDashboard.putNumber("Hopper/Hopper Speed", beltMotor.get());
   }
 }
