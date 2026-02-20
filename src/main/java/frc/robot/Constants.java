@@ -17,7 +17,7 @@ public class Constants {
     public static final double kS = 0.0;
     public static final double kG = 0.0;
     public static final double kV = 0.0;
-    public static final double kP = 2.0;
+    public static final double kP = 0.0;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
 
@@ -29,6 +29,7 @@ public class Constants {
     public static final double feedingIntakeSpeed = 0.5;
     public static final double kINTAKING_POSITION_SETPOINT = 0.0;
     public static final double kIDLED_POSITION_SETPOINT = 0.5;
+    public static final double kINTAKE_MAX_ANGLE_UNDER_TRENCH = 0.0;
     public static final double kENCODER_OFFSET = 0.0;
     public static final int kENCODER_ID = 0;
   }
@@ -58,7 +59,7 @@ public class Constants {
   }
 
   public class VisionConstants {
-
+    public static final int kLED_PORT = 0;
     public static final String kAPRILTAG_LL_NAME = "limelight-intake";
     public static final Translation2d kBLUEHUBPOSE = new Translation2d(
       4.634,
@@ -79,9 +80,9 @@ public class Constants {
   public class AutonomousConstants {
 
     public static final Pose2d kSTARTING_POSE_RIGHT_SIDE = new Pose2d(
-      4.440,
-      0.457,
-      Rotation2d.fromDegrees(90)
+      3.633,
+      0.415,
+      Rotation2d.fromDegrees(0)
     );
   }
 

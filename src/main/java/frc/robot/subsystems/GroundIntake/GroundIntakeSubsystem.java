@@ -113,6 +113,10 @@ public class GroundIntakeSubsystem extends SubsystemBase {
       new Rotation3d(0,-inputs.encoderPosition,0)
     );
   }
+
+  public double getIntakePivotAngle() {
+    return inputs.encoderPosition;
+  }
 }
 /* public enum GroundIntakeSubsystem {
 

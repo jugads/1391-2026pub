@@ -12,7 +12,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -157,7 +156,7 @@ public class CommandSwerveDrivetrain
     if (Utils.isSimulation()) {
       startSimThread();
     }
-     configureAutoBuilder();
+    configureAutoBuilder();
   }
 
   /**
@@ -182,7 +181,7 @@ public class CommandSwerveDrivetrain
     if (Utils.isSimulation()) {
       startSimThread();
     }
-     configureAutoBuilder();
+    configureAutoBuilder();
   }
 
   /**
@@ -221,7 +220,7 @@ public class CommandSwerveDrivetrain
     if (Utils.isSimulation()) {
       startSimThread();
     }
-     configureAutoBuilder();
+    configureAutoBuilder();
   }
 
   /**
@@ -398,8 +397,8 @@ public class CommandSwerveDrivetrain
   ) {
     globalPose.addVisionMeasurement(visionMeasurements, timestamp);
   }
-  
-  private void configureAutoBuilder() {
+
+  public void configureAutoBuilder() {
     try {
       var config = RobotConfig.fromGUISettings();
       AutoBuilder.configure(
@@ -438,9 +437,17 @@ public class CommandSwerveDrivetrain
       );
       System.out.println("CONFIGURED SUCCESSFULLY");
     } catch (Exception ex) {
-      System.out.println("Error" + ex.getStackTrace().toString() + ex.getMessage());
+      System.out.println(
+        "Error" + ex.getStackTrace().toString() + ex.getMessage()
+      );
     }
   }
 
-  
+  public boolean isInAllianceZone(Alliance alliance) {
+    if (alliance.equals(Alliance.Blue)) {
+      return getGlobalPose().getX() < 4;
+    } else {
+      return getGlobalPose().getX() > 12.5;
+    }
+  }
 }

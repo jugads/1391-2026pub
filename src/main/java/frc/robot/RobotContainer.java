@@ -5,28 +5,26 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
-import static frc.robot.Constants.MotorIDConstants.*;
+import static frc.robot.Constants.VisionConstants.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.commands.Autos;
-import frc.robot.commands.TrackFuel;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.GroundIntake.GroundIntakeIOSim;
 import frc.robot.subsystems.GroundIntake.GroundIntakeSubsystem;
-import frc.robot.subsystems.GroundIntake.GroundIntakeSubsystem.WantedState;
+import frc.robot.subsystems.Hopper.HopperIOSim;
+import frc.robot.subsystems.Hopper.HopperSubsystem;
+import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Shooter.ShooterIOSim;
 import frc.robot.subsystems.Shooter.ShooterSubsystem;
 import frc.robot.util.Limelight;
@@ -53,12 +51,6 @@ public class RobotContainer {
       .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
 
-  private final SwerveRequest.SwerveDriveBrake brake =
-    new SwerveRequest.SwerveDriveBrake();
-
-  private final SwerveRequest.PointWheelsAt point =
-    new SwerveRequest.PointWheelsAt();
-
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
   private final CommandXboxController joystick = new CommandXboxController(0);
@@ -73,8 +65,21 @@ public class RobotContainer {
   private final GroundIntakeSubsystem groundIntake = new GroundIntakeSubsystem(
     new GroundIntakeIOSim()
   );
+  private final HopperSubsystem hopper = new HopperSubsystem(new HopperIOSim());
+
+  private final LEDs leds = new LEDs(kLED_PORT);
+
+  private final RobotCore m_robot = new RobotCore(
+    shooter,
+    groundIntake,
+    hopper,
+    drivetrain,
+    leds
+  );
+
 
   private final Limelight tagLimelight = new Limelight("limelight-intake");
+  private final Autos autos = new Autos(m_robot);
 
   StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
     .getStructTopic("Global Pose", Pose2d.struct)
@@ -100,51 +105,13 @@ public class RobotContainer {
       )
     );
 
-    // Idle while the robot is disabled. This ensures the configured
-    // neutral mode is applied to the drive motors while disabled.
-    final var idle = new SwerveRequest.Idle();
-    RobotModeTriggers.disabled()
-      .whileTrue(drivetrain.applyRequest(() -> idle).ignoringDisable(true));
-
-    joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-    joystick
-      .b()
-      .whileTrue(
-        drivetrain.applyRequest(() ->
-          point.withModuleDirection(
-            new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX())
-          )
-        )
-      );
-    // Run SysId routines when holding back/start and X/Y.
-    // Note that each routine should be run exactly once in a single log.
-    // joystick
-    //   .y()
-    //   .whileTrue(shooter.setWantedStateCommand(WantedState.SHOOT_AT_HUB));
-    joystick
-      .povUp()
-      .whileTrue(drivetrain.applyRequest(() -> driveRR.withVelocityX(1)));
-    joystick
-      .povDown()
-      .whileTrue(drivetrain.applyRequest(() -> driveRR.withVelocityX(-1)));
-    joystick
-      .povLeft()
-      .whileTrue(drivetrain.applyRequest(() -> driveRR.withVelocityY(1)));
-    joystick
-      .povRight()
-      .whileTrue(drivetrain.applyRequest(() -> driveRR.withVelocityY(-1)));
-    // Reset the field-centric heading on left bumper press.
-    joystick
-      .leftBumper()
-      .onTrue(drivetrain.runOnce(drivetrain::seedFieldCentric));
-    joystick.x().whileTrue(groundIntake.setWantedStateCommand(WantedState.INTAKE));
-    joystick.y().whileTrue(groundIntake.setWantedStateCommand(WantedState.HOLD_AT_DEFAULT));
+    
     drivetrain.registerTelemetry(logger::telemeterize);
   }
 
   public Command getAutonomousCommand() {
     // Simple drive forward auton
-    return Commands.none();
+    return autos.rightSideAuto();
   }
 
   public void dashboardUpdates() {
@@ -163,7 +130,11 @@ public class RobotContainer {
         tagLimelight.getLimelightPoseEstimateData().timestampSeconds
       );
     }
-
+    if (!DriverStation.getAlliance().isEmpty()) {
+      if (drivetrain.isInAllianceZone(DriverStation.getAlliance().get())) {
+        leds.setWantedState(LEDs.WantedState.ZONE_ASSIST);
+      }
+    }
     SmartDashboard.putNumber(
       "Angle to Hub",
       drivetrain.getAngleToHub().getDegrees()

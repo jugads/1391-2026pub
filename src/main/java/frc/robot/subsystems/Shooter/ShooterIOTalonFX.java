@@ -48,5 +48,6 @@ public class ShooterIOTalonFX implements ShooterIO {
     SmartDashboard.putNumber("Shooter/Shooter Speed", shooterMotor.get());
     SmartDashboard.putNumber("Shooter/Wheel Speed", middleMotor.get());
     SmartDashboard.putNumber("Shooter/Belt Speed", feederMotor.get());
+    SmartDashboard.putNumber("Shooter/Current Draw", shooterMotor.getStatorCurrent().getValueAsDouble());
   }
 }
