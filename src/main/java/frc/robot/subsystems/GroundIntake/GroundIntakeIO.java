@@ -1,9 +1,5 @@
 package frc.robot.subsystems.GroundIntake;
 
-import static frc.robot.Constants.GroundIntakeConstants.*;
-
-import com.ctre.phoenix6.hardware.*;
-
 public interface GroundIntakeIO {
   public class GroundIntakeIOInputs {
 

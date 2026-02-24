@@ -1,8 +1,6 @@
 package frc.robot.subsystems.Shooter;
 
 
-import org.littletonrobotics.junction.Logger;
-
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -27,10 +25,6 @@ public class ShooterIOSim implements ShooterIO {
   private double shooterPercent = 0.0;
   private double wheelPercent = 0.0;
   private double beltPercent = 0.0;
-  private Pose3d shooterPose = new Pose3d(
-    0.0, 0.0, 0.0,
-    new Rotation3d()
-  );
   // Simple sims (tweak MOI + gearing to better match your mechanism)
   private final FlywheelSim shooterSim = new FlywheelSim(
     LinearSystemId.createFlywheelSystem(DCMotor.getFalcon500(1), 0.020, 0.0010),

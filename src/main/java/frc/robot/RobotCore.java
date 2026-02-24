@@ -13,7 +13,6 @@ import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.GroundIntake.GroundIntakeSubsystem;
 import frc.robot.subsystems.Hopper.HopperSubsystem;
 import frc.robot.subsystems.Shooter.ShooterSubsystem;
-import frc.robot.subsystems.Shooter.ShooterSubsystem.WantedState;
 import static frc.robot.Constants.GroundIntakeConstants.*;
 /** Add your docs here. */
 public class RobotCore extends SubsystemBase {
@@ -92,6 +91,8 @@ public class RobotCore extends SubsystemBase {
       case REVERSE_INTAKE:
         currentSuperState = CurrentSuperState.REVERSING_INTAKE;
         break;
+      default:
+        currentSuperState = CurrentSuperState.IDLING;
     }
   }
 
@@ -121,6 +122,7 @@ public class RobotCore extends SubsystemBase {
       case REVERSING_INTAKE:
         groundIntake.setWantedState(GroundIntakeSubsystem.WantedState.REVERSE);
         break;
+      default:
     }
   }
 
