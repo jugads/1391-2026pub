@@ -51,7 +51,6 @@ public class GroundIntakeSubsystem extends SubsystemBase {
     if (newState != systemState) {
       systemState = newState;
     }
-
     // Run outputs based on current system state
     switch (systemState) {
       case INTAKING:

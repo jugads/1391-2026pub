@@ -21,11 +21,6 @@ public class ShooterIOTalonFX implements ShooterIO {
   }
 
   @Override
-  public void setMiddleSpeed(double speed) {
-    middleMotor.set(speed);
-  }
-
-  @Override
   public void setFeederSpeed(double speed) {
     shooterMotor.set(speed);
   }
@@ -38,7 +33,6 @@ public class ShooterIOTalonFX implements ShooterIO {
   @Override
   public void updateInputs(shooterIOInputs inputs) {
     inputs.shooterSpeed = shooterMotor.get();
-    inputs.middleMotorSpeed = middleMotor.get();
     inputs.feederSpeed = feederMotor.get();
   }
 

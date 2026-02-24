@@ -5,6 +5,8 @@ import static frc.robot.Constants.GroundIntakeConstants.*;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.*;
+
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class GroundIntakeIOTalonFX implements GroundIntakeIO {
@@ -12,13 +14,14 @@ public class GroundIntakeIOTalonFX implements GroundIntakeIO {
   private final TalonFX pivotMotor;
   private final TalonFX intakeMotor;
   private final TalonFX intakeMotorFollower;
+  private final DutyCycleEncoder absEncoder = new DutyCycleEncoder(kENCODER_PORT);
   MotionMagicVoltage motionMagicVoltage = new MotionMagicVoltage(0).withSlot(0);
 
   public GroundIntakeIOTalonFX(int pivotID, int intakeID, int followerID) {
     this.pivotMotor = new TalonFX(pivotID);
     this.intakeMotor = new TalonFX(intakeID);
     this.intakeMotorFollower = new TalonFX(followerID);
-    pivotMotor.setPosition(0);
+    pivotMotor.setPosition(getAbsEncoderVal());
     Slot0Configs slot0Configs = new Slot0Configs();
     slot0Configs.kP = kP;
     slot0Configs.kI = kI;
@@ -73,5 +76,9 @@ public class GroundIntakeIOTalonFX implements GroundIntakeIO {
   @Override
   public void runIntakePivotToSetpoint(double setpoint) {
     pivotMotor.setControl(motionMagicVoltage.withPosition(setpoint));
+  }
+
+  public double getAbsEncoderVal() {
+    return absEncoder.get() - kENCODER_OFFSET;
   }
 }

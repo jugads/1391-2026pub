@@ -54,18 +54,15 @@ public class ShooterSubsystem extends SubsystemBase {
         break;
       case SHOOTING_AT_HUB:
         io.setShooterSpeed(motorsSetpoint);
-        io.setMiddleSpeed(motorsSetpoint * 0.83);
         io.setFeederSpeed(motorsSetpoint * 0.83 * 0.83);
         break;
       case REVERSING:
         io.setShooterSpeed(kREVERSING_SPEED);
-        io.setMiddleSpeed(kREVERSING_SPEED);
         io.setFeederSpeed(kREVERSING_SPEED);
         break;
       case IDLED:
       default:
         io.setShooterSpeed(0.0);
-        io.setMiddleSpeed(0.0);
         io.setFeederSpeed(0.0);
         break;
     }
@@ -129,7 +126,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean isUpToSpeed() {
-    if (Math.abs(shooterSpeedSetpoint - inputs.middleMotorSpeed) < 0.02) { //may change to rpm
+    if (Math.abs(shooterSpeedSetpoint - inputs.shooterSpeed) < 100) {
       return true;
     } else {
       return false;

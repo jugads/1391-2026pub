@@ -57,11 +57,6 @@ public class ShooterIOSim implements ShooterIO {
   }
 
   @Override
-  public void setMiddleSpeed(double speed) {
-    wheelPercent = clamp(speed, -1.0, 1.0);
-  }
-
-  @Override
   public void setFeederSpeed(double speed) {
     beltPercent = clamp(speed, -1.0, 1.0);
   }
@@ -90,7 +85,6 @@ public class ShooterIOSim implements ShooterIO {
 
     // Match your current TalonFX IO behavior: return commanded percent outputs
     inputs.shooterSpeed = shooterPercent;
-    inputs.middleMotorSpeed = wheelPercent;
     inputs.feederSpeed = beltPercent;
   }
 

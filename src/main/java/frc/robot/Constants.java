@@ -31,7 +31,7 @@ public class Constants {
     public static final double kIDLED_POSITION_SETPOINT = 0.5;
     public static final double kINTAKE_MAX_ANGLE_UNDER_TRENCH = 0.0;
     public static final double kENCODER_OFFSET = 0.0;
-    public static final int kENCODER_ID = 0;
+    public static final int kENCODER_PORT = 9;
   }
 
   public class ShoooterConstants {
