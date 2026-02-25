@@ -1,28 +1,41 @@
 package frc.robot.subsystems.Shooter;
 
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import static frc.robot.Constants.ShooterConstants.*;
 public class ShooterIOTalonFX implements ShooterIO {
 
   private final TalonFX shooterMotor;
-  private final TalonFX middleMotor;
   private final TalonFX feederMotor;
-
-  public ShooterIOTalonFX(int shooterID, int middleMotorID,  int feederID) {
+  private final VelocityVoltage request = new VelocityVoltage(0.);
+  public ShooterIOTalonFX(int shooterID,  int feederID) {
     shooterMotor = new TalonFX(shooterID);
-    middleMotor = new TalonFX(middleMotorID);
     feederMotor = new TalonFX(feederID);
+    TalonFXConfiguration shooterConfig = new TalonFXConfiguration();
+    Slot0Configs slot0 = new Slot0Configs();
+    slot0.kP = kP;
+    slot0.kI = kI;
+    slot0.kD = kD;
+    slot0.kG = kS;
+    slot0.kV = kV;
+    slot0.kA = kA;
+    shooterConfig.Slot0 = slot0;
+
+    shooterMotor.getConfigurator().apply(shooterConfig);
+
   }
 
   @Override
   public void setShooterSpeed(double speed) {
-    shooterMotor.set(speed);
+    shooterMotor.setControl(request.withVelocity(speed));
   }
 
   @Override
   public void setFeederSpeed(double speed) {
-    shooterMotor.set(speed);
+    feederMotor.set(speed);
   }
 
   /**
@@ -31,7 +44,7 @@ public class ShooterIOTalonFX implements ShooterIO {
    * @param inputs the ShooterIOInputs to update
    */
   @Override
-  public void updateInputs(shooterIOInputs inputs) {
+  public void updateInputs(ShooterIOInputs inputs) {
     inputs.shooterSpeed = shooterMotor.get();
     inputs.feederSpeed = feederMotor.get();
   }
@@ -40,8 +53,7 @@ public class ShooterIOTalonFX implements ShooterIO {
   public void refreshData() {
     // Not required for Spark MAX, but useful for manual telemetry push or debug logging
     SmartDashboard.putNumber("Shooter/Shooter Speed", shooterMotor.get());
-    SmartDashboard.putNumber("Shooter/Wheel Speed", middleMotor.get());
-    SmartDashboard.putNumber("Shooter/Belt Speed", feederMotor.get());
+    SmartDashboard.putNumber("Shooter/Feeder Speed", feederMotor.get());
     SmartDashboard.putNumber("Shooter/Current Draw", shooterMotor.getStatorCurrent().getValueAsDouble());
   }
 }

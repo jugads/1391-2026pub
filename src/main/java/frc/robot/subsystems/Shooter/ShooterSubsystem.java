@@ -1,6 +1,6 @@
 package frc.robot.subsystems.Shooter;
 
-import static frc.robot.Constants.ShoooterConstants.*;
+import static frc.robot.Constants.ShooterConstants.*;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -11,8 +11,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class ShooterSubsystem extends SubsystemBase {
 
   private final ShooterIO io;
-  private final ShooterIO.shooterIOInputs inputs =
-    new ShooterIO.shooterIOInputs();
+  private final ShooterIO.ShooterIOInputs inputs =
+    new ShooterIO.ShooterIOInputs();
   public double motorsSetpoint = 0.0;
 
   public enum WantedState {

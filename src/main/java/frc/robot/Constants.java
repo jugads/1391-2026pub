@@ -34,7 +34,7 @@ public class Constants {
     public static final int kENCODER_PORT = 9;
   }
 
-  public class ShoooterConstants {
+  public class ShooterConstants {
 
     public static final double kSHOOTER_SPEED_AT_HUB = 1.0;
     public static final double kREVERSING_SPEED = 0.0;
@@ -51,6 +51,13 @@ public class Constants {
     public static final Double[] kSHOOTER_ENTRY_8 = new Double[] { 0.0, 0.0 };
     public static final Double[] kSHOOTER_ENTRY_9 = new Double[] { 0.0, 0.0 };
     public static final Double[] kSHOOTER_ENTRY_10 = new Double[] { 0.0, 0.0 };
+
+    public static final double kP = 0.0;
+    public static final double kI = 0.0;
+    public static final double kD = 0.0;
+    public static final double kV = 0.0;
+    public static final double kS = 0.0;
+    public static final double kA = 0.0;
   }
 
   public class HopperConstants {
@@ -59,6 +66,7 @@ public class Constants {
   }
 
   public class VisionConstants {
+
     public static final int kLED_PORT = 0;
     public static final String kAPRILTAG_LL_NAME = "limelight-intake";
     public static final Translation2d kBLUEHUBPOSE = new Translation2d(
@@ -69,11 +77,13 @@ public class Constants {
       11.919,
       4.029
     );
+
     public class TidalLockConstants {
-        public static final double kP = 0.15;
-        public static final double kI = 0.1;
-        public static final double kD = 0.0;
-        public static final double kVELOCITY_MULTIPLIER = 0.1;
+
+      public static final double kP = 0.15;
+      public static final double kI = 0.1;
+      public static final double kD = 0.0;
+      public static final double kVELOCITY_MULTIPLIER = 0.1;
     }
   }
 
@@ -87,6 +97,7 @@ public class Constants {
   }
 
   public class MotorIDConstants {
+
     public static final int kPIVOT_ID = 0;
     public static final int kINTAKE_ID1 = 0;
     public static final int kINTAKE_ID2 = 0;
@@ -94,6 +105,5 @@ public class Constants {
     public static final int kSHOOTER_ID = 0;
     public static final int kLOADER_ID = 0;
     public static final int kMIDDLE_ID = 0;
-    
   }
 }

@@ -1,6 +1,5 @@
 package frc.robot.subsystems.Shooter;
 
-
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -14,10 +13,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * Shooter IO simulation.
  *
  * Important: This matches your current real implementation behavior:
- * - setShooterSpeed/setWheelSpeed/setBeltSpeed treat "speed" as percent output [-1..1]
+ * - setShooterSpeed/setWheelSpeed/setBeltSpeed treat "speed" as percent output
+ * [-1..1]
  * - updateInputs returns those percent outputs (like TalonFX.get() does)
  *
- * We also run FlywheelSim internally so you can view simulated RPM in SmartDashboard.
+ * We also run FlywheelSim internally so you can view simulated RPM in
+ * SmartDashboard.
  */
 public class ShooterIOSim implements ShooterIO {
 
@@ -27,22 +28,19 @@ public class ShooterIOSim implements ShooterIO {
   private double beltPercent = 0.0;
   // Simple sims (tweak MOI + gearing to better match your mechanism)
   private final FlywheelSim shooterSim = new FlywheelSim(
-    LinearSystemId.createFlywheelSystem(DCMotor.getFalcon500(1), 0.020, 0.0010),
-    DCMotor.getFalcon500(1),
-    1.0
-  );
+      LinearSystemId.createFlywheelSystem(DCMotor.getFalcon500(1), 0.020, 0.0010),
+      DCMotor.getFalcon500(1),
+      1.0);
 
   private final FlywheelSim wheelSim = new FlywheelSim(
-    LinearSystemId.createFlywheelSystem(DCMotor.getFalcon500(1), 0.018, 0.0010),
-    DCMotor.getFalcon500(1),
-    1.0
-  );
+      LinearSystemId.createFlywheelSystem(DCMotor.getFalcon500(1), 0.018, 0.0010),
+      DCMotor.getFalcon500(1),
+      1.0);
 
   private final FlywheelSim beltSim = new FlywheelSim(
-    LinearSystemId.createFlywheelSystem(DCMotor.getFalcon500(1), 0.030, 0.0015),
-    DCMotor.getFalcon500(1),
-    1.0
-  );
+      LinearSystemId.createFlywheelSystem(DCMotor.getFalcon500(1), 0.030, 0.0015),
+      DCMotor.getFalcon500(1),
+      1.0);
   private double lastTimestamp = Timer.getFPGATimestamp();
 
   @Override
@@ -56,7 +54,7 @@ public class ShooterIOSim implements ShooterIO {
   }
 
   @Override
-  public void updateInputs(shooterIOInputs inputs) {
+  public void updateInputs(ShooterIOInputs inputs) {
     // Advance sims
     double now = Timer.getFPGATimestamp();
     double dt = now - lastTimestamp;
@@ -91,31 +89,25 @@ public class ShooterIOSim implements ShooterIO {
 
     // Extra sim telemetry (not part of ShooterIOInputs, but helpful)
     SmartDashboard.putNumber(
-      "ShooterSim/Shooter RPM",
-      radPerSecToRpm(shooterSim.getAngularVelocityRadPerSec())
-    );
+        "ShooterSim/Shooter RPM",
+        radPerSecToRpm(shooterSim.getAngularVelocityRadPerSec()));
     SmartDashboard.putNumber(
-      "ShooterSim/Wheel RPM",
-      radPerSecToRpm(wheelSim.getAngularVelocityRadPerSec())
-    );
+        "ShooterSim/Wheel RPM",
+        radPerSecToRpm(wheelSim.getAngularVelocityRadPerSec()));
     SmartDashboard.putNumber(
-      "ShooterSim/Belt RPM",
-      radPerSecToRpm(beltSim.getAngularVelocityRadPerSec())
-    );
+        "ShooterSim/Belt RPM",
+        radPerSecToRpm(beltSim.getAngularVelocityRadPerSec()));
 
     SmartDashboard.putNumber(
-      "ShooterSim/Shooter Current (A)",
-      shooterSim.getCurrentDrawAmps()
-    );
+        "ShooterSim/Shooter Current (A)",
+        shooterSim.getCurrentDrawAmps());
     SmartDashboard.putNumber(
-      "ShooterSim/Wheel Current (A)",
-      wheelSim.getCurrentDrawAmps()
-    );
+        "ShooterSim/Wheel Current (A)",
+        wheelSim.getCurrentDrawAmps());
     SmartDashboard.putNumber(
-      "ShooterSim/Belt Current (A)",
-      beltSim.getCurrentDrawAmps()
-    );
-}
+        "ShooterSim/Belt Current (A)",
+        beltSim.getCurrentDrawAmps());
+  }
 
   private static double clamp(double val, double min, double max) {
     return Math.max(min, Math.min(max, val));
