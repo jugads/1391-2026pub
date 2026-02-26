@@ -63,7 +63,7 @@ public class GroundIntakeSubsystem extends SubsystemBase {
       case IDLED:
       default:
         io.setIntakeSpeed(0.0);
-        io.setPivotSpeed(0.0);
+        io.runIntakePivotToSetpoint(kZERO_SETPOINT);
         break;
     }
   }

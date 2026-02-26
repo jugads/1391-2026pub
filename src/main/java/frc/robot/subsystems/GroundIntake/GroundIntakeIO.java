@@ -5,6 +5,7 @@ public interface GroundIntakeIO {
 
     public double intakeSpeed;
     public double encoderPosition;
+    public double pivotSpeed;
   }
 
   default void updateInputs(GroundIntakeIOInputs inputs) {}

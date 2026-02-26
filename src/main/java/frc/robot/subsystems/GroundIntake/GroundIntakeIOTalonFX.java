@@ -1,10 +1,15 @@
 package frc.robot.subsystems.GroundIntake;
 
 import static frc.robot.Constants.GroundIntakeConstants.*;
+import static frc.robot.Constants.kCANBUSNAME;
 
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.hardware.*;
+import com.ctre.phoenix6.signals.InvertedValue;
 
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -14,14 +19,16 @@ public class GroundIntakeIOTalonFX implements GroundIntakeIO {
   private final TalonFX pivotMotor;
   private final TalonFX intakeMotor;
   private final TalonFX intakeMotorFollower;
-  private final DutyCycleEncoder absEncoder = new DutyCycleEncoder(kENCODER_PORT);
+  private final DutyCycleEncoder absEncoder = new DutyCycleEncoder(
+    kENCODER_PORT
+  );
   MotionMagicVoltage motionMagicVoltage = new MotionMagicVoltage(0).withSlot(0);
 
   public GroundIntakeIOTalonFX(int pivotID, int intakeID, int followerID) {
-    this.pivotMotor = new TalonFX(pivotID);
-    this.intakeMotor = new TalonFX(intakeID);
-    this.intakeMotorFollower = new TalonFX(followerID);
-    pivotMotor.setPosition(getAbsEncoderVal());
+    this.pivotMotor = new TalonFX(pivotID, kCANBUSNAME);
+    this.intakeMotor = new TalonFX(intakeID, kCANBUSNAME);
+    this.intakeMotorFollower = new TalonFX(followerID, kCANBUSNAME);
+    pivotMotor.setPosition(0);
     Slot0Configs slot0Configs = new Slot0Configs();
     slot0Configs.kP = kP;
     slot0Configs.kI = kI;
@@ -29,6 +36,26 @@ public class GroundIntakeIOTalonFX implements GroundIntakeIO {
     slot0Configs.kG = kG;
     slot0Configs.kV = kV;
     pivotMotor.getConfigurator().apply(slot0Configs);
+    SoftwareLimitSwitchConfigs limits = new SoftwareLimitSwitchConfigs();
+
+    limits.ForwardSoftLimitEnable = true;
+    limits.ForwardSoftLimitThreshold = 5.93;
+
+    limits.ReverseSoftLimitEnable = true;
+    limits.ReverseSoftLimitThreshold = -0.04;
+
+    MotionMagicConfigs mm = new MotionMagicConfigs();
+    mm.MotionMagicCruiseVelocity = 20; // rotations/sec
+    mm.MotionMagicAcceleration = 40; // rotations/sec^2
+    mm.MotionMagicJerk = 0; // optional
+
+    MotorOutputConfigs output = new MotorOutputConfigs();
+    output.Inverted = InvertedValue.Clockwise_Positive;
+    pivotMotor.getConfigurator().apply(mm);
+
+    pivotMotor.getConfigurator().apply(limits);
+
+    // pivotMotor.getConfigurator().apply(output);
   }
 
   @Override
@@ -46,6 +73,7 @@ public class GroundIntakeIOTalonFX implements GroundIntakeIO {
   public void updateInputs(GroundIntakeIOInputs inputs) {
     //SPARK MAX VERSION: inputs.intakeSpeed = intakeMotor.getAppliedOutput() * intakeMotor.getBusVoltage();
     inputs.intakeSpeed = intakeMotor.get();
+    inputs.pivotSpeed = pivotMotor.get();
     //SPARK MAX VERSION: inputs.encoderPosition = pivotMotor.getOutputCurrent();
     inputs.encoderPosition = pivotMotor.getPosition().getValueAsDouble();
   }
@@ -60,6 +88,7 @@ public class GroundIntakeIOTalonFX implements GroundIntakeIO {
       "GroundIntake/EncoderPosition",
       getIntakePosition()
     );
+    SmartDashboard.putNumber("GroundIntake/PivotSpeed", pivotMotor.get());
   }
 
   /* @Override

@@ -20,14 +20,14 @@ public class ShooterSubsystem extends SubsystemBase {
     IDLE,
     REV_TO_SPEED,
     SHOOT_AT_HUB,
-    REVERSE
+    REVERSE,
   }
 
   private enum SystemState {
     IDLED,
     REVVING_TO_SPEED,
     SHOOTING_AT_HUB,
-    REVERSING
+    REVERSING,
   }
 
   private WantedState wantedState = WantedState.IDLE;
@@ -55,8 +55,8 @@ public class ShooterSubsystem extends SubsystemBase {
         io.setShooterSpeed(motorsSetpoint);
         break;
       case SHOOTING_AT_HUB:
-        io.setShooterSpeed(motorsSetpoint);
-        io.setFeederSpeed(motorsSetpoint * 0.83 * 0.83);
+        io.setShooterSpeed(kSHOOTER_SPEED_AT_HUB);
+        io.setFeederSpeed(1.);
         break;
       case REVERSING:
         io.setShooterSpeed(kREVERSING_SPEED);
@@ -87,6 +87,11 @@ public class ShooterSubsystem extends SubsystemBase {
   public Command shootCommand(double shooterSpeed) {
     this.motorsSetpoint = shooterSpeed;
     return new InstantCommand(() -> setWantedState(WantedState.REV_TO_SPEED));
+  }
+
+  public void shoot(double shooterSpeed) {
+    this.motorsSetpoint = shooterSpeed;
+    setWantedState(WantedState.REV_TO_SPEED);
   }
 
   public Command reverse() {
@@ -128,11 +133,9 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean isUpToSpeed() {
-    if (Math.abs(shooterSpeedSetpoint - inputs.shooterSpeed) < 100) {
-      return true;
-    } else {
-      return false;
-    }
+    return (
+      Math.abs(inputs.shooterSpeed - motorsSetpoint) < kSHOOTER_SPEED_TOLERANCE
+    );
   }
 
   public boolean isJammed() {
@@ -146,8 +149,6 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public Pose3d getShooterPose() {
-    return new Pose3d(
-      0,0,0, new Rotation3d()
-    );
+    return new Pose3d(0, 0, 0, new Rotation3d());
   }
 }

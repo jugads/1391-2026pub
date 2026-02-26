@@ -4,16 +4,19 @@
 
 package frc.robot;
 
+import static frc.robot.Constants.GroundIntakeConstants.*;
+import static frc.robot.Constants.ShooterConstants.kSHOOTER_SPEED_AT_HUB;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.GroundIntake.GroundIntakeSubsystem;
 import frc.robot.subsystems.Hopper.HopperSubsystem;
+import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Shooter.ShooterSubsystem;
-import static frc.robot.Constants.GroundIntakeConstants.*;
+
 /** Add your docs here. */
 public class RobotCore extends SubsystemBase {
 
@@ -47,7 +50,7 @@ public class RobotCore extends SubsystemBase {
     INTAKE,
     REVERSE_INTAKE,
     LOAD,
-    HOME
+    HOME,
   }
 
   public enum CurrentSuperState {
@@ -57,7 +60,7 @@ public class RobotCore extends SubsystemBase {
     INTAKING,
     REVERSING_INTAKE,
     LOADING,
-    HOMED
+    HOMED,
   }
 
   @Override
@@ -113,28 +116,38 @@ public class RobotCore extends SubsystemBase {
         shooter.shootCommand(
           shooter.calculateShooterSpeed(drivetrain.getDistanceFromHub())
         );
-        groundIntake.setWantedState(GroundIntakeSubsystem.WantedState.HOLD_AT_DEFAULT);
+        groundIntake.setWantedState(
+          GroundIntakeSubsystem.WantedState.HOLD_AT_DEFAULT
+        );
         hopper.setWantedState(HopperSubsystem.WantedState.IDLE);
         leds.setWantedState(LEDs.WantedState.IDLE);
         break;
       case SHOOTING:
-        shooter.setWantedState(ShooterSubsystem.WantedState.SHOOT_AT_HUB);
-        hopper.feed(1.);
-        leds.setWantedState(LEDs.WantedState.SHOOT);
-        groundIntake.setWantedState(GroundIntakeSubsystem.WantedState.HOLD_AT_DEFAULT);
+        shooter.shoot(kSHOOTER_SPEED_AT_HUB);
+
+        if (shooter.isUpToSpeed()) {
+          shooter.setWantedState(ShooterSubsystem.WantedState.SHOOT_AT_HUB);
+          hopper.setWantedState(HopperSubsystem.WantedState.FEED);
+          leds.setWantedState(LEDs.WantedState.SHOOT);
+          groundIntake.setWantedState(
+            GroundIntakeSubsystem.WantedState.HOLD_AT_DEFAULT
+          );
+        }
         break;
       case INTAKING:
         groundIntake.setWantedState(GroundIntakeSubsystem.WantedState.INTAKE);
         leds.setWantedState(LEDs.WantedState.INTAKE);
         shooter.setWantedState(ShooterSubsystem.WantedState.IDLE);
-        hopper.setWantedState(HopperSubsystem.WantedState.FEED);
+        hopper.setWantedState(HopperSubsystem.WantedState.IDLE);
         break;
       case REVERSING_INTAKE:
         groundIntake.setWantedState(GroundIntakeSubsystem.WantedState.REVERSE);
         hopper.setWantedState(HopperSubsystem.WantedState.REVERSE);
         break;
       case HOMED:
-        groundIntake.setWantedState(GroundIntakeSubsystem.WantedState.HOLD_AT_DEFAULT);
+        groundIntake.setWantedState(
+          GroundIntakeSubsystem.WantedState.HOLD_AT_DEFAULT
+        );
         hopper.setWantedState(HopperSubsystem.WantedState.IDLE);
         shooter.setWantedState(ShooterSubsystem.WantedState.IDLE);
         leds.setWantedState(LEDs.WantedState.IDLE);

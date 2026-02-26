@@ -5,6 +5,8 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import static frc.robot.Constants.kCANBUSNAME;
 import static frc.robot.Constants.ShooterConstants.*;
 public class ShooterIOTalonFX implements ShooterIO {
 
@@ -12,8 +14,8 @@ public class ShooterIOTalonFX implements ShooterIO {
   private final TalonFX feederMotor;
   private final VelocityVoltage request = new VelocityVoltage(0.);
   public ShooterIOTalonFX(int shooterID,  int feederID) {
-    shooterMotor = new TalonFX(shooterID);
-    feederMotor = new TalonFX(feederID);
+    shooterMotor = new TalonFX(shooterID, kCANBUSNAME);
+    feederMotor = new TalonFX(feederID, kCANBUSNAME);
     TalonFXConfiguration shooterConfig = new TalonFXConfiguration();
     Slot0Configs slot0 = new Slot0Configs();
     slot0.kP = kP;
@@ -30,7 +32,7 @@ public class ShooterIOTalonFX implements ShooterIO {
 
   @Override
   public void setShooterSpeed(double speed) {
-    shooterMotor.setControl(request.withVelocity(speed));
+    shooterMotor.setControl(request.withVelocity(speed/60));
   }
 
   @Override
@@ -45,15 +47,16 @@ public class ShooterIOTalonFX implements ShooterIO {
    */
   @Override
   public void updateInputs(ShooterIOInputs inputs) {
-    inputs.shooterSpeed = shooterMotor.get();
+    inputs.shooterSpeed = shooterMotor.getVelocity().getValueAsDouble() * 60.0;
     inputs.feederSpeed = feederMotor.get();
   }
 
   @Override
   public void refreshData() {
     // Not required for Spark MAX, but useful for manual telemetry push or debug logging
-    SmartDashboard.putNumber("Shooter/Shooter Speed", shooterMotor.get());
+    SmartDashboard.putNumber("Shooter/Shooter Speed", shooterMotor.getVelocity().getValueAsDouble() * 60.0);
     SmartDashboard.putNumber("Shooter/Feeder Speed", feederMotor.get());
     SmartDashboard.putNumber("Shooter/Current Draw", shooterMotor.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Shooter/Voltage", shooterMotor.getMotorVoltage().getValueAsDouble());
   }
 }

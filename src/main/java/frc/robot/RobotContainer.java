@@ -22,15 +22,18 @@ import frc.robot.commands.Autos;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.GroundIntake.GroundIntakeIOSim;
+import frc.robot.subsystems.GroundIntake.GroundIntakeIOTalonFX;
 import frc.robot.subsystems.GroundIntake.GroundIntakeSubsystem;
 import frc.robot.subsystems.Hopper.HopperIOSim;
+import frc.robot.subsystems.Hopper.HopperIOTalonFX;
 import frc.robot.subsystems.Hopper.HopperSubsystem;
 import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Shooter.ShooterIOSim;
+import frc.robot.subsystems.Shooter.ShooterIOTalonFX;
 import frc.robot.subsystems.Shooter.ShooterSubsystem;
 import frc.robot.util.Limelight;
 import org.littletonrobotics.junction.Logger;
-
+import static frc.robot.Constants.MotorIDConstants.*;
 public class RobotContainer {
 
   private double MaxSpeed =
@@ -60,13 +63,13 @@ public class RobotContainer {
     TunerConstants.createDrivetrain();
 
   private final ShooterSubsystem shooter = new ShooterSubsystem(
-    new ShooterIOSim()
+    new ShooterIOTalonFX(kSHOOTER_ID, kLOADER_ID)
   );
 
   private final GroundIntakeSubsystem groundIntake = new GroundIntakeSubsystem(
-    new GroundIntakeIOSim()
+    new GroundIntakeIOTalonFX(kPIVOT_ID, kINTAKE_ID1, kINTAKE_ID2)
   );
-  private final HopperSubsystem hopper = new HopperSubsystem(new HopperIOSim());
+  private final HopperSubsystem hopper = new HopperSubsystem(new HopperIOTalonFX(kHOP_ID));
 
   private final LEDs leds = new LEDs(kLED_PORT);
 
@@ -97,10 +100,8 @@ public class RobotContainer {
       drivetrain.applyRequest(
         () ->
           drive
-            .withVelocityX(joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-            .withVelocityY(joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-            .withVelocityX(joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-            .withVelocityY(joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+            .withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+            .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left) // Drive left with negative X (left)
             .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
       )
     );
@@ -124,34 +125,34 @@ public class RobotContainer {
   }
 
   public void dashboardUpdates() {
-    tagLimelight.uploadGyro(
-      drivetrain.getPigeon2().getRotation2d().getDegrees()
-    );
+    // tagLimelight.uploadGyro(
+    //   drivetrain.getPigeon2().getRotation2d().getDegrees()
+    // );
 
-    publisher.set(drivetrain.getGlobalPose());
+    // publisher.set(drivetrain.getGlobalPose());
 
-    if (
-      tagLimelight.getLimelightPoseEstimateData() != null &&
-      tagLimelight.getLimelightPoseEstimateData().tagCount > 0
-    ) {
-      drivetrain.updateGlobalPoseWithVisionMeasurements(
-        tagLimelight.getLimelightPoseEstimateData().pose,
-        tagLimelight.getLimelightPoseEstimateData().timestampSeconds
-      );
-    }
-    if (!DriverStation.getAlliance().isEmpty()) {
-      if (drivetrain.isInAllianceZone(DriverStation.getAlliance().get())) {
-        leds.setWantedState(LEDs.WantedState.ZONE_ASSIST);
-      }
-    }
-    SmartDashboard.putNumber(
-      "Angle to Hub",
-      drivetrain.getAngleToHub().getDegrees()
-    );
+    // if (
+    //   tagLimelight.getLimelightPoseEstimateData() != null &&
+    //   tagLimelight.getLimelightPoseEstimateData().tagCount > 0
+    // ) {
+    //   drivetrain.updateGlobalPoseWithVisionMeasurements(
+    //     tagLimelight.getLimelightPoseEstimateData().pose,
+    //     tagLimelight.getLimelightPoseEstimateData().timestampSeconds
+    //   );
+    // }
+    // if (!DriverStation.getAlliance().isEmpty()) {
+    //   if (drivetrain.isInAllianceZone(DriverStation.getAlliance().get())) {
+    //     leds.setWantedState(LEDs.WantedState.ZONE_ASSIST);
+    //   }
+    // }
+    // SmartDashboard.putNumber(
+    //   "Angle to Hub",
+    //   drivetrain.getAngleToHub().getDegrees()
+    // );
 
-    Logger.recordOutput(
-      "Robot/ComponentPoses",
-      new Pose3d[] { shooter.getShooterPose(), groundIntake.getIntakePose() }
-    );
+    // Logger.recordOutput(
+    //   "Robot/ComponentPoses",
+    //   new Pose3d[] { shooter.getShooterPose(), groundIntake.getIntakePose() }
+    // );
   }
 }

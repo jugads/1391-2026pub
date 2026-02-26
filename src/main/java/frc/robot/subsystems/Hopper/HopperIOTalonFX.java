@@ -1,5 +1,7 @@
 package frc.robot.subsystems.Hopper;
 
+import static frc.robot.Constants.kCANBUSNAME;
+
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -8,11 +10,13 @@ public class HopperIOTalonFX implements HopperIO {
   private final TalonFX beltMotor;
 
   public HopperIOTalonFX(int beltID) {
-    beltMotor = new TalonFX(beltID);
+    beltMotor = new TalonFX(beltID, kCANBUSNAME);
   }
 
   @Override
-  public void setBeltSpeed(double speed) {}
+  public void setBeltSpeed(double speed) {
+    beltMotor.set(speed);
+  }
 
   @Override
   public void updateInputs(HopperIOInputs inputs) {
