@@ -104,6 +104,5 @@ public class Constants {
     public static final int kHOP_ID = 0;
     public static final int kSHOOTER_ID = 0;
     public static final int kLOADER_ID = 0;
-    public static final int kMIDDLE_ID = 0;
   }
 }

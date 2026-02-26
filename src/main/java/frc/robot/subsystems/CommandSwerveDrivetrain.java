@@ -19,6 +19,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -449,5 +450,15 @@ public class CommandSwerveDrivetrain
     } else {
       return getGlobalPose().getX() > 12.5;
     }
+  }
+
+  public ChassisSpeeds getFieldRelativeChassisSpeeds() {
+    double angleSin = getGlobalPose().getRotation().getSin();
+    double angleCos = getGlobalPose().getRotation().getCos();
+    return new ChassisSpeeds(
+      getChassisSpeeds().vxMetersPerSecond * angleCos + getChassisSpeeds().vyMetersPerSecond * angleSin,
+      getChassisSpeeds().vxMetersPerSecond * angleSin - getChassisSpeeds().vyMetersPerSecond * angleCos,
+      getChassisSpeeds().omegaRadiansPerSecond 
+    );
   }
 }

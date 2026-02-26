@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.RobotCore.WantedSuperState;
 import frc.robot.commands.Autos;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -69,7 +70,7 @@ public class RobotContainer {
 
   private final LEDs leds = new LEDs(kLED_PORT);
 
-  private final RobotCore m_robot = new RobotCore(
+  private final RobotCore robotSuper = new RobotCore(
     shooter,
     groundIntake,
     hopper,
@@ -77,9 +78,8 @@ public class RobotContainer {
     leds
   );
 
-
   private final Limelight tagLimelight = new Limelight("limelight-intake");
-  private final Autos autos = new Autos(m_robot);
+  private final Autos autos = new Autos(robotSuper);
 
   StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
     .getStructTopic("Global Pose", Pose2d.struct)
@@ -105,7 +105,16 @@ public class RobotContainer {
       )
     );
 
+    joystick
+      .leftTrigger()
+      .whileTrue(robotSuper.setWantedSuperStateCommand(WantedSuperState.INTAKE))
+      .whileFalse(robotSuper.setWantedSuperStateCommand(WantedSuperState.HOME));
+    joystick
+      .rightTrigger()
+      .whileTrue(robotSuper.setWantedSuperStateCommand(WantedSuperState.SHOOT))
+      .whileFalse(robotSuper.setWantedSuperStateCommand(WantedSuperState.HOME));
     
+
     drivetrain.registerTelemetry(logger::telemeterize);
   }
 

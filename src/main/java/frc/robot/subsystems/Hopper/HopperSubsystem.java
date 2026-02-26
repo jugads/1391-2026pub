@@ -1,5 +1,6 @@
 package frc.robot.subsystems.Hopper;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -33,7 +34,8 @@ public class HopperSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
-
+    io.refreshData();
+    SmartDashboard.putString("Hopper/Current State", systemState.toString());
     SystemState newState = handleStateTransition();
     if (newState != systemState) {
       systemState = newState;

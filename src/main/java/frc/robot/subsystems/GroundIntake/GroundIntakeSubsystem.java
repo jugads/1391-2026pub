@@ -4,6 +4,7 @@ import static frc.robot.Constants.GroundIntakeConstants.*;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -41,6 +42,7 @@ public class GroundIntakeSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     io.updateInputs(inputs);
     io.refreshData();
+    SmartDashboard.putString("Intake/Current State", systemState.toString());
     SystemState newState = handleStateTransition();
     if (newState != systemState) {
       systemState = newState;
