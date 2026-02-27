@@ -1,118 +1,88 @@
 package frc.robot.subsystems.GroundIntake;
 
-import com.ctre.phoenix6.hardware.*;
+import static frc.robot.Constants.GroundIntakeConstants.*;
 
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
-
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import static frc.robot.Constants.GroundIntakeConstants.*;
-
 
 public class GroundIntakeSubsystem extends SubsystemBase {
+
   private final GroundIntakeIO io;
-  private final GroundIntakeIO.GroundIntakeIOInputs inputs = new GroundIntakeIO.GroundIntakeIOInputs();
+  private final GroundIntakeIO.GroundIntakeIOInputs inputs =
+    new GroundIntakeIO.GroundIntakeIOInputs();
   double setpoint;
 
   public enum WantedState {
     IDLE,
-    FEEDING,
-    REVERSE
+    INTAKE,
+    HOLD_AT_DEFAULT,
+    REVERSE,
   }
 
-private enum SystemState {
+  private enum SystemState {
     IDLED,
-    FEEDING,
-    REVERSING
+    INTAKING,
+    HOLDING_AT_DEFAULT,
+    REVERSING,
   }
 
   private WantedState wantedState = WantedState.IDLE;
   private SystemState systemState = SystemState.IDLED;
 
-  private double wheelSpeedSetpoint;
-  private double pivotSpeedSetpoint;
-
-  public GroundIntakeSubsystem(GroundIntakeIO io, double initalWheelSpeed, double initialPivotSpeed) {
+  public GroundIntakeSubsystem(GroundIntakeIO io) {
     this.io = io;
-    this.wheelSpeedSetpoint = initalWheelSpeed;
-    this.pivotSpeedSetpoint = initialPivotSpeed;
-}
-
-  public double getWheelSpeed() { return wheelSpeedSetpoint;}
-  private void setWheelSpeed(double newSpeed) {this.wheelSpeedSetpoint = newSpeed;} 
-  public double getPivotSpeed() { return wheelSpeedSetpoint;}
-  private void setPivotSpeed(double newSpeed) {this.wheelSpeedSetpoint = newSpeed;} 
-
-  private void adjustSpeeds () {
-    double currentSpeed = getWheelSpeed();
-    if (currentSpeed < MIN_WHEEL_SPEED) {
-        setWheelSpeed(MIN_WHEEL_SPEED);
-
-    }
-
-    double currentPivotSpeed = getPivotSpeed();
-    if (currentPivotSpeed < MIN_PIVOT_SPEED) {
-        setWheelSpeed(MIN_PIVOT_SPEED);
-
-    }
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     io.updateInputs(inputs);
-      
+    io.refreshData();
+    SmartDashboard.putString("Intake/Current State", systemState.toString());
     SystemState newState = handleStateTransition();
     if (newState != systemState) {
-         systemState = newState;
+      systemState = newState;
     }
-
     // Run outputs based on current system state
     switch (systemState) {
-      case FEEDING:
-          io.setIntakeSpeed(feedingIntakeSpeed);
-          io.setPositionSetpoint(feedingPositionSetpoint);
-          break;
+      case INTAKING:
+        io.setIntakeSpeed(1.0);
+        io.runIntakePivotToSetpoint(kINTAKING_POSITION_SETPOINT);
+        break;
       case REVERSING:
-          io.setIntakeSpeed(-wheelSpeedSetpoint);
-          break;
+        io.setIntakeSpeed(-1.0);
+        break;
+      case HOLDING_AT_DEFAULT:
+        io.setIntakeSpeed(0.0);
+        io.runIntakePivotToSetpoint(kIDLED_POSITION_SETPOINT);
+        break;
       case IDLED:
       default:
-          io.setIntakeSpeed(idledIntakeSpeed);
-          io.setPivotSpeed(idledPivotSpeed);
-          break;
+        io.setIntakeSpeed(0.0);
+        io.runIntakePivotToSetpoint(kZERO_SETPOINT);
+        break;
     }
-
   }
 
   private SystemState handleStateTransition() {
     switch (wantedState) {
-        case FEEDING:
-            return SystemState.FEEDING;
-        case REVERSE:
-            return SystemState.REVERSING;
-        case IDLE:
-        default:
-            return SystemState.IDLED;
+      case INTAKE:
+        return SystemState.INTAKING;
+      case REVERSE:
+        return SystemState.REVERSING;
+      case HOLD_AT_DEFAULT:
+        return SystemState.HOLDING_AT_DEFAULT;
+      case IDLE:
+      default:
+        return SystemState.IDLED;
     }
   }
 
   // Public control methods
-  public void feed(double wheelSpeed, double pivotSpeed) {
-    this.wheelSpeedSetpoint = wheelSpeed;
-    this.pivotSpeedSetpoint = pivotSpeed;
-    setWantedState(WantedState.FEEDING);
-  }
-
-  public void reverse(double wheelSpeed, double pivotSpeed) {
-    this.wheelSpeedSetpoint = wheelSpeed;
-    this.pivotSpeedSetpoint = pivotSpeed;
-    setWantedState(WantedState.REVERSE);
-  }
 
   public void stop() {
     setWantedState(WantedState.IDLE);
@@ -125,30 +95,24 @@ private enum SystemState {
   public WantedState getWantedState() {
     return wantedState;
   }
-  public boolean isJammed() {
-    // Replace with your actual sensor logic or return false to test
-    return false;
-  }
 
-  public boolean hasBall() {
-    // Replace with sensor or switch input
-    return true;
-  }
   public Command setWantedStateCommand(WantedState state) {
     return new InstantCommand(() -> setWantedState(state));
   }
 
+  public Pose3d getIntakePose() {
+    return new Pose3d(
+      0.0,
+      0.0,
+      0.0,
+      new Rotation3d(0,-inputs.encoderPosition,0)
+    );
+  }
+
+  public double getIntakePivotAngle() {
+    return inputs.encoderPosition;
+  }
 }
-
-
-
-
-
-
-
-
-
-
 /* public enum GroundIntakeSubsystem {
 
 }

@@ -1,81 +1,113 @@
 package frc.robot.subsystems.GroundIntake;
 
-//import com.revrobotics.spark.SparkLowLevel.MotorType;
-//import com.revrobotics.spark.SparkMax;
-//import com.revrobotics.AbsoluteEncoder;
-//import com.revrobotics.RelativeEncoder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.GroundIntakeConstants;
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.DutyCycleEncoder;
-import com.ctre.phoenix6.hardware.*;
-
 import static frc.robot.Constants.GroundIntakeConstants.*;
+import static frc.robot.Constants.kCANBUSNAME;
 
-public class GroundIntakeIOTalonFX implements GroundIntakeIO{
-    private final TalonFX pivotMotor;
-    private final TalonFX intakeMotor;
-    private final DutyCycleEncoder encoder;
-    private final ArmFeedforward ff = new ArmFeedforward(kS, kG, kV);
-    PIDController controller = new PIDController(kP, kI, kD);
-   
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.hardware.*;
+import com.ctre.phoenix6.signals.InvertedValue;
 
-    public GroundIntakeIOTalonFX(int pivotID, int intakeID) {
-        this.pivotMotor = new TalonFX(pivotID);
-        this.intakeMotor = new TalonFX(intakeID);
-        encoder = new DutyCycleEncoder(0);
-      }
-    
-    
-    @Override
-    public void setIntakeSpeed(double speed) {
-      this.intakeMotor.set(speed);
-    }
-    @Override
-    public void setPivotSpeed(double speed) {
-      this.pivotMotor.set(speed);
-     }
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-    @Override
-    public void updateInputs(GroundIntakeIOInputs inputs) {
-       //SPARK MAX VERSION: inputs.intakeSpeed = intakeMotor.getAppliedOutput() * intakeMotor.getBusVoltage();
-       inputs.intakeSpeed = intakeMotor.get();
-       //SPARK MAX VERSION: inputs.encoderPosition = pivotMotor.getOutputCurrent();
-       inputs.encoderPosition = encoder.get();
-    }
-    @Override
-    public void refreshData() {
-        // Not required for Spark MAX, but useful for manual telemetry push or debug logging
-        //SPARK MAX VERSION: SmartDashboard.putNumber("GroundIntake/WheelSpeed", intakeMotor.getAppliedOutput() * intakeMotor.getBusVoltage());
-        //SPARK MAX VERSION: SmartDashboard.putNumber("GroundIntake/EncoderPosition", pivotMotor.getAppliedOutput() * pivotMotor.getBusVoltage());
-        SmartDashboard.putNumber("GroundIntake/WheelSpeed", intakeMotor.get());
-        SmartDashboard.putNumber("GroundIntake/EncoderPosition", getEncoderVal());
-    }
-    /* @Override
+public class GroundIntakeIOTalonFX implements GroundIntakeIO {
+
+  private final TalonFX pivotMotor;
+  private final TalonFX intakeMotor;
+  private final TalonFX intakeMotorFollower;
+  private final DutyCycleEncoder absEncoder = new DutyCycleEncoder(
+    kENCODER_PORT
+  );
+  MotionMagicVoltage motionMagicVoltage = new MotionMagicVoltage(0).withSlot(0);
+
+  public GroundIntakeIOTalonFX(int pivotID, int intakeID, int followerID) {
+    this.pivotMotor = new TalonFX(pivotID, kCANBUSNAME);
+    this.intakeMotor = new TalonFX(intakeID, kCANBUSNAME);
+    this.intakeMotorFollower = new TalonFX(followerID, kCANBUSNAME);
+    pivotMotor.setPosition(0);
+    Slot0Configs slot0Configs = new Slot0Configs();
+    slot0Configs.kP = kP;
+    slot0Configs.kI = kI;
+    slot0Configs.kD = kD;
+    slot0Configs.kG = kG;
+    slot0Configs.kV = kV;
+    pivotMotor.getConfigurator().apply(slot0Configs);
+    SoftwareLimitSwitchConfigs limits = new SoftwareLimitSwitchConfigs();
+
+    limits.ForwardSoftLimitEnable = true;
+    limits.ForwardSoftLimitThreshold = 5.93;
+
+    limits.ReverseSoftLimitEnable = true;
+    limits.ReverseSoftLimitThreshold = -0.04;
+
+    MotionMagicConfigs mm = new MotionMagicConfigs();
+    mm.MotionMagicCruiseVelocity = 20; // rotations/sec
+    mm.MotionMagicAcceleration = 40; // rotations/sec^2
+    mm.MotionMagicJerk = 0; // optional
+
+    MotorOutputConfigs output = new MotorOutputConfigs();
+    output.Inverted = InvertedValue.Clockwise_Positive;
+    pivotMotor.getConfigurator().apply(mm);
+
+    pivotMotor.getConfigurator().apply(limits);
+
+    // pivotMotor.getConfigurator().apply(output);
+  }
+
+  @Override
+  public void setIntakeSpeed(double speed) {
+    this.intakeMotor.set(speed);
+    this.intakeMotorFollower.set(speed);
+  }
+
+  @Override
+  public void setPivotSpeed(double speed) {
+    this.pivotMotor.set(speed);
+  }
+
+  @Override
+  public void updateInputs(GroundIntakeIOInputs inputs) {
+    //SPARK MAX VERSION: inputs.intakeSpeed = intakeMotor.getAppliedOutput() * intakeMotor.getBusVoltage();
+    inputs.intakeSpeed = intakeMotor.get();
+    inputs.pivotSpeed = pivotMotor.get();
+    //SPARK MAX VERSION: inputs.encoderPosition = pivotMotor.getOutputCurrent();
+    inputs.encoderPosition = pivotMotor.getPosition().getValueAsDouble();
+  }
+
+  @Override
+  public void refreshData() {
+    // Not required for Spark MAX, but useful for manual telemetry push or debug logging
+    //SPARK MAX VERSION: SmartDashboard.putNumber("GroundIntake/WheelSpeed", intakeMotor.getAppliedOutput() * intakeMotor.getBusVoltage());
+    //SPARK MAX VERSION: SmartDashboard.putNumber("GroundIntake/EncoderPosition", pivotMotor.getAppliedOutput() * pivotMotor.getBusVoltage());
+    SmartDashboard.putNumber("GroundIntake/WheelSpeed", intakeMotor.get());
+    SmartDashboard.putNumber(
+      "GroundIntake/EncoderPosition",
+      getIntakePosition()
+    );
+    SmartDashboard.putNumber("GroundIntake/PivotSpeed", pivotMotor.get());
+  }
+
+  /* @Override
     public double getEncoderVal() {
       return this.pivotMotor.getEncoder().getPosition();
     } */
 
-    @Override
-    public double getEncoderVal() {
+  @Override
+  public double getIntakePosition() {
     // getPosition() returns a StatusSignal; getValueAsDouble() converts it to a numeric value.
-    return encoder.get();
+    return pivotMotor.getPosition().getValueAsDouble();
+  }
+
+  @Override
+  public void runIntakePivotToSetpoint(double setpoint) {
+    pivotMotor.setControl(motionMagicVoltage.withPosition(setpoint));
+  }
+
+  public double getAbsEncoderVal() {
+    return absEncoder.get() - kENCODER_OFFSET;
+  }
 }
-
-    @Override
-    public void setPositionSetpoint(double setpoint) {
-        controller.setSetpoint(setpoint);
-
-        double currentPosition = getEncoderVal(); // same as in updateInputs()
-        double output = controller.calculate(currentPosition);
-
-        pivotMotor.set(output); // same direction for both
-    }
-
-
-}
-
-
-
