@@ -59,7 +59,7 @@ public class Constants {
     public static final double kD = 0.0;
     public static final double kV = 0.12;
     public static final double kS = 0.0;
-    public static final double kA = 0.02;
+    public static final double kA = 0.0;
   }
 
   public class HopperConstants {
