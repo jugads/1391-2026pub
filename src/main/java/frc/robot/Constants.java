@@ -37,7 +37,7 @@ public class Constants {
 
   public class ShooterConstants {
 
-    public static final double kSHOOTER_SPEED_AT_HUB = 7300.0;
+    public static final double kSHOOTER_SPEED_AT_HUB = 5500.0;
     public static final double kSHOOTER_SPEED_TOLERANCE = 200.;
     public static final double kREVERSING_SPEED = 0.0;
     public static final InterpolatingDoubleTreeMap kSHOOTER_SPEEDS =
@@ -54,10 +54,10 @@ public class Constants {
     public static final Double[] kSHOOTER_ENTRY_9 = new Double[] { 0.0, 0.0 };
     public static final Double[] kSHOOTER_ENTRY_10 = new Double[] { 0.0, 0.0 };
 
-    public static final double kP = 0.1;
+    public static final double kP = 0.2;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
-    public static final double kV = 0.12;
+    public static final double kV = 0.101;
     public static final double kS = 0.0;
     public static final double kA = 0.0;
   }

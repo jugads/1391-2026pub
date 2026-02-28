@@ -3,7 +3,11 @@ package frc.robot.commands;
 import static frc.robot.Constants.AutonomousConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -21,6 +25,7 @@ public class Autos {
     this.drivetrain = robotCore.fetchDrivetrain();
     drivetrain.configureAutoBuilder();
     m_robot = robotCore;
+    initiateNamedCommands();
     try {
       getFuelPath = PathPlannerPath.fromPathFile("RS-getFuel1");
     } catch (Exception e) {
@@ -39,5 +44,13 @@ public class Autos {
       new WaitUntilCommand(() -> m_robot.canDriveUnderTrenchSafely()),
       AutoBuilder.followPath(getFuelPath)
     );
+  }
+
+  public void initiateNamedCommands() {
+    WantedSuperState[] states = WantedSuperState.values();
+    for (int i=0; i<states.length; i++) {
+      NamedCommands.registerCommand("Set Robot State To " + states[i].toString(), m_robot.setWantedSuperStateCommand(states[i]));
+      System.out.println("Adding Named Command: Set Robot State To " + states[i].toString());
+    }
   }
 }

@@ -19,7 +19,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "RS-returnToAllianceZone"
+            "pathName": "RS-returnToAlliance1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RS-returnToAlliance2"
           }
         }
       ]

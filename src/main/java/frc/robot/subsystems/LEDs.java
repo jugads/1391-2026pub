@@ -10,7 +10,6 @@ public class LEDs extends SubsystemBase {
   Spark blinkin;
   WantedState wantedState = WantedState.IDLE;
   CurrentState currentState = CurrentState.IDLING;
-  ZoneAssist zoneAssist = ZoneAssist.FAR;
 
   public LEDs(int port) {
     blinkin = new Spark(port);
@@ -18,22 +17,18 @@ public class LEDs extends SubsystemBase {
 
   public enum WantedState {
     IDLE,
-    SHOOT,
+    SHOOT_SPINUP,
     INTAKE,
-    ZONE_ASSIST,
+    SHOOT_READY,
+    DISABLED
   }
 
   public enum CurrentState {
     IDLING,
+    SPINNING_UP,
     SHOOTING,
     INTAKING,
-    ZONE_ASSISTING,
-  }
-
-  public enum ZoneAssist {
-    FAR,
-    MEDIUM,
-    NEAR,
+    DISABLED
   }
 
   @Override
@@ -42,14 +37,17 @@ public class LEDs extends SubsystemBase {
       case IDLE:
         currentState = CurrentState.IDLING;
         break;
-      case SHOOT:
+      case SHOOT_SPINUP:
         currentState = CurrentState.SHOOTING;
         break;
       case INTAKE:
         currentState = CurrentState.INTAKING;
         break;
-      case ZONE_ASSIST:
-        currentState = CurrentState.ZONE_ASSISTING;
+      case SHOOT_READY:
+        currentState = CurrentState.SHOOTING;
+        break;
+      case DISABLED:
+        currentState = CurrentState.DISABLED;
         break;
     }
 
@@ -60,31 +58,20 @@ public class LEDs extends SubsystemBase {
       case SHOOTING:
         blinkin.set(-0.07);
         break;
+      case SPINNING_UP:
+        blinkin.set(0.67);
+        break;
       case INTAKING:
         blinkin.set(-0.23);
         break;
-      case ZONE_ASSISTING:
-        switch (zoneAssist) {
-          case FAR:
-            blinkin.set(0.61);
-            break;
-          case MEDIUM:
-            blinkin.set(0.93);
-            break;
-          case NEAR:
-            blinkin.set(0.75);
-            break;
-        }
+      case DISABLED:
+        blinkin.set(0.61);
         break;
     }
   }
 
   public Command setWantedStateCommand(WantedState state) {
     return new InstantCommand(() -> wantedState = state);
-  }
-
-  public void setZoneAssist(ZoneAssist zoneAssist) {
-    this.zoneAssist = zoneAssist;
   }
 
   public void setWantedState(WantedState state) {

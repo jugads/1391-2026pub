@@ -43,7 +43,7 @@ public class HopperSubsystem extends SubsystemBase {
 
     switch (systemState) {
       case FEEDING:
-        io.setBeltSpeed(0.75);
+        io.setBeltSpeed(0.25);
         break;
       case REVERSING:
         io.setBeltSpeed(-0.75);

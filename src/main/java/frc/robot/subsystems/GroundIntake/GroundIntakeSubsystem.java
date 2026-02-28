@@ -20,6 +20,7 @@ public class GroundIntakeSubsystem extends SubsystemBase {
     IDLE,
     INTAKE,
     HOLD_AT_DEFAULT,
+    HOLD_AT_ZERO,
     REVERSE,
   }
 
@@ -27,6 +28,7 @@ public class GroundIntakeSubsystem extends SubsystemBase {
     IDLED,
     INTAKING,
     HOLDING_AT_DEFAULT,
+    HOLDING_AT_ZERO,
     REVERSING,
   }
 
@@ -50,7 +52,7 @@ public class GroundIntakeSubsystem extends SubsystemBase {
     // Run outputs based on current system state
     switch (systemState) {
       case INTAKING:
-        io.setIntakeSpeed(1.0);
+        io.setIntakeSpeed(0.45);
         io.runIntakePivotToSetpoint(kINTAKING_POSITION_SETPOINT);
         break;
       case REVERSING:
@@ -59,6 +61,10 @@ public class GroundIntakeSubsystem extends SubsystemBase {
       case HOLDING_AT_DEFAULT:
         io.setIntakeSpeed(0.0);
         io.runIntakePivotToSetpoint(kIDLED_POSITION_SETPOINT);
+        break;
+      case HOLDING_AT_ZERO:
+        io.setIntakeSpeed(0.0);
+        io.runIntakePivotToSetpoint(kZERO_SETPOINT);
         break;
       case IDLED:
       default:
@@ -76,6 +82,8 @@ public class GroundIntakeSubsystem extends SubsystemBase {
         return SystemState.REVERSING;
       case HOLD_AT_DEFAULT:
         return SystemState.HOLDING_AT_DEFAULT;
+      case HOLD_AT_ZERO:
+        return SystemState.HOLDING_AT_ZERO;
       case IDLE:
       default:
         return SystemState.IDLED;

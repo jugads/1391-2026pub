@@ -8,20 +8,36 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.804464575545771,
-        "y": 0.5779263041206305
+        "x": 3.976866666666667,
+        "y": 0.5380111111111107
       },
       "isLocked": false,
       "linkedName": "End of RS-returnToAllianceZone"
     },
     {
       "anchor": {
-        "x": 1.6690555555555555,
-        "y": 3.3194777777777777
+        "x": 2.817922222222222,
+        "y": 0.789955555555556
       },
       "prevControl": {
-        "x": 1.435991429627134,
-        "y": 3.2290282713931604
+        "x": 3.7100202696219915,
+        "y": 0.3381136873920368
+      },
+      "nextControl": {
+        "x": 2.0419333333333336,
+        "y": 1.1829888888888889
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.3419666666666665,
+        "y": 3.5008777777777773
+      },
+      "prevControl": {
+        "x": 2.4651999999999994,
+        "y": 2.5434888888888882
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,7 +58,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 180.0
+    "rotation": 15.154068050312619
   },
   "reversed": false,
   "folder": null,

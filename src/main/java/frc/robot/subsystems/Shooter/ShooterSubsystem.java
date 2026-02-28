@@ -14,6 +14,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final ShooterIO io;
   private final ShooterIO.ShooterIOInputs inputs =
     new ShooterIO.ShooterIOInputs();
+  public int cyclesOfShooterUpToSpeed;
   public double motorsSetpoint = 0.0;
 
   public enum WantedState {
@@ -44,7 +45,15 @@ public class ShooterSubsystem extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     io.refreshData();
+    if (
+      Math.abs(inputs.shooterSpeed - motorsSetpoint) < kSHOOTER_SPEED_TOLERANCE
+    ) {
+      cyclesOfShooterUpToSpeed++;
+    } else {
+      cyclesOfShooterUpToSpeed = 0;
+    }
     SmartDashboard.putString("Shooter/WantedState", wantedState.toString());
+    SmartDashboard.putNumber("Shooter/MotorsSetpoint", motorsSetpoint);
     SystemState newState = handleStateTransition();
     if (newState != systemState) {
       systemState = newState;
@@ -55,8 +64,8 @@ public class ShooterSubsystem extends SubsystemBase {
         io.setShooterSpeed(motorsSetpoint);
         break;
       case SHOOTING_AT_HUB:
-        io.setShooterSpeed(kSHOOTER_SPEED_AT_HUB);
-        io.setFeederSpeed(1.);
+        io.setShooterSpeed(motorsSetpoint);
+        io.setFeederSpeed(0.7);
         break;
       case REVERSING:
         io.setShooterSpeed(kREVERSING_SPEED);
@@ -92,6 +101,11 @@ public class ShooterSubsystem extends SubsystemBase {
   public void shoot(double shooterSpeed) {
     this.motorsSetpoint = shooterSpeed;
     setWantedState(WantedState.REV_TO_SPEED);
+  }
+
+  public void shootAtHub() {
+    this.motorsSetpoint = kSHOOTER_SPEED_AT_HUB;
+    setWantedState(WantedState.SHOOT_AT_HUB);
   }
 
   public Command reverse() {
@@ -133,9 +147,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean isUpToSpeed() {
-    return (
-      Math.abs(inputs.shooterSpeed - motorsSetpoint) < kSHOOTER_SPEED_TOLERANCE
-    );
+    return cyclesOfShooterUpToSpeed > 50;
   }
 
   public boolean isJammed() {

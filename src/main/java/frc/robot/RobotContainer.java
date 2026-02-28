@@ -114,8 +114,10 @@ public class RobotContainer {
       .rightTrigger()
       .whileTrue(robotSuper.setWantedSuperStateCommand(WantedSuperState.SHOOT))
       .whileFalse(robotSuper.setWantedSuperStateCommand(WantedSuperState.HOME));
-    
-
+    joystick
+      .rightBumper()
+      .whileTrue(robotSuper.setIntakeOverrideCommand(true))
+      .whileFalse(robotSuper.setIntakeOverrideCommand(false));
     drivetrain.registerTelemetry(logger::telemeterize);
   }
 

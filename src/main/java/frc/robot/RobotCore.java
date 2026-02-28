@@ -7,12 +7,14 @@ package frc.robot;
 import static frc.robot.Constants.GroundIntakeConstants.*;
 import static frc.robot.Constants.ShooterConstants.kSHOOTER_SPEED_AT_HUB;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.GroundIntake.GroundIntakeSubsystem;
+import frc.robot.subsystems.GroundIntake.GroundIntakeSubsystem.WantedState;
 import frc.robot.subsystems.Hopper.HopperSubsystem;
 import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Shooter.ShooterSubsystem;
@@ -28,6 +30,8 @@ public class RobotCore extends SubsystemBase {
   private WantedSuperState wantedSuperState = WantedSuperState.IDLE;
   private CurrentSuperState currentSuperState = CurrentSuperState.IDLING;
   private boolean readyToShoot = false;
+  private boolean intakeOverride = false;
+  private boolean shootingAtHub = true;
 
   public RobotCore(
     ShooterSubsystem shooter,
@@ -45,7 +49,6 @@ public class RobotCore extends SubsystemBase {
 
   public enum WantedSuperState {
     IDLE,
-    REV,
     SHOOT,
     INTAKE,
     REVERSE_INTAKE,
@@ -55,7 +58,6 @@ public class RobotCore extends SubsystemBase {
 
   public enum CurrentSuperState {
     IDLING,
-    REVVING,
     SHOOTING,
     INTAKING,
     REVERSING_INTAKE,
@@ -80,13 +82,6 @@ public class RobotCore extends SubsystemBase {
       case IDLE:
         currentSuperState = CurrentSuperState.IDLING;
         break;
-      case REV:
-        if (readyToShoot) {
-          currentSuperState = CurrentSuperState.SHOOTING;
-        } else {
-          currentSuperState = CurrentSuperState.REVVING;
-        }
-        break;
       case SHOOT:
         currentSuperState = CurrentSuperState.SHOOTING;
         break;
@@ -106,53 +101,57 @@ public class RobotCore extends SubsystemBase {
   public void applyStateBehavior() {
     switch (currentSuperState) {
       case IDLING:
-        groundIntake.stop();
         hopper.stop();
         shooter.stop();
-        leds.stop();
-        break;
-      case REVVING:
-        //ADD DRIVETRAIN METHODS TO HUB
-        shooter.shootCommand(
-          shooter.calculateShooterSpeed(drivetrain.getDistanceFromHub())
-        );
-        groundIntake.setWantedState(
-          GroundIntakeSubsystem.WantedState.HOLD_AT_DEFAULT
-        );
-        hopper.setWantedState(HopperSubsystem.WantedState.IDLE);
-        leds.setWantedState(LEDs.WantedState.IDLE);
         break;
       case SHOOTING:
-        shooter.shoot(kSHOOTER_SPEED_AT_HUB);
+        if (shootingAtHub) {
+          shooter.shootAtHub();
 
-        if (shooter.isUpToSpeed()) {
-          shooter.setWantedState(ShooterSubsystem.WantedState.SHOOT_AT_HUB);
-          hopper.setWantedState(HopperSubsystem.WantedState.FEED);
-          leds.setWantedState(LEDs.WantedState.SHOOT);
-          groundIntake.setWantedState(
-            GroundIntakeSubsystem.WantedState.HOLD_AT_DEFAULT
+          if (shooter.isUpToSpeed()) {
+            hopper.setWantedState(HopperSubsystem.WantedState.FEED);
+          }
+        } else {
+          shooter.shoot(
+            shooter.calculateShooterSpeed(drivetrain.getDistanceFromHub())
           );
         }
         break;
       case INTAKING:
-        groundIntake.setWantedState(GroundIntakeSubsystem.WantedState.INTAKE);
-        leds.setWantedState(LEDs.WantedState.INTAKE);
         shooter.setWantedState(ShooterSubsystem.WantedState.IDLE);
         hopper.setWantedState(HopperSubsystem.WantedState.IDLE);
         break;
       case REVERSING_INTAKE:
-        groundIntake.setWantedState(GroundIntakeSubsystem.WantedState.REVERSE);
         hopper.setWantedState(HopperSubsystem.WantedState.REVERSE);
         break;
       case HOMED:
-        groundIntake.setWantedState(
-          GroundIntakeSubsystem.WantedState.HOLD_AT_DEFAULT
-        );
         hopper.setWantedState(HopperSubsystem.WantedState.IDLE);
         shooter.setWantedState(ShooterSubsystem.WantedState.IDLE);
-        leds.setWantedState(LEDs.WantedState.IDLE);
         break;
     }
+    if (intakeOverride && currentSuperState != CurrentSuperState.INTAKING) {
+      groundIntake.setWantedState(
+        GroundIntakeSubsystem.WantedState.HOLD_AT_ZERO
+      );
+    } else {
+      switch (currentSuperState) {
+        case INTAKING:
+          groundIntake.setWantedState(GroundIntakeSubsystem.WantedState.INTAKE);
+          break;
+        case REVERSING_INTAKE:
+          groundIntake.setWantedState(
+            GroundIntakeSubsystem.WantedState.REVERSE
+          );
+          break;
+        case HOMED:
+          groundIntake.setWantedState(
+            GroundIntakeSubsystem.WantedState.HOLD_AT_DEFAULT
+          );
+        default:
+          groundIntake.setWantedState(GroundIntakeSubsystem.WantedState.IDLE);
+      }
+    }
+    leds.setWantedState(computeLedState());
   }
 
   public CommandSwerveDrivetrain fetchDrivetrain() {
@@ -165,5 +164,27 @@ public class RobotCore extends SubsystemBase {
 
   public boolean canDriveUnderTrenchSafely() {
     return groundIntake.getIntakePivotAngle() < kINTAKE_MAX_ANGLE_UNDER_TRENCH;
+  }
+
+  public Command setIntakeOverrideCommand(boolean override) {
+    return new InstantCommand(() -> this.intakeOverride = override);
+  }
+
+  public Command shootFuel(boolean atHub) {
+    this.shootingAtHub = atHub;
+    return new InstantCommand(() -> wantedSuperState = WantedSuperState.SHOOT);
+  }
+
+  private LEDs.WantedState computeLedState() {
+    if (!DriverStation.isEnabled()) return LEDs.WantedState.DISABLED;
+    if (wantedSuperState == WantedSuperState.SHOOT) {
+      return shooter.isUpToSpeed()
+        ? LEDs.WantedState.SHOOT_READY
+        : LEDs.WantedState.SHOOT_SPINUP;
+    }
+    if (
+      currentSuperState == CurrentSuperState.INTAKING
+    ) return LEDs.WantedState.INTAKE;
+    return LEDs.WantedState.IDLE;
   }
 }
