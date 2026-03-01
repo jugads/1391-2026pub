@@ -28,7 +28,7 @@ public class GroundIntakeIOTalonFX implements GroundIntakeIO {
     this.pivotMotor = new TalonFX(pivotID, kCANBUSNAME);
     this.intakeMotor = new TalonFX(intakeID, kCANBUSNAME);
     this.intakeMotorFollower = new TalonFX(followerID, kCANBUSNAME);
-    pivotMotor.setPosition(0);
+    pivotMotor.setPosition(5.7);
     Slot0Configs slot0Configs = new Slot0Configs();
     slot0Configs.kP = kP;
     slot0Configs.kI = kI;

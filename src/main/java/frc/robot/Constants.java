@@ -37,7 +37,7 @@ public class Constants {
 
   public class ShooterConstants {
 
-    public static final double kSHOOTER_SPEED_AT_HUB = 4050.0;
+    public static final double kSHOOTER_SPEED_AT_HUB = 4250.0;
     public static final double kSHOOTER_SPEED_TOLERANCE = 100.;
     public static final double kREVERSING_SPEED = 0.0;
     public static final InterpolatingDoubleTreeMap kSHOOTER_SPEEDS =

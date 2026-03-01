@@ -6,6 +6,7 @@ public interface ShooterIO {
 
   default void setFeederSpeed(double speed) {}
 
+  default void stopShooter() {}
   public class ShooterIOInputs {
 
     public double shooterSpeed = 0.0;

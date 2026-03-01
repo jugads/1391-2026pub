@@ -137,7 +137,7 @@ public class RobotCore extends SubsystemBase {
         break;
       case HOMED:
         hopper.setWantedState(HopperSubsystem.WantedState.IDLE);
-        shooter.setWantedState(ShooterSubsystem.WantedState.IDLE);
+        shooter.stop();
         break;
     }
     if (intakeOverride && currentSuperState != CurrentSuperState.INTAKING) {

@@ -75,7 +75,7 @@ public class ShooterSubsystem extends SubsystemBase {
         break;
       case IDLED:
       default:
-        io.setShooterSpeed(0.0);
+        io.stopShooter();
         io.setFeederSpeed(0.0);
         break;
     }
