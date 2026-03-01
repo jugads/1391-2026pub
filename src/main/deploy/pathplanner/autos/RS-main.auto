@@ -7,6 +7,12 @@
         {
           "type": "named",
           "data": {
+            "name": "ROB-state_INTAKE"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "INT-wait_trench"
           }
         },
@@ -14,6 +20,48 @@
           "type": "path",
           "data": {
             "pathName": "RS-getFuel1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RS-getFuel2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RS-returnToAlliance1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ROB-state_REV_AUTO"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RS-returnToAlliance2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ROB-state_SHOOT"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "int-OVERRIDE"
           }
         }
       ]

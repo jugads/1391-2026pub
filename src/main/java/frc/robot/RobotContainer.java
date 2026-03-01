@@ -167,4 +167,8 @@ public class RobotContainer {
     //   new Pose3d[] { shooter.getShooterPose(), groundIntake.getIntakePose() }
     // );
   }
+
+  public void onTeleopInit() {
+    robotSuper.setWantedSuperState(WantedSuperState.HOME);
+  }
 }

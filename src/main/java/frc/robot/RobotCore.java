@@ -54,6 +54,7 @@ public class RobotCore extends SubsystemBase {
     REVERSE_INTAKE,
     LOAD,
     HOME,
+    REV_AUTO
   }
 
   public enum CurrentSuperState {
@@ -63,6 +64,7 @@ public class RobotCore extends SubsystemBase {
     REVERSING_INTAKE,
     LOADING,
     HOMED,
+    REVVING_AUTO
   }
 
   @Override
@@ -94,6 +96,10 @@ public class RobotCore extends SubsystemBase {
         break;
       case HOME:
         currentSuperState = CurrentSuperState.HOMED;
+        break;
+      case REV_AUTO:
+        currentSuperState = CurrentSuperState.REVVING_AUTO;
+        break;
       default:
         currentSuperState = CurrentSuperState.HOMED;
     }
@@ -118,6 +124,9 @@ public class RobotCore extends SubsystemBase {
             shooter.calculateShooterSpeed(drivetrain.getDistanceFromHub())
           );
         }
+        break;
+      case REVVING_AUTO:
+        shooter.shoot(kSHOOTER_SPEED_AT_HUB);
         break;
       case INTAKING:
         shooter.setWantedState(ShooterSubsystem.WantedState.IDLE);
@@ -155,6 +164,9 @@ public class RobotCore extends SubsystemBase {
             GroundIntakeSubsystem.WantedState.HOLD_AT_DEFAULT
           );
           break;
+        case REVVING_AUTO:
+          groundIntake.setWantedState(GroundIntakeSubsystem.WantedState.HOLD_AT_DEFAULT);
+          break;
         default:
           groundIntake.setWantedState(GroundIntakeSubsystem.WantedState.IDLE);
       }
@@ -170,8 +182,12 @@ public class RobotCore extends SubsystemBase {
     return new InstantCommand(() -> this.wantedSuperState = state);
   }
 
+  public void setWantedSuperState(WantedSuperState state) {
+    this.wantedSuperState = state;
+  }
+
   public boolean canDriveUnderTrenchSafely() {
-    return groundIntake.getIntakePivotAngle() < kINTAKE_MAX_ANGLE_UNDER_TRENCH;
+    return groundIntake.getIntakePivotAngle() > kINTAKE_MAX_ANGLE_UNDER_TRENCH;
   }
 
   public Command setIntakeOverrideCommand(boolean override) {

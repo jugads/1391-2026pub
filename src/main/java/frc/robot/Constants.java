@@ -30,14 +30,14 @@ public class Constants {
     public static final double kINTAKING_POSITION_SETPOINT = 5.7;
     public static final double kIDLED_POSITION_SETPOINT = 5.7;
     public static final double kZERO_SETPOINT = 0.0;
-    public static final double kINTAKE_MAX_ANGLE_UNDER_TRENCH = 0.0;
+    public static final double kINTAKE_MAX_ANGLE_UNDER_TRENCH = 5.0;
     public static final double kENCODER_OFFSET = 0.313;
     public static final int kENCODER_PORT = 9;
   }
 
   public class ShooterConstants {
 
-    public static final double kSHOOTER_SPEED_AT_HUB = 4250.0;
+    public static final double kSHOOTER_SPEED_AT_HUB = 4050.0;
     public static final double kSHOOTER_SPEED_TOLERANCE = 100.;
     public static final double kREVERSING_SPEED = 0.0;
     public static final InterpolatingDoubleTreeMap kSHOOTER_SPEEDS =

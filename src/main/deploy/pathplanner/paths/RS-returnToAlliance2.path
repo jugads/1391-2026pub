@@ -3,25 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.913736654804271,
-        "y": 2.7169988137603784
+        "x": 5.8311777777777785,
+        "y": 0.6589444444444439
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.341603321470939,
-        "y": 2.596065480427045
+        "x": 4.259044444444446,
+        "y": 0.5380111111111106
       },
       "isLocked": false,
       "linkedName": "End of RS-returnToAllianceZone"
     },
     {
       "anchor": {
-        "x": 3.3419666666666665,
-        "y": 3.5008777777777773
+        "x": 2.485355555555555,
+        "y": 1.344233333333333
       },
       "prevControl": {
-        "x": 2.4651999999999994,
-        "y": 2.5434888888888882
+        "x": 2.2938777777777775,
+        "y": 0.4876222222222226
+      },
+      "nextControl": {
+        "x": 2.768551808170174,
+        "y": 2.611163937135575
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.1908,
+        "y": 3.057455555555555
+      },
+      "prevControl": {
+        "x": 2.898544444444444,
+        "y": 2.886133333333332
       },
       "nextControl": null,
       "isLocked": false,
@@ -42,13 +58,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 15.154068050312619
+    "rotation": 35.27242144859844
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -37.14668669802159
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

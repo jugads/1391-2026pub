@@ -6,7 +6,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
-
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -34,22 +33,28 @@ public class Autos {
     WantedSuperState[] states = WantedSuperState.values();
     for (int i = 0; i < states.length; i++) {
       NamedCommands.registerCommand(
-        "Set Robot State To " + states[i].toString(),
+        "ROB-state_" + states[i].toString(),
         m_robot.setWantedSuperStateCommand(states[i])
       );
-      System.out.println(
-        "ROB-state_" + states[i].toString()
-      );
+      System.out.println("ROB-state_" + states[i].toString());
     }
     NamedCommands.registerCommand(
       "INT-wait_trench",
       new WaitUntilCommand(() -> m_robot.canDriveUnderTrenchSafely())
     );
-
+    NamedCommands.registerCommand(
+      "int-OVERRIDE",
+      m_robot.setIntakeOverrideCommand(true)
+    );
   }
 
-  public SendableChooser<PathPlannerAuto> register(SendableChooser<PathPlannerAuto> chooser) {
-    chooser.addOption("RS-Main Cycle + Outpost", new PathPlannerAuto("RS-main"));
+  public SendableChooser<PathPlannerAuto> register(
+    SendableChooser<PathPlannerAuto> chooser
+  ) {
+    chooser.addOption(
+      "RS-Main Cycle + Outpost",
+      new PathPlannerAuto("RS-main")
+    );
     return chooser;
   }
 }
