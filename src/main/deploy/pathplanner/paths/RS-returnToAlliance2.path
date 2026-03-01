@@ -3,32 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.5489999999999995,
-        "y": 0.6589444444444439
+        "x": 5.913736654804271,
+        "y": 2.7169988137603784
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.976866666666667,
-        "y": 0.5380111111111107
+        "x": 4.341603321470939,
+        "y": 2.596065480427045
       },
       "isLocked": false,
       "linkedName": "End of RS-returnToAllianceZone"
-    },
-    {
-      "anchor": {
-        "x": 2.817922222222222,
-        "y": 0.789955555555556
-      },
-      "prevControl": {
-        "x": 3.7100202696219915,
-        "y": 0.3381136873920368
-      },
-      "nextControl": {
-        "x": 2.0419333333333336,
-        "y": 1.1829888888888889
-      },
-      "isLocked": false,
-      "linkedName": null
     },
     {
       "anchor": {
@@ -64,7 +48,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -37.14668669802159
   },
   "useDefaultConstraints": true
 }

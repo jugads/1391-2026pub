@@ -75,6 +75,7 @@ public class RobotCore extends SubsystemBase {
       readyToShoot = false;
     }
     SmartDashboard.putBoolean("Superstructure/Ready to Shoot", readyToShoot);
+    SmartDashboard.putBoolean("Intake Override", intakeOverride);
   }
 
   public void handleStateTransitions() {
@@ -105,10 +106,11 @@ public class RobotCore extends SubsystemBase {
         shooter.stop();
         break;
       case SHOOTING:
-        if (shootingAtHub) {
-          shooter.shootAtHub();
+        shooter.shoot(kSHOOTER_SPEED_AT_HUB);
 
+        if (shootingAtHub) {
           if (shooter.isUpToSpeed()) {
+            shooter.shootAtHub();
             hopper.setWantedState(HopperSubsystem.WantedState.FEED);
           }
         } else {
@@ -147,6 +149,12 @@ public class RobotCore extends SubsystemBase {
           groundIntake.setWantedState(
             GroundIntakeSubsystem.WantedState.HOLD_AT_DEFAULT
           );
+          break;
+        case SHOOTING:
+          groundIntake.setWantedState(
+            GroundIntakeSubsystem.WantedState.HOLD_AT_DEFAULT
+          );
+          break;
         default:
           groundIntake.setWantedState(GroundIntakeSubsystem.WantedState.IDLE);
       }

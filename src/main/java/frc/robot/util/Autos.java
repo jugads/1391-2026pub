@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.util;
 
 import static frc.robot.Constants.AutonomousConstants.*;
 
@@ -7,6 +7,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -21,36 +22,34 @@ public class Autos {
   CommandSwerveDrivetrain drivetrain;
   PathPlannerPath getFuelPath;
   RobotCore m_robot;
+
   public Autos(RobotCore robotCore) {
     this.drivetrain = robotCore.fetchDrivetrain();
     drivetrain.configureAutoBuilder();
     m_robot = robotCore;
     initiateNamedCommands();
-    try {
-      getFuelPath = PathPlannerPath.fromPathFile("RS-getFuel1");
-    } catch (Exception e) {
-      e.printStackTrace();
-      getFuelPath = null;
-      System.out.println("Path not found");
-    }
-  }
-
-  public Command rightSideAuto() {
-    return Commands.sequence(
-      new InstantCommand(() ->
-        drivetrain.resetGlobalPose(kSTARTING_POSE_RIGHT_SIDE)
-      ),
-      m_robot.setWantedSuperStateCommand(WantedSuperState.INTAKE),
-      new WaitUntilCommand(() -> m_robot.canDriveUnderTrenchSafely()),
-      AutoBuilder.followPath(getFuelPath)
-    );
   }
 
   public void initiateNamedCommands() {
     WantedSuperState[] states = WantedSuperState.values();
-    for (int i=0; i<states.length; i++) {
-      NamedCommands.registerCommand("Set Robot State To " + states[i].toString(), m_robot.setWantedSuperStateCommand(states[i]));
-      System.out.println("Adding Named Command: Set Robot State To " + states[i].toString());
+    for (int i = 0; i < states.length; i++) {
+      NamedCommands.registerCommand(
+        "Set Robot State To " + states[i].toString(),
+        m_robot.setWantedSuperStateCommand(states[i])
+      );
+      System.out.println(
+        "ROB-state_" + states[i].toString()
+      );
     }
+    NamedCommands.registerCommand(
+      "INT-wait_trench",
+      new WaitUntilCommand(() -> m_robot.canDriveUnderTrenchSafely())
+    );
+
+  }
+
+  public SendableChooser<PathPlannerAuto> register(SendableChooser<PathPlannerAuto> chooser) {
+    chooser.addOption("RS-Main Cycle + Outpost", new PathPlannerAuto("RS-main"));
+    return chooser;
   }
 }

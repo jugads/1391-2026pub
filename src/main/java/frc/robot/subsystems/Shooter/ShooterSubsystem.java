@@ -46,7 +46,9 @@ public class ShooterSubsystem extends SubsystemBase {
     io.updateInputs(inputs);
     io.refreshData();
     if (
-      Math.abs(inputs.shooterSpeed - motorsSetpoint) < kSHOOTER_SPEED_TOLERANCE
+      Math.abs(inputs.shooterSpeed - motorsSetpoint) <
+        kSHOOTER_SPEED_TOLERANCE &&
+      motorsSetpoint != 0
     ) {
       cyclesOfShooterUpToSpeed++;
     } else {
@@ -104,7 +106,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void shootAtHub() {
-    this.motorsSetpoint = kSHOOTER_SPEED_AT_HUB;
+    this.motorsSetpoint = kSHOOTER_SPEED_AT_HUB + 150;
     setWantedState(WantedState.SHOOT_AT_HUB);
   }
 
@@ -147,7 +149,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean isUpToSpeed() {
-    return cyclesOfShooterUpToSpeed > 50;
+    return cyclesOfShooterUpToSpeed > 10;
   }
 
   public boolean isJammed() {

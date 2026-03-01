@@ -5,20 +5,23 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
+import static frc.robot.Constants.MotorIDConstants.*;
 import static frc.robot.Constants.VisionConstants.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.RobotCore.WantedSuperState;
-import frc.robot.commands.Autos;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.GroundIntake.GroundIntakeIOSim;
@@ -31,9 +34,10 @@ import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Shooter.ShooterIOSim;
 import frc.robot.subsystems.Shooter.ShooterIOTalonFX;
 import frc.robot.subsystems.Shooter.ShooterSubsystem;
+import frc.robot.util.Autos;
 import frc.robot.util.Limelight;
 import org.littletonrobotics.junction.Logger;
-import static frc.robot.Constants.MotorIDConstants.*;
+
 public class RobotContainer {
 
   private double MaxSpeed =
@@ -69,7 +73,9 @@ public class RobotContainer {
   private final GroundIntakeSubsystem groundIntake = new GroundIntakeSubsystem(
     new GroundIntakeIOTalonFX(kPIVOT_ID, kINTAKE_ID1, kINTAKE_ID2)
   );
-  private final HopperSubsystem hopper = new HopperSubsystem(new HopperIOTalonFX(kHOP_ID));
+  private final HopperSubsystem hopper = new HopperSubsystem(
+    new HopperIOTalonFX(kHOP_ID)
+  );
 
   private final LEDs leds = new LEDs(kLED_PORT);
 
@@ -81,15 +87,17 @@ public class RobotContainer {
     leds
   );
 
-  private final Limelight tagLimelight = new Limelight("limelight-intake");
+  private final Limelight tagLimelight = new Limelight("limelight-tag");
   private final Autos autos = new Autos(robotSuper);
-
+  private final SendableChooser<Command> autoChooser;
   StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
     .getStructTopic("Global Pose", Pose2d.struct)
     .publish();
 
   public RobotContainer() {
     configureBindings();
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData(autoChooser);
   }
 
   private void configureBindings() {
@@ -123,7 +131,7 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     // Simple drive forward auton
-    return autos.rightSideAuto();
+    return autoChooser.getSelected();
   }
 
   public void dashboardUpdates() {
@@ -131,7 +139,7 @@ public class RobotContainer {
     //   drivetrain.getPigeon2().getRotation2d().getDegrees()
     // );
 
-    // publisher.set(drivetrain.getGlobalPose());
+    // // publisher.set(drivetrain.getGlobalPose());
 
     // if (
     //   tagLimelight.getLimelightPoseEstimateData() != null &&
@@ -142,6 +150,8 @@ public class RobotContainer {
     //     tagLimelight.getLimelightPoseEstimateData().timestampSeconds
     //   );
     // }
+
+    publisher.set(drivetrain.getGlobalPose());
     // if (!DriverStation.getAlliance().isEmpty()) {
     //   if (drivetrain.isInAllianceZone(DriverStation.getAlliance().get())) {
     //     leds.setWantedState(LEDs.WantedState.ZONE_ASSIST);

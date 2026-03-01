@@ -5,27 +5,15 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "INT-wait_trench"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "RS-getFuel1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "RS-getFuel2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "RS-returnToAlliance1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "RS-returnToAlliance2"
           }
         }
       ]
