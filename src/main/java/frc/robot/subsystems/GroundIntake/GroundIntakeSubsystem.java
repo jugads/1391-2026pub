@@ -14,7 +14,7 @@ public class GroundIntakeSubsystem extends SubsystemBase {
   private final GroundIntakeIO io;
   private final GroundIntakeIO.GroundIntakeIOInputs inputs =
     new GroundIntakeIO.GroundIntakeIOInputs();
-  double setpoint;
+  double setpoint = 0.45;
 
   public enum WantedState {
     IDLE,
@@ -52,7 +52,7 @@ public class GroundIntakeSubsystem extends SubsystemBase {
     // Run outputs based on current system state
     switch (systemState) {
       case INTAKING:
-        io.setIntakeSpeed(0.45);
+        io.setIntakeSpeed(setpoint);
         io.runIntakePivotToSetpoint(kINTAKING_POSITION_SETPOINT);
         break;
       case REVERSING:
@@ -63,7 +63,7 @@ public class GroundIntakeSubsystem extends SubsystemBase {
         io.runIntakePivotToSetpoint(kIDLED_POSITION_SETPOINT);
         break;
       case HOLDING_AT_ZERO:
-        io.setIntakeSpeed(0.0);
+        io.setIntakeSpeed(0.1);
         io.runIntakePivotToSetpoint(kZERO_SETPOINT);
         break;
       case IDLED:
@@ -122,6 +122,14 @@ public class GroundIntakeSubsystem extends SubsystemBase {
 
   public double getIntakePivotAngle() {
     return inputs.encoderPosition;
+  }
+
+  public Command increaseIntakeSpeedSetpoint() {
+    return new InstantCommand(() -> setpoint += 0.05);
+  }
+
+  public Command resetIntakeSpeedSetpoint() {
+    return new InstantCommand(() -> setpoint = 0.45);
   }
 }
 /* public enum GroundIntakeSubsystem {

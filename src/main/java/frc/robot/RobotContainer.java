@@ -20,8 +20,11 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.RobotCore.WantedSuperState;
+import frc.robot.commands.TidalLockCommand;
+import frc.robot.commands.Tweak;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.GroundIntake.GroundIntakeIOSim;
@@ -61,7 +64,8 @@ public class RobotContainer {
 
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
-  private final CommandXboxController joystick = new CommandXboxController(0);
+  private final CommandXboxController driver = new CommandXboxController(0);
+  private final CommandXboxController operator = new CommandXboxController(1);
 
   public final CommandSwerveDrivetrain drivetrain =
     TunerConstants.createDrivetrain();
@@ -78,16 +82,17 @@ public class RobotContainer {
   );
 
   private final LEDs leds = new LEDs(kLED_PORT);
+  private final Limelight tagLimelight = new Limelight("limelight-tag");
 
   private final RobotCore robotSuper = new RobotCore(
     shooter,
     groundIntake,
     hopper,
     drivetrain,
-    leds
+    leds,
+    tagLimelight
   );
 
-  private final Limelight tagLimelight = new Limelight("limelight-tag");
   private final Autos autos = new Autos(robotSuper);
   private final SendableChooser<Command> autoChooser;
   StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
@@ -97,6 +102,7 @@ public class RobotContainer {
   public RobotContainer() {
     configureBindings();
     autoChooser = AutoBuilder.buildAutoChooser();
+    drivetrain.configurePigeonMountPose(DriverStation.getAlliance().get());
     SmartDashboard.putData(autoChooser);
   }
 
@@ -108,24 +114,62 @@ public class RobotContainer {
       drivetrain.applyRequest(
         () ->
           drive
-            .withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-            .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left) // Drive left with negative X (left)
-            .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+            .withVelocityX(-driver.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+            .withVelocityY(-driver.getLeftX() * MaxSpeed) // Drive left with negative X (left) // Drive left with negative X (left)
+            .withRotationalRate(-driver.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
       )
     );
 
-    joystick
-      .leftTrigger()
-      .whileTrue(robotSuper.setWantedSuperStateCommand(WantedSuperState.INTAKE))
-      .whileFalse(robotSuper.setWantedSuperStateCommand(WantedSuperState.HOME));
-    joystick
+    driver.leftTrigger().onTrue(robotSuper.toggleIntake());
+    driver
       .rightTrigger()
-      .whileTrue(robotSuper.setWantedSuperStateCommand(WantedSuperState.SHOOT))
+      .whileTrue(
+        new ParallelCommandGroup(
+          new TidalLockCommand(drivetrain),
+          robotSuper.shootFuel(false)
+        )
+      )
       .whileFalse(robotSuper.setWantedSuperStateCommand(WantedSuperState.HOME));
-    joystick
+    driver
       .rightBumper()
+      .whileTrue(robotSuper.shootFuel(true))
+      .whileFalse(robotSuper.setWantedSuperStateCommand(WantedSuperState.HOME));
+
+    driver
+      .povDown()
+      .whileTrue(drivetrain.pathFindToNearestTrenchAndDrive(driveRR));
+    driver
+      .x()
+      .whileTrue(
+        drivetrain.applyRequest(() ->
+          driveRR
+            .withVelocityX(-driver.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+            .withVelocityY(-driver.getLeftX() * MaxSpeed) // Drive left with negative X (left) // Drive left with negative X (left)
+            .withRotationalRate(-driver.getRightX() * MaxAngularRate)
+        )
+      );
+
+    //////OPERATOR CONTROLS ----------------------------------------------------
+    operator.y().onTrue(groundIntake.increaseIntakeSpeedSetpoint());
+    operator.x().onTrue(groundIntake.resetIntakeSpeedSetpoint());
+    operator.a().whileTrue(new Tweak(drivetrain));
+    operator
+      .b()
+      .whileTrue(
+        robotSuper.setWantedSuperStateCommand(WantedSuperState.REVERSE_INTAKE)
+      )
+      .whileFalse(robotSuper.setWantedSuperStateCommand(WantedSuperState.HOME));
+    operator
+      .leftBumper()
       .whileTrue(robotSuper.setIntakeOverrideCommand(true))
       .whileFalse(robotSuper.setIntakeOverrideCommand(false));
+    operator
+      .rightBumper()
+      .whileTrue(
+        robotSuper.setWantedSuperStateCommand(WantedSuperState.REV_AUTO)
+      )
+      .whileFalse(robotSuper.setWantedSuperStateCommand(WantedSuperState.HOME));
+    operator.start().onTrue(robotSuper.toggleAutoRev());
     drivetrain.registerTelemetry(logger::telemeterize);
   }
 
@@ -135,21 +179,22 @@ public class RobotContainer {
   }
 
   public void dashboardUpdates() {
-    // tagLimelight.uploadGyro(
-    //   drivetrain.getPigeon2().getRotation2d().getDegrees()
-    // );
+    tagLimelight.uploadGyro(
+      drivetrain.getPigeon2().getRotation2d().getDegrees()
+    );
 
-    // // publisher.set(drivetrain.getGlobalPose());
+    // publisher.set(drivetrain.getGlobalPose());
 
-    // if (
-    //   tagLimelight.getLimelightPoseEstimateData() != null &&
-    //   tagLimelight.getLimelightPoseEstimateData().tagCount > 0
-    // ) {
-    //   drivetrain.updateGlobalPoseWithVisionMeasurements(
-    //     tagLimelight.getLimelightPoseEstimateData().pose,
-    //     tagLimelight.getLimelightPoseEstimateData().timestampSeconds
-    //   );
-    // }
+    if (
+      tagLimelight.getLimelightPoseEstimateData() != null &&
+      tagLimelight.getLimelightPoseEstimateData().tagCount > 0 &&
+      DriverStation.isTeleop()
+    ) {
+      drivetrain.updateGlobalPoseWithVisionMeasurements(
+        tagLimelight.getLimelightPoseEstimateData().pose,
+        tagLimelight.getLimelightPoseEstimateData().timestampSeconds
+      );
+    }
 
     publisher.set(drivetrain.getGlobalPose());
     // if (!DriverStation.getAlliance().isEmpty()) {
@@ -157,15 +202,22 @@ public class RobotContainer {
     //     leds.setWantedState(LEDs.WantedState.ZONE_ASSIST);
     //   }
     // }
-    // SmartDashboard.putNumber(
-    //   "Angle to Hub",
-    //   drivetrain.getAngleToHub().getDegrees()
-    // );
-
+    SmartDashboard.putNumber(
+      "Angle to Hub",
+      drivetrain.getAngleToHub().getDegrees()
+    );
+    SmartDashboard.putNumber(
+      "Distance to Hub",
+      drivetrain.getDistanceFromHub()
+    );
     // Logger.recordOutput(
     //   "Robot/ComponentPoses",
     //   new Pose3d[] { shooter.getShooterPose(), groundIntake.getIntakePose() }
     // );
+    SmartDashboard.putNumber(
+      "PIGEOn",
+      drivetrain.getPigeon2().getRotation2d().getDegrees()
+    );
   }
 
   public void onTeleopInit() {

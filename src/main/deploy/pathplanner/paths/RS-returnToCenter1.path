@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.3117333333333336,
+        "y": 3.3597888888888883
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.6869111111111112,
+        "y": 3.390022222222221
+      },
+      "isLocked": false,
+      "linkedName": "End of RS-returnToAllianceZone2"
+    },
+    {
+      "anchor": {
+        "x": 3.795466666666667,
+        "y": 0.6186333333333334
+      },
+      "prevControl": {
+        "x": 2.795466666666667,
+        "y": 0.6186333333333335
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "End of RS-returnToCenter1"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -1.1573330681295895
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 35.27242144859845
+  },
+  "useDefaultConstraints": true
+}

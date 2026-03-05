@@ -3,45 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.8311777777777785,
-        "y": 0.6589444444444439
+        "x": 3.614066666666667,
+        "y": 7.2095
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.259044444444446,
-        "y": 0.5380111111111107
-      },
-      "isLocked": false,
-      "linkedName": "End of RS-returnToAllianceZone"
-    },
-    {
-      "anchor": {
-        "x": 2.485355555555555,
-        "y": 1.344233333333333
-      },
-      "prevControl": {
-        "x": 2.2938777777777775,
-        "y": 0.4876222222222226
-      },
-      "nextControl": {
-        "x": 2.768551808170174,
-        "y": 2.611163937135575
+        "x": 4.631922222222222,
+        "y": 7.370744444444444
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.3117333333333336,
-        "y": 3.3597888888888883
+        "x": 5.609466666666667,
+        "y": 7.521911111111111
       },
       "prevControl": {
-        "x": 3.019477777777778,
-        "y": 3.1884666666666654
+        "x": 4.609466666666667,
+        "y": 7.521911111111111
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "End of RS-returnToAllianceZone2"
+      "linkedName": "End of LS_underTrench1"
     }
   ],
   "rotationTargets": [],
@@ -57,8 +41,8 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 35.27242144859845
+    "velocity": 3.0,
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": null,

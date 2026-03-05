@@ -5,6 +5,9 @@ import static frc.robot.Constants.VisionConstants.*;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.configs.MountPoseConfigs;
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
@@ -12,6 +15,8 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.PathConstraints;
+
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -27,6 +32,8 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
@@ -456,9 +463,36 @@ public class CommandSwerveDrivetrain
     double angleSin = getGlobalPose().getRotation().getSin();
     double angleCos = getGlobalPose().getRotation().getCos();
     return new ChassisSpeeds(
-      getChassisSpeeds().vxMetersPerSecond * angleCos + getChassisSpeeds().vyMetersPerSecond * angleSin,
-      getChassisSpeeds().vxMetersPerSecond * angleSin - getChassisSpeeds().vyMetersPerSecond * angleCos,
-      getChassisSpeeds().omegaRadiansPerSecond 
+      getChassisSpeeds().vxMetersPerSecond * angleCos +
+      getChassisSpeeds().vyMetersPerSecond * angleSin,
+      getChassisSpeeds().vxMetersPerSecond * angleSin -
+      getChassisSpeeds().vyMetersPerSecond * angleCos,
+      getChassisSpeeds().omegaRadiansPerSecond
+    );
+  }
+
+  public void configurePigeonMountPose(Alliance alliance) {
+    Pigeon2 pigeon = getPigeon2(); // however you access it
+
+    Pigeon2Configuration cfg = new Pigeon2Configuration();
+
+    cfg.MountPose = new MountPoseConfigs()
+      .withMountPoseYaw(-178.35812377929688)
+      .withMountPosePitch(0.5538748502731323)
+      .withMountPoseRoll(90.68478393554688);
+
+    pigeon.getConfigurator().apply(cfg);
+    pigeon.setYaw(alliance == Alliance.Blue ? 0 : 180);
+  }
+
+  public Command pathFindToNearestTrenchAndDrive(SwerveRequest.RobotCentric request) {
+    Pose2d trench = getGlobalPose().nearest(kTRENCHES);
+    PathConstraints constraints = new PathConstraints(2.0, 3.0, 2.0, 3.0);
+    return new SequentialCommandGroup(
+      AutoBuilder.pathfindToPose(trench, constraints),
+      new RunCommand(() -> this.setControl(
+        request.withVelocityX(1.)
+      )).withTimeout(1.)
     );
   }
 }

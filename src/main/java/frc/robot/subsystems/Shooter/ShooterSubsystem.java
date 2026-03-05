@@ -17,11 +17,14 @@ public class ShooterSubsystem extends SubsystemBase {
   public int cyclesOfShooterUpToSpeed;
   public double motorsSetpoint = 0.0;
 
+
   public enum WantedState {
     IDLE,
     REV_TO_SPEED,
     SHOOT_AT_HUB,
     REVERSE,
+    FEED_AND_SHOOT,
+    WARM_UP
   }
 
   private enum SystemState {
@@ -29,6 +32,8 @@ public class ShooterSubsystem extends SubsystemBase {
     REVVING_TO_SPEED,
     SHOOTING_AT_HUB,
     REVERSING,
+    FEEDING_AND_SHOOTING,
+    WARMING_UP
   }
 
   private WantedState wantedState = WantedState.IDLE;
@@ -65,6 +70,10 @@ public class ShooterSubsystem extends SubsystemBase {
       case REVVING_TO_SPEED:
         io.setShooterSpeed(motorsSetpoint);
         break;
+      case WARMING_UP:
+        io.setShooterSpeed(2600);
+        io.setFeederSpeed(0.0);
+        break;
       case SHOOTING_AT_HUB:
         io.setShooterSpeed(motorsSetpoint);
         io.setFeederSpeed(0.7);
@@ -72,6 +81,10 @@ public class ShooterSubsystem extends SubsystemBase {
       case REVERSING:
         io.setShooterSpeed(kREVERSING_SPEED);
         io.setFeederSpeed(kREVERSING_SPEED);
+        break;
+      case FEEDING_AND_SHOOTING:
+        io.setShooterSpeed(motorsSetpoint);
+        io.setFeederSpeed(0.7);
         break;
       case IDLED:
       default:
@@ -85,10 +98,14 @@ public class ShooterSubsystem extends SubsystemBase {
     switch (wantedState) {
       case REV_TO_SPEED:
         return SystemState.REVVING_TO_SPEED;
+      case WARM_UP:
+        return SystemState.WARMING_UP;
       case SHOOT_AT_HUB:
         return SystemState.SHOOTING_AT_HUB;
       case REVERSE:
         return SystemState.REVERSING;
+      case FEED_AND_SHOOT:
+        return SystemState.FEEDING_AND_SHOOTING;
       case IDLE:
       default:
         return SystemState.IDLED;
@@ -109,7 +126,14 @@ public class ShooterSubsystem extends SubsystemBase {
     this.motorsSetpoint = kSHOOTER_SPEED_AT_HUB + 150;
     setWantedState(WantedState.SHOOT_AT_HUB);
   }
-
+  public void shootAtHubRegular() {
+    this.motorsSetpoint = kSHOOTER_SPEED_AT_HUB;
+    setWantedState(WantedState.SHOOT_AT_HUB);
+  }
+  public void feedAndShoot(double setpoint) {
+    this.motorsSetpoint = setpoint + 150;
+    setWantedState(WantedState.FEED_AND_SHOOT);
+  }
   public Command reverse() {
     return new InstantCommand(() -> setWantedState(WantedState.REVERSE));
   }
@@ -143,13 +167,10 @@ public class ShooterSubsystem extends SubsystemBase {
     kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_5[0], kSHOOTER_ENTRY_5[1]);
     kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_6[0], kSHOOTER_ENTRY_6[1]);
     kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_7[0], kSHOOTER_ENTRY_7[1]);
-    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_8[0], kSHOOTER_ENTRY_8[1]);
-    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_9[0], kSHOOTER_ENTRY_9[1]);
-    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_10[0], kSHOOTER_ENTRY_10[1]);
   }
 
   public boolean isUpToSpeed() {
-    return cyclesOfShooterUpToSpeed > 10;
+    return cyclesOfShooterUpToSpeed > 5;
   }
 
   public boolean isJammed() {

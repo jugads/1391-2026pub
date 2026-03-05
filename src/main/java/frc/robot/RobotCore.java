@@ -18,6 +18,7 @@ import frc.robot.subsystems.GroundIntake.GroundIntakeSubsystem.WantedState;
 import frc.robot.subsystems.Hopper.HopperSubsystem;
 import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Shooter.ShooterSubsystem;
+import frc.robot.util.Limelight;
 
 /** Add your docs here. */
 public class RobotCore extends SubsystemBase {
@@ -27,44 +28,52 @@ public class RobotCore extends SubsystemBase {
   HopperSubsystem hopper;
   CommandSwerveDrivetrain drivetrain;
   LEDs leds;
+  Limelight tagLimelight;
   private WantedSuperState wantedSuperState = WantedSuperState.IDLE;
   private CurrentSuperState currentSuperState = CurrentSuperState.IDLING;
   private boolean readyToShoot = false;
   private boolean intakeOverride = false;
   private boolean shootingAtHub = true;
+  private double shooterCalculatedSpeed = 0.0;
+  private boolean hasCalculatedShooterSpeed = false;
+  private boolean toggleRevving = true;
 
   public RobotCore(
     ShooterSubsystem shooter,
     GroundIntakeSubsystem groundIntake,
     HopperSubsystem hopper,
     CommandSwerveDrivetrain drivetrain,
-    LEDs leds
+    LEDs leds,
+    Limelight tagLimelight
   ) {
     this.shooter = shooter;
     this.groundIntake = groundIntake;
     this.hopper = hopper;
     this.drivetrain = drivetrain;
     this.leds = leds;
+    this.tagLimelight = tagLimelight;
   }
 
   public enum WantedSuperState {
     IDLE,
     SHOOT,
+    SHOOT_FROM_DISTANCE,
     INTAKE,
     REVERSE_INTAKE,
     LOAD,
     HOME,
-    REV_AUTO
+    REV_AUTO,
   }
 
   public enum CurrentSuperState {
     IDLING,
     SHOOTING,
+    SHOOTING_FROM_DISTANCE,
     INTAKING,
     REVERSING_INTAKE,
     LOADING,
     HOMED,
-    REVVING_AUTO
+    REVVING_AUTO,
   }
 
   @Override
@@ -77,7 +86,19 @@ public class RobotCore extends SubsystemBase {
       readyToShoot = false;
     }
     SmartDashboard.putBoolean("Superstructure/Ready to Shoot", readyToShoot);
-    SmartDashboard.putBoolean("Intake Override", intakeOverride);
+    SmartDashboard.putBoolean("Superstructure/Intake Override", intakeOverride);
+    SmartDashboard.putNumber(
+      "Superstructure/Shooter Speed Setpoint",
+      shooterCalculatedSpeed
+    );
+    SmartDashboard.putBoolean(
+      "Superstructure/Is Shooting At Hub",
+      shootingAtHub
+    );
+    SmartDashboard.putBoolean(
+      "Has Calculated Shooter Speed",
+      hasCalculatedShooterSpeed
+    );
   }
 
   public void handleStateTransitions() {
@@ -87,6 +108,9 @@ public class RobotCore extends SubsystemBase {
         break;
       case SHOOT:
         currentSuperState = CurrentSuperState.SHOOTING;
+        break;
+      case SHOOT_FROM_DISTANCE:
+        currentSuperState = CurrentSuperState.SHOOTING_FROM_DISTANCE;
         break;
       case INTAKE:
         currentSuperState = CurrentSuperState.INTAKING;
@@ -113,20 +137,34 @@ public class RobotCore extends SubsystemBase {
         break;
       case SHOOTING:
         shooter.shoot(kSHOOTER_SPEED_AT_HUB);
-
-        if (shootingAtHub) {
-          if (shooter.isUpToSpeed()) {
+        if (shooter.isUpToSpeed()) {
+          if (!intakeOverride) {
             shooter.shootAtHub();
-            hopper.setWantedState(HopperSubsystem.WantedState.FEED);
+          } else {
+            shooter.shootAtHubRegular();
           }
-        } else {
-          shooter.shoot(
-            shooter.calculateShooterSpeed(drivetrain.getDistanceFromHub())
+          hopper.setWantedState(HopperSubsystem.WantedState.FEED);
+        }
+        break;
+      case SHOOTING_FROM_DISTANCE:
+        if (!hasCalculatedShooterSpeed) {
+          if (tagLimelight.isSeeingValidTarget()) {
+            drivetrain.resetGlobalPose(tagLimelight.getLimelightPoseEstimateData().pose);
+          }
+          shooterCalculatedSpeed = shooter.calculateShooterSpeed(
+            drivetrain.getDistanceFromHub()
           );
+          hasCalculatedShooterSpeed = true;
+        }
+        shooter.shoot(shooterCalculatedSpeed);
+        if (shooter.isUpToSpeed()) {
+          hopper.setWantedState(HopperSubsystem.WantedState.FEED);
+          shooter.feedAndShoot(shooterCalculatedSpeed);
         }
         break;
       case REVVING_AUTO:
-        shooter.shoot(kSHOOTER_SPEED_AT_HUB);
+        shooter.setWantedState(ShooterSubsystem.WantedState.REV_TO_SPEED);
+        hopper.setWantedState(HopperSubsystem.WantedState.IDLE);
         break;
       case INTAKING:
         shooter.setWantedState(ShooterSubsystem.WantedState.IDLE);
@@ -134,10 +172,19 @@ public class RobotCore extends SubsystemBase {
         break;
       case REVERSING_INTAKE:
         hopper.setWantedState(HopperSubsystem.WantedState.REVERSE);
+        shooter.stop();
         break;
       case HOMED:
+        hasCalculatedShooterSpeed = false;
         hopper.setWantedState(HopperSubsystem.WantedState.IDLE);
-        shooter.stop();
+        if (
+          drivetrain.isInAllianceZone(DriverStation.getAlliance().get()) &&
+          toggleRevving
+        ) {
+          shooter.setWantedState(ShooterSubsystem.WantedState.WARM_UP);
+        } else {
+          shooter.stop();
+        }
         break;
     }
     if (intakeOverride && currentSuperState != CurrentSuperState.INTAKING) {
@@ -165,7 +212,14 @@ public class RobotCore extends SubsystemBase {
           );
           break;
         case REVVING_AUTO:
-          groundIntake.setWantedState(GroundIntakeSubsystem.WantedState.HOLD_AT_DEFAULT);
+          groundIntake.setWantedState(
+            GroundIntakeSubsystem.WantedState.HOLD_AT_DEFAULT
+          );
+          break;
+        case SHOOTING_FROM_DISTANCE:
+          groundIntake.setWantedState(
+            GroundIntakeSubsystem.WantedState.HOLD_AT_DEFAULT
+          );
           break;
         default:
           groundIntake.setWantedState(GroundIntakeSubsystem.WantedState.IDLE);
@@ -194,9 +248,18 @@ public class RobotCore extends SubsystemBase {
     return new InstantCommand(() -> this.intakeOverride = override);
   }
 
+  public Command toggleAutoRev() {
+    return new InstantCommand(() -> this.toggleRevving = (!toggleRevving));
+  }
+
   public Command shootFuel(boolean atHub) {
-    this.shootingAtHub = atHub;
-    return new InstantCommand(() -> wantedSuperState = WantedSuperState.SHOOT);
+    hasCalculatedShooterSpeed = false;
+    if (atHub) return new InstantCommand(() ->
+      wantedSuperState = WantedSuperState.SHOOT
+    );
+    else return new InstantCommand(() ->
+      wantedSuperState = WantedSuperState.SHOOT_FROM_DISTANCE
+    );
   }
 
   private LEDs.WantedState computeLedState() {
@@ -210,5 +273,15 @@ public class RobotCore extends SubsystemBase {
       currentSuperState == CurrentSuperState.INTAKING
     ) return LEDs.WantedState.INTAKE;
     return LEDs.WantedState.IDLE;
+  }
+
+  public Command toggleIntake() {
+    return new InstantCommand(() -> {
+      if (wantedSuperState == WantedSuperState.INTAKE) {
+        wantedSuperState = WantedSuperState.HOME;
+      } else {
+        wantedSuperState = WantedSuperState.INTAKE;
+      }
+    });
   }
 }

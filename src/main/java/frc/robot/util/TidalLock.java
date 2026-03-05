@@ -15,4 +15,8 @@ public class TidalLock {
         SmartDashboard.putNumber("Tidallock dy multi", dy * kVELOCITY_MULTIPLIER);
         return pid.calculate(robotAngle, desiredAngle) + dy * kVELOCITY_MULTIPLIER;
     }
+
+    public boolean isLocked(double robotAngle, double desiredAngle) {
+        return Math.abs(robotAngle - desiredAngle) < 5.0;
+    }
 }

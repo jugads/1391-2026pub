@@ -19,13 +19,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "RS-getFuel1"
+            "pathName": "LS-getFuel1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RS-getFuel2"
+            "pathName": "LS-getFuel2"
           }
         },
         {
@@ -37,13 +37,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "RS-returnToAlliance1"
+            "pathName": "LS-returnToAlliance1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "RS-returnToAlliance2"
+            "pathName": "LS-returnToAlliance2"
           }
         },
         {
@@ -68,24 +68,6 @@
           "type": "wait",
           "data": {
             "waitTime": 1.5
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ROB-state_INTAKE"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "RS-returnToCenter1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "RS-returnToCenter2"
           }
         }
       ]

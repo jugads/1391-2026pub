@@ -1,7 +1,5 @@
 package frc.robot.util;
 
-import static frc.robot.Constants.AutonomousConstants.*;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
