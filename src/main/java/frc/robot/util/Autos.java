@@ -44,6 +44,11 @@ public class Autos {
       "int-OVERRIDE",
       m_robot.setIntakeOverrideCommand(true)
     );
+    NamedCommands.registerCommand(
+      "int-NORMAL",
+      m_robot.setIntakeOverrideCommand(false)
+    );
+    NamedCommands.registerCommand("shoot-from-range", m_robot.shootFuel(false));
   }
 
   public SendableChooser<PathPlannerAuto> register(

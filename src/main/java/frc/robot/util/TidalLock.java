@@ -8,7 +8,7 @@ public class TidalLock {
     PIDController pid = new PIDController(kP, kI, kD);
 
     public TidalLock() {
-        
+        pid.enableContinuousInput(-180, 180);
     }
 
     public double getOutput(double robotAngle, double desiredAngle, double dy) {

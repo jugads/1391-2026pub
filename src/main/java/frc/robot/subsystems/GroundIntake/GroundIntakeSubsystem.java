@@ -14,7 +14,7 @@ public class GroundIntakeSubsystem extends SubsystemBase {
   private final GroundIntakeIO io;
   private final GroundIntakeIO.GroundIntakeIOInputs inputs =
     new GroundIntakeIO.GroundIntakeIOInputs();
-  double setpoint = 0.45;
+  double setpoint = 0.6;
 
   public enum WantedState {
     IDLE,

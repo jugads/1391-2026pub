@@ -372,7 +372,7 @@ public class CommandSwerveDrivetrain
 
   public Rotation2d getAngleToHub() {
     Translation2d robot = globalPose.getEstimatedPosition().getTranslation();
-    Translation2d hub = kBLUEHUBPOSE;
+    Translation2d hub = DriverStation.getAlliance().get() == Alliance.Blue ? kBLUEHUBPOSE : kREDHUBPOSE;
 
     // Vector from robot -> hub
     double dx = hub.getX() - robot.getX();
@@ -426,7 +426,7 @@ public class CommandSwerveDrivetrain
           ),
         new PPHolonomicDriveController(
           // PPHolonomicController is the built in path following controller for holonomic drive trains
-          new PIDConstants(5.25, 0.0, 0.0), // Translation PID constants
+          new PIDConstants(5.25, 0.0, 0.), // Translation PID constants
           new PIDConstants(3.7, 0.0, 0.5)
         ),
         config,
@@ -483,16 +483,5 @@ public class CommandSwerveDrivetrain
 
     pigeon.getConfigurator().apply(cfg);
     pigeon.setYaw(alliance == Alliance.Blue ? 0 : 180);
-  }
-
-  public Command pathFindToNearestTrenchAndDrive(SwerveRequest.RobotCentric request) {
-    Pose2d trench = getGlobalPose().nearest(kTRENCHES);
-    PathConstraints constraints = new PathConstraints(2.0, 3.0, 2.0, 3.0);
-    return new SequentialCommandGroup(
-      AutoBuilder.pathfindToPose(trench, constraints),
-      new RunCommand(() -> this.setControl(
-        request.withVelocityX(1.)
-      )).withTimeout(1.)
-    );
   }
 }

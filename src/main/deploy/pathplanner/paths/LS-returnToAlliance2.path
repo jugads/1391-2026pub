@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 3.120255555555555,
-        "y": 7.421133333333334
+        "x": 2.5760555555555555,
+        "y": 7.2095
       },
       "prevControl": {
-        "x": 4.0852352526745275,
-        "y": 7.683457911190919
+        "x": 3.5410352526745283,
+        "y": 7.471824577857586
       },
       "nextControl": {
-        "x": 2.082244444444444,
-        "y": 7.1389555555555555
+        "x": 1.5380444444444445,
+        "y": 6.927322222222222
       },
       "isLocked": false,
       "linkedName": null
@@ -41,7 +41,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "End of LS-returnToAlliance2"
     }
   ],
   "rotationTargets": [],

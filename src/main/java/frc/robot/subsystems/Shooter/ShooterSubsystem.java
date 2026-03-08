@@ -4,6 +4,7 @@ import static frc.robot.Constants.ShooterConstants.*;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -71,12 +72,12 @@ public class ShooterSubsystem extends SubsystemBase {
         io.setShooterSpeed(motorsSetpoint);
         break;
       case WARMING_UP:
-        io.setShooterSpeed(2600);
+        io.setShooterSpeed(DriverStation.isAutonomous() ? 4000 : 2600);
         io.setFeederSpeed(0.0);
         break;
       case SHOOTING_AT_HUB:
         io.setShooterSpeed(motorsSetpoint);
-        io.setFeederSpeed(0.7);
+        io.setFeederSpeed(0.85);
         break;
       case REVERSING:
         io.setShooterSpeed(kREVERSING_SPEED);
@@ -84,7 +85,7 @@ public class ShooterSubsystem extends SubsystemBase {
         break;
       case FEEDING_AND_SHOOTING:
         io.setShooterSpeed(motorsSetpoint);
-        io.setFeederSpeed(0.7);
+        io.setFeederSpeed(0.85);
         break;
       case IDLED:
       default:
@@ -131,7 +132,7 @@ public class ShooterSubsystem extends SubsystemBase {
     setWantedState(WantedState.SHOOT_AT_HUB);
   }
   public void feedAndShoot(double setpoint) {
-    this.motorsSetpoint = setpoint + 150;
+    this.motorsSetpoint = setpoint;
     setWantedState(WantedState.FEED_AND_SHOOT);
   }
   public Command reverse() {
@@ -159,18 +160,23 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void populateInterpolatingDoubleTreeMap() {
-    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_0[0], kSHOOTER_ENTRY_0[1]);
-    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_1[0], kSHOOTER_ENTRY_1[1]);
-    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_2[0], kSHOOTER_ENTRY_2[1]);
-    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_3[0], kSHOOTER_ENTRY_3[1]);
-    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_4[0], kSHOOTER_ENTRY_4[1]);
-    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_5[0], kSHOOTER_ENTRY_5[1]);
-    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_6[0], kSHOOTER_ENTRY_6[1]);
-    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_7[0], kSHOOTER_ENTRY_7[1]);
+    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_00[0], kSHOOTER_ENTRY_00[1]);
+    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_01[0], kSHOOTER_ENTRY_01[1]);
+    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_02[0], kSHOOTER_ENTRY_02[1]);
+    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_03[0], kSHOOTER_ENTRY_03[1]);
+    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_04[0], kSHOOTER_ENTRY_04[1]);
+    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_05[0], kSHOOTER_ENTRY_05[1]);
+    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_06[0], kSHOOTER_ENTRY_06[1]);
+    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_07[0], kSHOOTER_ENTRY_07[1]);
+    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_08[0], kSHOOTER_ENTRY_08[1]);
+    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_09[0], kSHOOTER_ENTRY_09[1]);
+    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_10[0], kSHOOTER_ENTRY_10[1]);
+    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_11[0], kSHOOTER_ENTRY_11[1]);
+    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_12[0], kSHOOTER_ENTRY_12[1]);
   }
 
   public boolean isUpToSpeed() {
-    return cyclesOfShooterUpToSpeed > 5;
+    return cyclesOfShooterUpToSpeed > 10;
   }
 
   public boolean isJammed() {

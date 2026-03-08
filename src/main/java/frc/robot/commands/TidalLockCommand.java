@@ -42,6 +42,6 @@ public class TidalLockCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(drivetrain.getAngleToHub().getDegrees()) < 10;
+    return Math.abs(drivetrain.getAngleToHub().getDegrees()) < 6;
   }
 }

@@ -69,6 +69,12 @@
           "data": {
             "waitTime": 1.5
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LS-goToClimb"
+          }
         }
       ]
     }

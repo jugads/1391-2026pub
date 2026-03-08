@@ -41,62 +41,70 @@ public class Constants {
 
   public class ShooterConstants {
 
-    public static final double kSHOOTER_SPEED_AT_HUB = 3500.0;
-    public static final double kSHOOTER_SPEED_TOLERANCE = 200.;
+    public static final double kSHOOTER_SPEED_AT_HUB = 4250.0;
+    public static final double kSHOOTER_SPEED_TOLERANCE = 100.;
     public static final double kREVERSING_SPEED = 0.0;
+    public static final double kMAX_DISTANCE_FROM_HUB = 2.8;
+    public static final double kMIN_DISTANCE_FROM_HUB = 1.51;
     public static final InterpolatingDoubleTreeMap kSHOOTER_SPEEDS =
       new InterpolatingDoubleTreeMap();
-    public static final Double[] kSHOOTER_ENTRY_0 = new Double[] { 1.6, 3525. };
-    public static final Double[] kSHOOTER_ENTRY_1 = new Double[] { 1.7, 3625. };
-    public static final Double[] kSHOOTER_ENTRY_2 = new Double[] { 1.8, 3700. };
-    public static final Double[] kSHOOTER_ENTRY_3 = new Double[] { 1.9, 3850. };
-    public static final Double[] kSHOOTER_ENTRY_4 = new Double[] { 2.0, 4125. };
-    public static final Double[] kSHOOTER_ENTRY_5 = new Double[] { 2.1, 4250. };
-    public static final Double[] kSHOOTER_ENTRY_6 = new Double[] {
+    public static final Double[] kSHOOTER_ENTRY_00 = new Double[] {
+      1.6,
+      4325.,
+    };
+    public static final Double[] kSHOOTER_ENTRY_01 = new Double[] {
+      1.7,
+      4425.,
+    };
+    public static final Double[] kSHOOTER_ENTRY_02 = new Double[] {
+      1.8,
+      4630.,
+    };
+    public static final Double[] kSHOOTER_ENTRY_03 = new Double[] {
+      1.9,
+      4850.,
+    };
+    public static final Double[] kSHOOTER_ENTRY_04 = new Double[] {
+      2.0,
+      4875.,
+    };
+    public static final Double[] kSHOOTER_ENTRY_05 = new Double[] {
+      2.1,
+      4975.,
+    };
+    public static final Double[] kSHOOTER_ENTRY_06 = new Double[] {
       2.2,
-      4375.0,
+      5150.0,
     };
-    public static final Double[] kSHOOTER_ENTRY_7 = new Double[] {
+    public static final Double[] kSHOOTER_ENTRY_07 = new Double[] {
       2.3,
-      4600.0,
+      5250.0,
     };
-    public static final Double[] kSHOOTER_ENTRY_8 = new Double[] {
+    public static final Double[] kSHOOTER_ENTRY_08 = new Double[] {
       2.4,
-      4700.0,
+      5350.0,
     };
-    public static final Double[] kSHOOTER_ENTRY_9 = new Double[] {
+    public static final Double[] kSHOOTER_ENTRY_09 = new Double[] {
       2.5,
-      4900.0,
+      5550.0,
     };
     public static final Double[] kSHOOTER_ENTRY_10 = new Double[] {
       2.6,
-      5100.0,
+      5650.0,
     };
     public static final Double[] kSHOOTER_ENTRY_11 = new Double[] {
       2.7,
-      5250.0,
+      5750.0,
     };
     public static final Double[] kSHOOTER_ENTRY_12 = new Double[] {
       2.8,
-      5400.0,
-    };
-    public static final Double[] kSHOOTER_ENTRY_13 = new Double[] {
-      2.9,
-      5550.0,
-    };
-    public static final Double[] kSHOOTER_ENTRY_14 = new Double[] {
-      3.0,
-      5700.0,
-    };
-    public static final Double[] kSHOOTER_ENTRY_15 = new Double[] {
-      3.1,
       5800.0,
     };
 
-    public static final double kP = 0.2;
+    public static final double kP = 0.4;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
-    public static final double kV = 0.11;
+    public static final double kV = 0.105;
     public static final double kS = 0.0;
     public static final double kA = 0.0;
   }
@@ -119,12 +127,12 @@ public class Constants {
       4.029
     );
 
-    public static final List<Pose2d> kTRENCHES = List.of(
-      new Pose2d(3.54, 0.67, new Rotation2d(0.0)), // RIGHT BLUE
-      new Pose2d(12.99, 0.67, new Rotation2d(Math.PI)), // LEFT RED
-      new Pose2d(12.99, 7.49, new Rotation2d(Math.PI)), // RIGHT RED
-      new Pose2d(3.54, 7.49, new Rotation2d(0.0)) // LEFT BLUE
-    );
+    public static final double[] kTRENCH_GOING_OUT_SETPOINTS = new double[] {
+      0.8,-18.5,0
+    };
+    public static final double[] kTRENCH_GOING_IN_SETPOINTS = new double[] {
+      0,0,180
+    };
 
     public class TidalLockConstants {
 
@@ -143,5 +151,7 @@ public class Constants {
     public static final int kHOP_ID = 20;
     public static final int kSHOOTER_ID = 51;
     public static final int kLOADER_ID = 50;
+    public static final int kSHOOTER_FOLLOWER_ID = 52;
+    public static final int kLOADER_FOLLOWER_ID = 53;
   }
 }

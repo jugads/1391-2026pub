@@ -7,7 +7,7 @@
         {
           "type": "named",
           "data": {
-            "name": "ROB-state_INTAKE"
+            "name": "ROB-state_HOME"
           }
         },
         {
@@ -23,9 +23,21 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "ROB-state_INTAKE"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "RS-getFuel2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RS-returnToAlliance1"
           }
         },
         {
@@ -37,25 +49,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "RS-returnToAlliance1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
             "pathName": "RS-returnToAlliance2"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ROB-state_SHOOT"
+            "name": "shoot-from-range"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 4.0
+            "waitTime": 3.0
           }
         },
         {
@@ -67,7 +73,13 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.5
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "int-NORMAL"
           }
         },
         {

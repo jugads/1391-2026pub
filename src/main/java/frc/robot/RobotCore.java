@@ -5,7 +5,7 @@
 package frc.robot;
 
 import static frc.robot.Constants.GroundIntakeConstants.*;
-import static frc.robot.Constants.ShooterConstants.kSHOOTER_SPEED_AT_HUB;
+import static frc.robot.Constants.ShooterConstants.*;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -156,10 +156,10 @@ public class RobotCore extends SubsystemBase {
           );
           hasCalculatedShooterSpeed = true;
         }
-        shooter.shoot(shooterCalculatedSpeed);
+        shooter.shoot(shooterCalculatedSpeed + 250);
         if (shooter.isUpToSpeed()) {
           hopper.setWantedState(HopperSubsystem.WantedState.FEED);
-          shooter.feedAndShoot(shooterCalculatedSpeed);
+          shooter.feedAndShoot(shooterCalculatedSpeed + 100);
         }
         break;
       case REVVING_AUTO:
@@ -264,7 +264,7 @@ public class RobotCore extends SubsystemBase {
 
   private LEDs.WantedState computeLedState() {
     if (!DriverStation.isEnabled()) return LEDs.WantedState.DISABLED;
-    if (wantedSuperState == WantedSuperState.SHOOT) {
+    if (wantedSuperState == WantedSuperState.SHOOT || wantedSuperState == WantedSuperState.SHOOT_FROM_DISTANCE) {
       return shooter.isUpToSpeed()
         ? LEDs.WantedState.SHOOT_READY
         : LEDs.WantedState.SHOOT_SPINUP;
@@ -272,6 +272,9 @@ public class RobotCore extends SubsystemBase {
     if (
       currentSuperState == CurrentSuperState.INTAKING
     ) return LEDs.WantedState.INTAKE;
+    if (
+      drivetrain.isInAllianceZone(DriverStation.getAlliance().get()) && drivetrain.getDistanceFromHub() < kMAX_DISTANCE_FROM_HUB && drivetrain.getDistanceFromHub() > kMIN_DISTANCE_FROM_HUB
+    ) return LEDs.WantedState.GREEN;
     return LEDs.WantedState.IDLE;
   }
 

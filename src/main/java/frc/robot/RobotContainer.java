@@ -5,6 +5,7 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
+import static frc.robot.Constants.GroundIntakeConstants.kS;
 import static frc.robot.Constants.MotorIDConstants.*;
 import static frc.robot.Constants.VisionConstants.*;
 
@@ -23,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.RobotCore.WantedSuperState;
+import frc.robot.commands.SubsurfaceDash;
 import frc.robot.commands.TidalLockCommand;
 import frc.robot.commands.Tweak;
 import frc.robot.generated.TunerConstants;
@@ -71,7 +73,12 @@ public class RobotContainer {
     TunerConstants.createDrivetrain();
 
   private final ShooterSubsystem shooter = new ShooterSubsystem(
-    new ShooterIOTalonFX(kSHOOTER_ID, kLOADER_ID)
+    new ShooterIOTalonFX(
+      kSHOOTER_ID,
+      kLOADER_ID,
+      kSHOOTER_FOLLOWER_ID,
+      kLOADER_FOLLOWER_ID
+    )
   );
 
   private final GroundIntakeSubsystem groundIntake = new GroundIntakeSubsystem(
@@ -134,10 +141,7 @@ public class RobotContainer {
       .rightBumper()
       .whileTrue(robotSuper.shootFuel(true))
       .whileFalse(robotSuper.setWantedSuperStateCommand(WantedSuperState.HOME));
-
-    driver
-      .povDown()
-      .whileTrue(drivetrain.pathFindToNearestTrenchAndDrive(driveRR));
+    driver.povDown().whileTrue(new SubsurfaceDash(drivetrain, driveRR, tagLimelight));
     driver
       .x()
       .whileTrue(
