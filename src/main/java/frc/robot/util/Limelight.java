@@ -58,4 +58,8 @@ public class Limelight {
   public void setIMUMode(int mode) {
     LimelightHelpers.SetIMUMode(this.name, mode);
   }
+
+  public int getTID() {
+    return (int) table.getEntry("tid").getInteger(0);
+  }
 }

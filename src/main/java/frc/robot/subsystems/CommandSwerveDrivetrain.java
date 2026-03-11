@@ -482,6 +482,5 @@ public class CommandSwerveDrivetrain
       .withMountPoseRoll(90.68478393554688);
 
     pigeon.getConfigurator().apply(cfg);
-    pigeon.setYaw(alliance == Alliance.Blue ? 0 : 180);
   }
 }

@@ -8,40 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.662299809363489,
-        "y": 3.716385781946057
+        "x": 6.234288888888889,
+        "y": 5.0528555555555545
       },
       "isLocked": false,
       "linkedName": "End of RS-getFuel2"
     },
     {
       "anchor": {
-        "x": 6.113355555555555,
-        "y": 3.823366666666667
+        "x": 5.811022222222221,
+        "y": 2.4930999999999996
       },
       "prevControl": {
-        "x": 6.426013206956244,
-        "y": 4.208735399788446
-      },
-      "nextControl": {
-        "x": 5.680011111111109,
-        "y": 3.289244444444445
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 5.8311777777777785,
-        "y": 0.6589444444444439
-      },
-      "prevControl": {
-        "x": 6.395533333333334,
-        "y": 0.6589444444444439
+        "x": 6.778488888888888,
+        "y": 2.523333333333333
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "End of RS-returnToAllianceZone"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -49,22 +33,22 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.0,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 1.0,
-    "rotation": 0.0
+    "velocity": 2.0,
+    "rotation": 45.971021931079264
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
-    "velocity": 1.0,
+    "velocity": 0,
     "rotation": 110.85445803957828
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

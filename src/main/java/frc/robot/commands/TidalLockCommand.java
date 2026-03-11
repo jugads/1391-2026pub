@@ -6,17 +6,18 @@ package frc.robot.commands;
 
 import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.util.TidalLock;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class TidalLockCommand extends Command {
+
   /** Creates a new TidalLockCommand. */
   CommandSwerveDrivetrain drivetrain;
   SwerveRequest.RobotCentric request = new SwerveRequest.RobotCentric();
   TidalLock tidalLock = new TidalLock();
+
   public TidalLockCommand(CommandSwerveDrivetrain drivetrain) {
     this.drivetrain = drivetrain;
     // Use addRequirements() here to declare subsystem dependencies.
@@ -30,7 +31,15 @@ public class TidalLockCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    drivetrain.setControl(request.withRotationalRate(tidalLock.getOutput(drivetrain.getGlobalPose().getRotation().getDegrees(), drivetrain.getAngleToHub().getDegrees(), 0)));
+    drivetrain.setControl(
+      request.withRotationalRate(
+        tidalLock.getOutput(
+          drivetrain.getGlobalPose().getRotation().getDegrees(),
+          drivetrain.getAngleToHub().getDegrees(),
+          0
+        )
+      )
+    );
   }
 
   // Called once the command ends or is interrupted.
@@ -42,6 +51,6 @@ public class TidalLockCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(drivetrain.getAngleToHub().getDegrees()) < 6;
+    return false;
   }
 }

@@ -1,9 +1,12 @@
 package frc.robot.util;
 
+import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -12,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.RobotCore;
 import frc.robot.RobotCore.WantedSuperState;
+import frc.robot.commands.TidalLockCommand;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class Autos {
@@ -49,6 +53,36 @@ public class Autos {
       m_robot.setIntakeOverrideCommand(false)
     );
     NamedCommands.registerCommand("shoot-from-range", m_robot.shootFuel(false));
+    NamedCommands.registerCommand(
+      "runRobotBackwards",
+      drivetrain.applyRequest(() ->
+        new SwerveRequest.FieldCentric()
+          .withVelocityX(
+            2. * (DriverStation.getAlliance().get() == Alliance.Red ? -1. : -1.)
+          )
+          .withVelocityY(0)
+          .withRotationalRate(0)
+      )
+    );
+
+    NamedCommands.registerCommand(
+      "stop",
+      drivetrain.applyRequest(() ->
+        new SwerveRequest.FieldCentric()
+          .withVelocityX(0.)
+          .withVelocityY(0)
+          .withRotationalRate(0)
+      )
+    );
+
+    NamedCommands.registerCommand(
+      "Tidal Lock",
+      new TidalLockCommand(drivetrain)
+    );
+
+    drivetrain
+      .getPigeon2()
+      .setYaw(DriverStation.getAlliance().get() == Alliance.Red ? 180. : 0.);
   }
 
   public SendableChooser<PathPlannerAuto> register(

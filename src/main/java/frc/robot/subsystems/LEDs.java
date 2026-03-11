@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -7,12 +8,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LEDs extends SubsystemBase {
 
-  Spark blinkin;
+  PWMSparkMax blinkin;
   WantedState wantedState = WantedState.IDLE;
   CurrentState currentState = CurrentState.IDLING;
 
   public LEDs(int port) {
-    blinkin = new Spark(port);
+    blinkin = new PWMSparkMax(port);
+    blinkin.setSafetyEnabled(false);
   }
 
   public enum WantedState {

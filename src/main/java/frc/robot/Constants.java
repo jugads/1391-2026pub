@@ -116,7 +116,7 @@ public class Constants {
 
   public class VisionConstants {
 
-    public static final int kLED_PORT = 8;
+    public static final int kLED_PORT = 9;
     public static final String kAPRILTAG_LL_NAME = "limelight-intake";
     public static final Translation2d kBLUEHUBPOSE = new Translation2d(
       4.634,
@@ -128,7 +128,7 @@ public class Constants {
     );
 
     public static final double[] kTRENCH_GOING_OUT_SETPOINTS = new double[] {
-      0.8,-18.5,0
+      -18,-1,0
     };
     public static final double[] kTRENCH_GOING_IN_SETPOINTS = new double[] {
       0,0,180
@@ -136,8 +136,8 @@ public class Constants {
 
     public class TidalLockConstants {
 
-      public static final double kP = 0.15;
-      public static final double kI = 0.1;
+      public static final double kP = 0.08;
+      public static final double kI = 0.;
       public static final double kD = 0.0;
       public static final double kVELOCITY_MULTIPLIER = 0.1;
     }

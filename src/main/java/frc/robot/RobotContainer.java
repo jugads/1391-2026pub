@@ -11,6 +11,7 @@ import static frc.robot.Constants.VisionConstants.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -18,13 +19,15 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.RobotCore.WantedSuperState;
-import frc.robot.commands.SubsurfaceDash;
+import frc.robot.commands.BumpLock;
 import frc.robot.commands.TidalLockCommand;
 import frc.robot.commands.Tweak;
 import frc.robot.generated.TunerConstants;
@@ -36,11 +39,13 @@ import frc.robot.subsystems.Hopper.HopperIOSim;
 import frc.robot.subsystems.Hopper.HopperIOTalonFX;
 import frc.robot.subsystems.Hopper.HopperSubsystem;
 import frc.robot.subsystems.LEDs;
+import frc.robot.subsystems.LEDs.WantedState;
 import frc.robot.subsystems.Shooter.ShooterIOSim;
 import frc.robot.subsystems.Shooter.ShooterIOTalonFX;
 import frc.robot.subsystems.Shooter.ShooterSubsystem;
 import frc.robot.util.Autos;
 import frc.robot.util.Limelight;
+import frc.robot.util.SubsurfaceDash;
 import org.littletonrobotics.junction.Logger;
 
 public class RobotContainer {
@@ -71,7 +76,6 @@ public class RobotContainer {
 
   public final CommandSwerveDrivetrain drivetrain =
     TunerConstants.createDrivetrain();
-
   private final ShooterSubsystem shooter = new ShooterSubsystem(
     new ShooterIOTalonFX(
       kSHOOTER_ID,
@@ -87,6 +91,7 @@ public class RobotContainer {
   private final HopperSubsystem hopper = new HopperSubsystem(
     new HopperIOTalonFX(kHOP_ID)
   );
+  SubsurfaceDash dash = new SubsurfaceDash(drivetrain);
 
   private final LEDs leds = new LEDs(kLED_PORT);
   private final Limelight tagLimelight = new Limelight("limelight-tag");
@@ -121,6 +126,7 @@ public class RobotContainer {
       drivetrain.applyRequest(
         () ->
           drive
+            .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective)
             .withVelocityX(-driver.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
             .withVelocityY(-driver.getLeftX() * MaxSpeed) // Drive left with negative X (left) // Drive left with negative X (left)
             .withRotationalRate(-driver.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
@@ -141,7 +147,19 @@ public class RobotContainer {
       .rightBumper()
       .whileTrue(robotSuper.shootFuel(true))
       .whileFalse(robotSuper.setWantedSuperStateCommand(WantedSuperState.HOME));
-    driver.povDown().whileTrue(new SubsurfaceDash(drivetrain, driveRR, tagLimelight));
+    driver
+      .y()
+      .whileTrue(
+        drivetrain.applyRequest(() ->
+          drive
+            .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective)
+            .withVelocityX(-driver.getLeftY() * MaxSpeed * 0.35)
+            .withVelocityY(-driver.getLeftX() * MaxSpeed * 0.2)
+            .withRotationalRate(
+              dash.calculateRotationalVelocity() * MaxAngularRate
+            )
+        )
+      );
     driver
       .x()
       .whileTrue(
@@ -152,7 +170,17 @@ public class RobotContainer {
             .withRotationalRate(-driver.getRightX() * MaxAngularRate)
         )
       );
-
+    driver
+      .leftBumper()
+      .whileTrue(
+        new BumpLock(
+          drivetrain,
+          () -> -driver.getLeftX(),
+          () -> -driver.getLeftY(),
+          drive
+        )
+      );
+    driver.start().onTrue(new InstantCommand(() -> MaxSpeed *= -1));
     //////OPERATOR CONTROLS ----------------------------------------------------
     operator.y().onTrue(groundIntake.increaseIntakeSpeedSetpoint());
     operator.x().onTrue(groundIntake.resetIntakeSpeedSetpoint());
@@ -222,9 +250,17 @@ public class RobotContainer {
       "PIGEOn",
       drivetrain.getPigeon2().getRotation2d().getDegrees()
     );
+
+    SmartDashboard.putString("Active Alliance", DriverStation.getGameSpecificMessage() == "R" ? "Red" : "Blue");
   }
 
   public void onTeleopInit() {
     robotSuper.setWantedSuperState(WantedSuperState.HOME);
   }
+
+  public void onDisabledInit() {
+    leds.setWantedState(WantedState.DISABLED);
+  }
+
+  
 }

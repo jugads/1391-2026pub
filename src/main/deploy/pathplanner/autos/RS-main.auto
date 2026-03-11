@@ -35,12 +35,6 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "RS-returnToAlliance1"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "ROB-state_HOME"
@@ -49,7 +43,45 @@
         {
           "type": "path",
           "data": {
-            "pathName": "RS-returnToAlliance2"
+            "pathName": "RS-returnOverBump"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "runRobotBackwards"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.4
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "stop"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.1
+                }
+              }
+            ]
           }
         },
         {
@@ -59,9 +91,28 @@
           }
         },
         {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Tidal Lock"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "wait",
           "data": {
-            "waitTime": 3.0
+            "waitTime": 2.5
           }
         },
         {
@@ -85,7 +136,7 @@
         {
           "type": "named",
           "data": {
-            "name": "ROB-state_INTAKE"
+            "name": "ROB-state_HOME"
           }
         },
         {
@@ -95,9 +146,71 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "ROB-state_INTAKE"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "RS-returnToCenter2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ROB-state_HOME"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RS-returnOverBump2"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "runRobotBackwards"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.8
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot-from-range"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Tidal Lock"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.3
+                }
+              }
+            ]
           }
         }
       ]

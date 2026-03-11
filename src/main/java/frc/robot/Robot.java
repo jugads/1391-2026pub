@@ -17,7 +17,7 @@ public class Robot extends LoggedRobot {
 
   private Command m_autonomousCommand;
   private final RobotContainer m_robotContainer;
-
+  boolean hasSetGyro = false;
   public Robot() {
     m_robotContainer = new RobotContainer();
     Logger.addDataReceiver(new NT4Publisher());
@@ -31,7 +31,9 @@ public class Robot extends LoggedRobot {
   }
 
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    m_robotContainer.onDisabledInit();
+  }
 
   @Override
   public void disabledPeriodic() {}

@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.9590111111111117,
-        "y": 2.8861333333333334
+        "x": 3.313,
+        "y": 2.475
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3341888888888893,
-        "y": 2.9163666666666663
+        "x": 2.676833333333333,
+        "y": 2.3016222222222225
       },
       "isLocked": false,
       "linkedName": "End of RS-returnToAllianceZone2"
@@ -41,14 +41,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 0.5,
     "rotation": -1.1573330681295895
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 36.86989764584399
+    "rotation": 48.41754671015113
   },
   "useDefaultConstraints": true
 }

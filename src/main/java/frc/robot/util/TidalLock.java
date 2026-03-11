@@ -9,6 +9,7 @@ public class TidalLock {
 
     public TidalLock() {
         pid.enableContinuousInput(-180, 180);
+        pid.setTolerance(3);
     }
 
     public double getOutput(double robotAngle, double desiredAngle, double dy) {

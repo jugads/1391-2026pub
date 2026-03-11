@@ -55,7 +55,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 4.0
+            "waitTime": 3.0
           }
         },
         {
@@ -67,13 +67,43 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.5
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "int-NORMAL"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ROB-state_HOME"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "LS-goToClimb"
+            "pathName": "LS-returnToCenter1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LS-returnToCenter2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ROB-state_INTAKE"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LS-getFuelAgain"
           }
         }
       ]

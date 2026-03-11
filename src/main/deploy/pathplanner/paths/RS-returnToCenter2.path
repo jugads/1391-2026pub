@@ -20,44 +20,28 @@
         "y": 0.6186333333333334
       },
       "prevControl": {
-        "x": 5.3854555555555566,
-        "y": 0.6186333333333335
+        "x": 5.401272231581862,
+        "y": 0.44148033501806816
       },
       "nextControl": {
-        "x": 7.3854555555555566,
-        "y": 0.6186333333333333
+        "x": 7.393233333333334,
+        "y": 0.8000333333333334
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.745955555555556,
-        "y": 1.6969555555555562
+        "x": 7.121133333333334,
+        "y": 3.5311111111111115
       },
       "prevControl": {
-        "x": 7.313761111111111,
-        "y": 1.1577944444444448
-      },
-      "nextControl": {
-        "x": 8.17815,
-        "y": 2.2361166666666676
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 7.7258,
-        "y": 3.2791666666666663
-      },
-      "prevControl": {
-        "x": 7.951975,
-        "y": 2.757641666666667
+        "x": 7.347308333333335,
+        "y": 3.0095861111111124
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "End of RS-returnToCenter2"
     }
   ],
   "rotationTargets": [],
@@ -87,13 +71,13 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 0.0,
     "rotation": 90.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
-    "velocity": 0,
+    "velocity": 0.5,
     "rotation": -1.1573330681295895
   },
   "useDefaultConstraints": true
