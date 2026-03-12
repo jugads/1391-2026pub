@@ -25,6 +25,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.RobotCore.WantedSuperState;
 import frc.robot.commands.BumpLock;
@@ -139,7 +141,10 @@ public class RobotContainer {
       .whileTrue(
         new ParallelCommandGroup(
           new TidalLockCommand(drivetrain),
-          robotSuper.shootFuel(false)
+          new SequentialCommandGroup(
+            new WaitCommand(0.75),
+            robotSuper.shootFuel(false)
+          )
         )
       )
       .whileFalse(robotSuper.setWantedSuperStateCommand(WantedSuperState.HOME));
@@ -251,7 +256,10 @@ public class RobotContainer {
       drivetrain.getPigeon2().getRotation2d().getDegrees()
     );
 
-    SmartDashboard.putString("Active Alliance", DriverStation.getGameSpecificMessage() == "R" ? "Red" : "Blue");
+    SmartDashboard.putString(
+      "Active Alliance",
+      DriverStation.getGameSpecificMessage() == "R" ? "Red" : "Blue"
+    );
   }
 
   public void onTeleopInit() {
@@ -261,6 +269,4 @@ public class RobotContainer {
   public void onDisabledInit() {
     leds.setWantedState(WantedState.DISABLED);
   }
-
-  
 }
