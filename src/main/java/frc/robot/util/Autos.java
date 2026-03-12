@@ -79,10 +79,6 @@ public class Autos {
       "Tidal Lock",
       new TidalLockCommand(drivetrain)
     );
-
-    drivetrain
-      .getPigeon2()
-      .setYaw(DriverStation.getAlliance().get() == Alliance.Red ? 180. : 0.);
   }
 
   public SendableChooser<PathPlannerAuto> register(

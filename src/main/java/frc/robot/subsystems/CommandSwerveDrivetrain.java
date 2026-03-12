@@ -63,7 +63,7 @@ public class CommandSwerveDrivetrain
     Rotation2d.k180deg;
   /* Keep track if we've ever applied the operator perspective before or not */
   private boolean m_hasAppliedOperatorPerspective = false;
-
+  private boolean hasSetGyro = false;
   /* Swerve requests to apply during SysId characterization */
   private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization =
     new SwerveRequest.SysIdSwerveTranslation();
@@ -282,6 +282,15 @@ public class CommandSwerveDrivetrain
           );
           m_hasAppliedOperatorPerspective = true;
         });
+    }
+
+    if (!hasSetGyro) {
+      if (DriverStation.getAlliance().isPresent()) {
+        getPigeon2().setYaw(
+          DriverStation.getAlliance().get() == Alliance.Blue ? 0.0 : 180
+        );
+        hasSetGyro = true;
+      }
     }
     globalPose.update(getPigeon2().getRotation2d(), getModulePositions());
   }
