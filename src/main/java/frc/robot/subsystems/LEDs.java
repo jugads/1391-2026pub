@@ -23,7 +23,8 @@ public class LEDs extends SubsystemBase {
     INTAKE,
     SHOOT_READY,
     DISABLED,
-    GREEN
+    GREEN,
+    IDEAL
   }
 
   public enum CurrentState {
@@ -32,6 +33,7 @@ public class LEDs extends SubsystemBase {
     SHOOTING,
     INTAKING,
     DISABLED,
+    PURPLED,
     ABLE_TO_SHOOT
   }
 
@@ -53,6 +55,9 @@ public class LEDs extends SubsystemBase {
       case GREEN:
         currentState = CurrentState.ABLE_TO_SHOOT;
         break;
+      case IDEAL:
+        currentState = CurrentState.PURPLED;
+        break;
       case DISABLED:
         currentState = CurrentState.DISABLED;
         break;
@@ -73,6 +78,9 @@ public class LEDs extends SubsystemBase {
         break;
       case ABLE_TO_SHOOT:
         blinkin.set(0.75);
+        break;
+      case PURPLED:
+        blinkin.set(0.71);
         break;
       case DISABLED:
         blinkin.set(0.61);

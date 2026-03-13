@@ -36,7 +36,9 @@ public class Robot extends LoggedRobot {
   }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+
+  }
 
   @Override
   public void disabledExit() {}

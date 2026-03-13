@@ -16,6 +16,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -116,8 +117,10 @@ public class RobotContainer {
   public RobotContainer() {
     configureBindings();
     autoChooser = AutoBuilder.buildAutoChooser();
-    drivetrain.configurePigeonMountPose(DriverStation.getAlliance().get());
     SmartDashboard.putData(autoChooser);
+    drivetrain.configurePigeonMountPose(DriverStation.getAlliance().get());
+    resetGyro();
+    drivetrain.initializePoseEstimator();
   }
 
   private void configureBindings() {
@@ -268,5 +271,12 @@ public class RobotContainer {
 
   public void onDisabledInit() {
     leds.setWantedState(WantedState.DISABLED);
+  }
+
+  public void resetGyro() {
+      double headingDeg = DriverStation.getAlliance().get() == Alliance.Blue
+        ? 0.0
+        : 180.0;
+      drivetrain.getPigeon2().setYaw(headingDeg);
   }
 }

@@ -7,6 +7,12 @@
         {
           "type": "named",
           "data": {
+            "name": "Reset gyro"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "ROB-state_INTAKE"
           }
         },

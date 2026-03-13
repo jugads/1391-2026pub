@@ -16,7 +16,6 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathConstraints;
-
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -73,13 +72,7 @@ public class CommandSwerveDrivetrain
     new SwerveRequest.SysIdSwerveRotation();
   private final SwerveRequest.ApplyRobotSpeeds m_ApplyRobotSpeeds =
     new SwerveRequest.ApplyRobotSpeeds();
-  private final SwerveDrivePoseEstimator globalPose =
-    new SwerveDrivePoseEstimator(
-      getKinematics(),
-      getPigeon2().getRotation2d(),
-      getModulePositions(),
-      new Pose2d()
-    );
+  private SwerveDrivePoseEstimator globalPose;
 
   /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
   private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
@@ -283,16 +276,6 @@ public class CommandSwerveDrivetrain
           m_hasAppliedOperatorPerspective = true;
         });
     }
-
-    if (!hasSetGyro) {
-      if (DriverStation.getAlliance().isPresent()) {
-        getPigeon2().setYaw(
-          DriverStation.getAlliance().get() == Alliance.Blue ? 0.0 : 180
-        );
-        hasSetGyro = true;
-      }
-    }
-    globalPose.update(getPigeon2().getRotation2d(), getModulePositions());
   }
 
   private void startSimThread() {
@@ -367,21 +350,21 @@ public class CommandSwerveDrivetrain
 
   //HUB CALCS
   public double getDistanceFromHub() {
-    if (DriverStation.getAlliance().get() == Alliance.Blue) return globalPose
-      .getEstimatedPosition()
+    if (DriverStation.getAlliance().get() == Alliance.Blue) return getState().Pose
       .getTranslation()
       .getDistance(kBLUEHUBPOSE);
     else {
-      return globalPose
-        .getEstimatedPosition()
+      return getState().Pose
         .getTranslation()
         .getDistance(kREDHUBPOSE);
     }
   }
 
   public Rotation2d getAngleToHub() {
-    Translation2d robot = globalPose.getEstimatedPosition().getTranslation();
-    Translation2d hub = DriverStation.getAlliance().get() == Alliance.Blue ? kBLUEHUBPOSE : kREDHUBPOSE;
+    Translation2d robot = getState().Pose.getTranslation();
+    Translation2d hub = DriverStation.getAlliance().get() == Alliance.Blue
+      ? kBLUEHUBPOSE
+      : kREDHUBPOSE;
 
     // Vector from robot -> hub
     double dx = hub.getX() - robot.getX();
@@ -401,26 +384,36 @@ public class CommandSwerveDrivetrain
   }
 
   public Pose2d getGlobalPose() {
-    return globalPose.getEstimatedPosition();
+    return getState().Pose;
+  }
+
+  public void initializePoseEstimator() {
+    System.out.println(
+      "custom globalPose rot = " + getGlobalPose().getRotation().getDegrees()
+    );
+    System.out.println(
+      "ctre state pose rot = " + getState().Pose.getRotation().getDegrees()
+    );
+    System.out.println("ctre state pose = " + getState().Pose);
   }
 
   public void resetGlobalPose(Pose2d pose) {
-    globalPose.resetPose(pose);
+    resetPose(pose);
   }
 
   public void updateGlobalPoseWithVisionMeasurements(
     Pose2d visionMeasurements,
     double timestamp
   ) {
-    globalPose.addVisionMeasurement(visionMeasurements, timestamp);
+    addVisionMeasurement(visionMeasurements, timestamp);
   }
 
   public void configureAutoBuilder() {
     try {
       var config = RobotConfig.fromGUISettings();
       AutoBuilder.configure(
-        () -> getGlobalPose(),
-        this::resetGlobalPose,
+        () -> getState().Pose,
+        this::resetPose,
         () -> getState().Speeds,
         (speeds, feedforwards) ->
           setControl(
@@ -462,15 +455,15 @@ public class CommandSwerveDrivetrain
 
   public boolean isInAllianceZone(Alliance alliance) {
     if (alliance.equals(Alliance.Blue)) {
-      return getGlobalPose().getX() < 4;
+      return getState().Pose.getX() < 4;
     } else {
-      return getGlobalPose().getX() > 12.5;
+      return getState().Pose.getX() > 12.5;
     }
   }
 
   public ChassisSpeeds getFieldRelativeChassisSpeeds() {
-    double angleSin = getGlobalPose().getRotation().getSin();
-    double angleCos = getGlobalPose().getRotation().getCos();
+    double angleSin = getState().Pose.getRotation().getSin();
+    double angleCos = getState().Pose.getRotation().getCos();
     return new ChassisSpeeds(
       getChassisSpeeds().vxMetersPerSecond * angleCos +
       getChassisSpeeds().vyMetersPerSecond * angleSin,
@@ -480,6 +473,13 @@ public class CommandSwerveDrivetrain
     );
   }
 
+  /**
+   * Configure the mount pose of the Pigeon2 camera. This method
+   * takes an Alliance parameter to determine which mount pose to
+   * use for the blue or red alliance.
+   *
+   * @param alliance The alliance to configure the mount pose for.
+   */
   public void configurePigeonMountPose(Alliance alliance) {
     Pigeon2 pigeon = getPigeon2(); // however you access it
 

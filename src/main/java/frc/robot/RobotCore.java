@@ -273,8 +273,11 @@ public class RobotCore extends SubsystemBase {
       currentSuperState == CurrentSuperState.INTAKING
     ) return LEDs.WantedState.INTAKE;
     if (
-      drivetrain.isInAllianceZone(DriverStation.getAlliance().get()) && drivetrain.getDistanceFromHub() < kMAX_DISTANCE_FROM_HUB && drivetrain.getDistanceFromHub() > kMIN_DISTANCE_FROM_HUB
+      drivetrain.isInAllianceZone(DriverStation.getAlliance().get()) && drivetrain.getDistanceFromHub() < 2.6 && drivetrain.getDistanceFromHub() > 1.95
     ) return LEDs.WantedState.GREEN;
+    if (
+      drivetrain.isInAllianceZone(DriverStation.getAlliance().get()) && drivetrain.getDistanceFromHub() < 1.95
+    ) return LEDs.WantedState.IDEAL;
     return LEDs.WantedState.IDLE;
   }
 

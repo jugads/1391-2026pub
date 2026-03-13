@@ -1,6 +1,7 @@
 package frc.robot.util;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -58,7 +59,7 @@ public class Autos {
       drivetrain.applyRequest(() ->
         new SwerveRequest.FieldCentric()
           .withVelocityX(
-            2. * (DriverStation.getAlliance().get() == Alliance.Red ? -1. : -1.)
+            -2.
           )
           .withVelocityY(0)
           .withRotationalRate(0)
@@ -79,6 +80,8 @@ public class Autos {
       "Tidal Lock",
       new TidalLockCommand(drivetrain)
     );
+
+    // NamedCommands.registerCommand("Reset gyro", new InstantCommand(() -> drivetrain.getPigeon2().setYaw(DriverStation.getAlliance().get() == Alliance.Blue ? 0 : 180)));
   }
 
   public SendableChooser<PathPlannerAuto> register(
