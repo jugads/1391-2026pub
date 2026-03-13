@@ -80,7 +80,7 @@ public class LEDs extends SubsystemBase {
         blinkin.set(0.75);
         break;
       case PURPLED:
-        blinkin.set(0.71);
+        blinkin.set(0.91);
         break;
       case DISABLED:
         blinkin.set(0.61);
