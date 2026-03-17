@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.614066666666667,
-        "y": 7.2095
-      },
-      "prevControl": null,
-      "nextControl": {
-        "x": 4.631922222222222,
-        "y": 7.370744444444444
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
         "x": 5.680011111111112,
         "y": 7.380822222222222
       },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.445922222222223,
+        "y": 7.421133333333334
+      },
+      "isLocked": false,
+      "linkedName": "fuelelft"
+    },
+    {
+      "anchor": {
+        "x": 7.665333333333333,
+        "y": 6.745922222222223
+      },
       "prevControl": {
-        "x": 4.680011111111112,
-        "y": 7.380822222222222
+        "x": 7.524244444444443,
+        "y": 7.3405111111111125
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "fuelelft"
+      "linkedName": "left side fuel grabber"
     }
   ],
   "rotationTargets": [],
@@ -41,13 +41,13 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 2.5,
-    "rotation": 0.0
+    "velocity": 1.0,
+    "rotation": -90.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
-    "velocity": 0,
+    "velocity": 2.5,
     "rotation": 0.0
   },
   "useDefaultConstraints": true

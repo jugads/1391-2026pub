@@ -12,6 +12,7 @@ import static frc.robot.Constants.VisionConstants.*;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
+import com.ctre.phoenix6.swerve.SwerveRequest.SwerveDriveBrake;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -71,6 +72,10 @@ public class RobotContainer {
       .withDeadband(MaxSpeed * 0.1)
       .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+    
+    
+  private final SwerveRequest.SwerveDriveBrake brake = 
+  new SwerveDriveBrake();
 
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
@@ -138,7 +143,7 @@ public class RobotContainer {
       )
     );
 
-    driver.leftTrigger().onTrue(robotSuper.toggleIntake());
+    operator.leftTrigger().onTrue(robotSuper.toggleIntake());
     driver
       .rightTrigger()
       .whileTrue(
@@ -191,7 +196,6 @@ public class RobotContainer {
     driver.start().onTrue(new InstantCommand(() -> MaxSpeed *= -1));
     //////OPERATOR CONTROLS ----------------------------------------------------
     operator.y().onTrue(groundIntake.increaseIntakeSpeedSetpoint());
-    operator.x().onTrue(groundIntake.resetIntakeSpeedSetpoint());
     operator.a().whileTrue(new Tweak(drivetrain));
     operator
       .b()
@@ -209,6 +213,11 @@ public class RobotContainer {
         robotSuper.setWantedSuperStateCommand(WantedSuperState.REV_AUTO)
       )
       .whileFalse(robotSuper.setWantedSuperStateCommand(WantedSuperState.HOME));
+    operator.x().whileTrue(
+      drivetrain.applyRequest(
+        () -> brake
+      )
+    );
     operator.start().onTrue(robotSuper.toggleAutoRev());
     drivetrain.registerTelemetry(logger::telemeterize);
   }

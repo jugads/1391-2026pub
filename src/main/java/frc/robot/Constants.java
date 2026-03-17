@@ -50,23 +50,23 @@ public class Constants {
       new InterpolatingDoubleTreeMap();
     public static final Double[] kSHOOTER_ENTRY_00 = new Double[] {
       1.6,
-      4325.,
+      4220.,
     };
     public static final Double[] kSHOOTER_ENTRY_01 = new Double[] {
       1.7,
-      4425.,
+      4360.,
     };
     public static final Double[] kSHOOTER_ENTRY_02 = new Double[] {
       1.8,
-      4630.,
+      4570.,
     };
     public static final Double[] kSHOOTER_ENTRY_03 = new Double[] {
       1.9,
-      4850.,
+      4800.,
     };
     public static final Double[] kSHOOTER_ENTRY_04 = new Double[] {
       2.0,
-      4875.,
+      4820.,
     };
     public static final Double[] kSHOOTER_ENTRY_05 = new Double[] {
       2.1,

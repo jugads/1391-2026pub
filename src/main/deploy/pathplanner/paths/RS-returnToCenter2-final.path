@@ -3,29 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.614066666666667,
-        "y": 7.2095
+        "x": 3.6846111111111117,
+        "y": 0.5380111111111103
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.631922222222222,
-        "y": 7.370744444444444
+        "x": 4.684611111111112,
+        "y": 0.5380111111111106
+      },
+      "isLocked": false,
+      "linkedName": "gobackpls"
+    },
+    {
+      "anchor": {
+        "x": 6.254444444444444,
+        "y": 0.789955555555556
+      },
+      "prevControl": {
+        "x": 5.342522939269344,
+        "y": 0.37959087822676085
+      },
+      "nextControl": {
+        "x": 6.4824248207382205,
+        "y": 0.8925467248877554
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.680011111111112,
-        "y": 7.380822222222222
+        "x": 6.0125777777777785,
+        "y": 2.3116999999999996
       },
       "prevControl": {
-        "x": 4.680011111111112,
-        "y": 7.380822222222222
+        "x": 6.190088888888889,
+        "y": 1.1829888888888882
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "fuelelft"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -41,8 +57,8 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 2.5,
-    "rotation": 0.0
+    "velocity": 0,
+    "rotation": 90.84252426074059
   },
   "reversed": false,
   "folder": null,

@@ -8,27 +8,11 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.917277777777777,
-        "y": 3.652044444444445
+        "x": 7.987822222222224,
+        "y": 5.627288888888888
       },
       "isLocked": false,
       "linkedName": "End of LS-getfuel2"
-    },
-    {
-      "anchor": {
-        "x": 6.40561111111111,
-        "y": 4.327255555555555
-      },
-      "prevControl": {
-        "x": 6.890608743445718,
-        "y": 3.340819693180081
-      },
-      "nextControl": {
-        "x": 5.811022222222221,
-        "y": 5.536588888888889
-      },
-      "isLocked": false,
-      "linkedName": null
     },
     {
       "anchor": {
@@ -37,7 +21,7 @@
       },
       "prevControl": {
         "x": 7.403311111111111,
-        "y": 7.149033333333333
+        "y": 7.108722222222223
       },
       "nextControl": null,
       "isLocked": false,

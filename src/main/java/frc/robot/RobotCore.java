@@ -7,6 +7,7 @@ package frc.robot;
 import static frc.robot.Constants.GroundIntakeConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -159,7 +160,7 @@ public class RobotCore extends SubsystemBase {
         shooter.shoot(shooterCalculatedSpeed + 250);
         if (shooter.isUpToSpeed()) {
           hopper.setWantedState(HopperSubsystem.WantedState.FEED);
-          shooter.feedAndShoot(shooterCalculatedSpeed + 100);
+          shooter.feedAndShoot(shooterCalculatedSpeed + 30);
         }
         break;
       case REVVING_AUTO:
@@ -289,5 +290,13 @@ public class RobotCore extends SubsystemBase {
         wantedSuperState = WantedSuperState.INTAKE;
       }
     });
+  }
+
+  public boolean cameraSeesTag() {
+    return tagLimelight.getLimelightPoseEstimateData().tagCount > 0;
+  }
+
+  public Pose2d getLimelightPose() {
+    return tagLimelight.getLimelightPoseEstimateData().pose;
   }
 }

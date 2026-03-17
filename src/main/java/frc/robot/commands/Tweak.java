@@ -32,8 +32,8 @@ public class Tweak extends Command {
     double dt = Timer.getFPGATimestamp() - time;
     drivetrain.setControl(
       new SwerveRequest.RobotCentric()
-        .withVelocityX(0.5 * Math.cos(dt*30))
-        .withVelocityY(0)
+        .withVelocityX(0)
+        .withVelocityY(0.5 * Math.cos(dt*30))
         .withRotationalRate(0)
     );
   }

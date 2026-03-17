@@ -7,13 +7,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Reset gyro"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ROB-state_INTAKE"
+            "name": "ROB-state_HOME"
           }
         },
         {
@@ -25,19 +19,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LS-getFuel1"
+            "pathName": "RS-getFuel1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ROB-state_INTAKE"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "LS-doStuff"
+            "pathName": "RS-getFuel2-2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "LS-getFuel2"
+            "pathName": "RS-collect"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "reset odometry"
           }
         },
         {
@@ -49,13 +55,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LS-returnToAlliance1"
+            "pathName": "RS-returnToAlliance1-2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "LS-returnToAlliance2"
+            "pathName": "RS-returnToShoot"
           }
         },
         {
@@ -65,9 +71,22 @@
           }
         },
         {
-          "type": "wait",
+          "type": "deadline",
           "data": {
-            "waitTime": 3.0
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 3.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Tweak"
+                }
+              }
+            ]
           }
         },
         {
@@ -79,7 +98,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 2.5
           }
         },
         {
@@ -97,13 +116,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LS-returnToCenter1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "LS-returnToCenter2"
+            "pathName": "RS-returnToCenter1-2"
           }
         },
         {
@@ -115,7 +128,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LS-getFuelAgain"
+            "pathName": "RS-returnToCenter2-final"
           }
         }
       ]

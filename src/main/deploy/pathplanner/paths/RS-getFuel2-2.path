@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.614066666666667,
-        "y": 7.2095
+        "x": 5.225148279952552,
+        "y": 0.6189561091340454
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.631922222222222,
-        "y": 7.370744444444444
+        "x": 6.225148279952552,
+        "y": 0.6189561091340456
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "End of RS-getFuel1"
     },
     {
       "anchor": {
-        "x": 5.680011111111112,
-        "y": 7.380822222222222
+        "x": 7.332766666666666,
+        "y": 1.031822222222222
       },
       "prevControl": {
-        "x": 4.680011111111112,
-        "y": 7.380822222222222
+        "x": 6.928328588374851,
+        "y": 0.44451372083827534
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "fuelelft"
+      "linkedName": "getting fuel"
     }
   ],
   "rotationTargets": [],
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 2.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -41,8 +41,8 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 2.5,
-    "rotation": 0.0
+    "velocity": 1.0,
+    "rotation": 57.61932229343072
   },
   "reversed": false,
   "folder": null,
@@ -50,5 +50,5 @@
     "velocity": 0,
     "rotation": 0.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

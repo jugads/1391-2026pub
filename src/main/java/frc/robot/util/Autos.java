@@ -12,11 +12,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.RobotCore;
 import frc.robot.RobotCore.WantedSuperState;
 import frc.robot.commands.TidalLockCommand;
+import frc.robot.commands.Tweak;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class Autos {
@@ -58,14 +60,13 @@ public class Autos {
       "runRobotBackwards",
       drivetrain.applyRequest(() ->
         new SwerveRequest.FieldCentric()
-          .withVelocityX(
-            -2.
-          )
+          .withVelocityX(-2.5)
           .withVelocityY(0)
           .withRotationalRate(0)
       )
     );
 
+    NamedCommands.registerCommand("Tweak", new Tweak(drivetrain));
     NamedCommands.registerCommand(
       "stop",
       drivetrain.applyRequest(() ->
@@ -80,17 +81,16 @@ public class Autos {
       "Tidal Lock",
       new TidalLockCommand(drivetrain)
     );
-
-    // NamedCommands.registerCommand("Reset gyro", new InstantCommand(() -> drivetrain.getPigeon2().setYaw(DriverStation.getAlliance().get() == Alliance.Blue ? 0 : 180)));
-  }
-
-  public SendableChooser<PathPlannerAuto> register(
-    SendableChooser<PathPlannerAuto> chooser
-  ) {
-    chooser.addOption(
-      "RS-Main Cycle + Outpost",
-      new PathPlannerAuto("RS-main")
+    NamedCommands.registerCommand(
+      "reset odometry",
+      new ConditionalCommand(
+        new InstantCommand(() ->
+          drivetrain.resetPose(m_robot.getLimelightPose())
+        ),
+        Commands.none(),
+        () -> m_robot.cameraSeesTag()
+      )
     );
-    return chooser;
+    // NamedCommands.registerCommand("Reset gyro", new InstantCommand(() -> drivetrain.getPigeon2().setYaw(DriverStation.getAlliance().get() == Alliance.Blue ? 0 : 180)));
   }
 }

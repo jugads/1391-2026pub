@@ -41,8 +41,8 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 2.0,
-    "rotation": 45.971021931079264
+    "velocity": 2.5,
+    "rotation": 45.97102193107927
   },
   "reversed": false,
   "folder": null,

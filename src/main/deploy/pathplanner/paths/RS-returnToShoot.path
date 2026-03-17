@@ -3,29 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.614066666666667,
-        "y": 7.2095
+        "x": 5.962188888888888,
+        "y": 0.5783222222222231
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.631922222222222,
-        "y": 7.370744444444444
+        "x": 4.259044444444445,
+        "y": 0.5984777777777767
+      },
+      "isLocked": false,
+      "linkedName": "End of RS-returnToAllianceZone1-2"
+    },
+    {
+      "anchor": {
+        "x": 2.797766666666667,
+        "y": 0.8201888888888891
+      },
+      "prevControl": {
+        "x": 2.9590111111111113,
+        "y": 0.4876222222222224
+      },
+      "nextControl": {
+        "x": 2.3614931601472993,
+        "y": 1.7200029960850864
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.680011111111112,
-        "y": 7.380822222222222
+        "x": 3.0799444444444446,
+        "y": 0.8302666666666665
       },
       "prevControl": {
-        "x": 4.680011111111112,
-        "y": 7.380822222222222
+        "x": 3.7361500000000003,
+        "y": 0.19032777777777854
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "fuelelft"
+      "linkedName": "End of RS-returnToShoot"
     }
   ],
   "rotationTargets": [],
@@ -41,8 +57,8 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 2.5,
-    "rotation": 0.0
+    "velocity": 0,
+    "rotation": 60.36161631184861
   },
   "reversed": false,
   "folder": null,

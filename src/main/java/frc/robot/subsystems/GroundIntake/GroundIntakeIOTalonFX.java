@@ -3,6 +3,7 @@ package frc.robot.subsystems.GroundIntake;
 import static frc.robot.Constants.GroundIntakeConstants.*;
 import static frc.robot.Constants.kCANBUSNAME;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -35,6 +36,10 @@ public class GroundIntakeIOTalonFX implements GroundIntakeIO {
     slot0Configs.kD = kD;
     slot0Configs.kG = kG;
     slot0Configs.kV = kV;
+    CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
+    currentLimitsConfigs.StatorCurrentLimit = 90;
+    currentLimitsConfigs.SupplyCurrentLimit = 70;
+    pivotMotor.getConfigurator().apply(currentLimitsConfigs);
     pivotMotor.getConfigurator().apply(slot0Configs);
     SoftwareLimitSwitchConfigs limits = new SoftwareLimitSwitchConfigs();
 
@@ -52,7 +57,8 @@ public class GroundIntakeIOTalonFX implements GroundIntakeIO {
     MotorOutputConfigs output = new MotorOutputConfigs();
     output.Inverted = InvertedValue.Clockwise_Positive;
     pivotMotor.getConfigurator().apply(mm);
-
+    intakeMotor.getConfigurator().apply(currentLimitsConfigs);
+    intakeMotorFollower.getConfigurator().apply(currentLimitsConfigs);
     pivotMotor.getConfigurator().apply(limits);
 
     // pivotMotor.getConfigurator().apply(output);
@@ -89,6 +95,9 @@ public class GroundIntakeIOTalonFX implements GroundIntakeIO {
       getIntakePosition()
     );
     SmartDashboard.putNumber("GroundIntake/PivotSpeed", pivotMotor.get());
+    SmartDashboard.putNumber("GroundIntake/Current Draw", intakeMotor.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("GroundIntake/Current Draw Other", intakeMotorFollower.getStatorCurrent().getValueAsDouble());
+
   }
 
   /* @Override
