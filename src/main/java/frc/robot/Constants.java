@@ -50,11 +50,11 @@ public class Constants {
       new InterpolatingDoubleTreeMap();
     public static final Double[] kSHOOTER_ENTRY_00 = new Double[] {
       1.6,
-      4220.,
+      4020.,
     };
     public static final Double[] kSHOOTER_ENTRY_01 = new Double[] {
       1.7,
-      4360.,
+      4160.,
     };
     public static final Double[] kSHOOTER_ENTRY_02 = new Double[] {
       1.8,
@@ -62,15 +62,15 @@ public class Constants {
     };
     public static final Double[] kSHOOTER_ENTRY_03 = new Double[] {
       1.9,
-      4800.,
+      4600.,
     };
     public static final Double[] kSHOOTER_ENTRY_04 = new Double[] {
       2.0,
-      4820.,
+      4620.,
     };
     public static final Double[] kSHOOTER_ENTRY_05 = new Double[] {
       2.1,
-      4975.,
+      4775.,
     };
     public static final Double[] kSHOOTER_ENTRY_06 = new Double[] {
       2.2,
@@ -99,6 +99,16 @@ public class Constants {
     public static final Double[] kSHOOTER_ENTRY_12 = new Double[] {
       2.8,
       5800.0,
+    };
+
+    public static final Double[] kSHOOTER_ENTRY_13 = new Double[] {
+      2.9,
+      5900.0,
+    };
+
+    public static final Double[] kSHOOTER_ENTRY_1 = new Double[] {
+      3.0,
+      6100.0,
     };
 
     public static final double kP = 0.4;
@@ -139,7 +149,7 @@ public class Constants {
       public static final double kP = 0.08;
       public static final double kI = 0.;
       public static final double kD = 0.0;
-      public static final double kVELOCITY_MULTIPLIER = 0.1;
+      public static final double kVELOCITY_MULTIPLIER = 0.2;
     }
   }
 

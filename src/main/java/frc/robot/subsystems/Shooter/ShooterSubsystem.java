@@ -124,7 +124,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public void shootAtHub() {
-    this.motorsSetpoint = kSHOOTER_SPEED_AT_HUB + 150;
+    this.motorsSetpoint = SmartDashboard.getNumber("shooter speed", 5000) + 150;
     setWantedState(WantedState.SHOOT_AT_HUB);
   }
   public void shootAtHubRegular() {

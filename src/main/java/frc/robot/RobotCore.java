@@ -53,6 +53,7 @@ public class RobotCore extends SubsystemBase {
     this.drivetrain = drivetrain;
     this.leds = leds;
     this.tagLimelight = tagLimelight;
+    SmartDashboard.putNumber("shooter speed", 0);
   }
 
   public enum WantedSuperState {
@@ -64,6 +65,7 @@ public class RobotCore extends SubsystemBase {
     LOAD,
     HOME,
     REV_AUTO,
+    SHOOT_WHILE_MOVING,
   }
 
   public enum CurrentSuperState {
@@ -75,6 +77,7 @@ public class RobotCore extends SubsystemBase {
     LOADING,
     HOMED,
     REVVING_AUTO,
+    SHOOTING_WHILE_MOVING,
   }
 
   @Override
@@ -125,6 +128,9 @@ public class RobotCore extends SubsystemBase {
       case REV_AUTO:
         currentSuperState = CurrentSuperState.REVVING_AUTO;
         break;
+      case SHOOT_WHILE_MOVING:
+        currentSuperState = CurrentSuperState.SHOOTING_WHILE_MOVING;
+        break;
       default:
         currentSuperState = CurrentSuperState.HOMED;
     }
@@ -137,7 +143,7 @@ public class RobotCore extends SubsystemBase {
         shooter.stop();
         break;
       case SHOOTING:
-        shooter.shoot(kSHOOTER_SPEED_AT_HUB);
+        shooter.shoot(SmartDashboard.getNumber("shooter speed", 5000));
         if (shooter.isUpToSpeed()) {
           if (!intakeOverride) {
             shooter.shootAtHub();
@@ -150,7 +156,9 @@ public class RobotCore extends SubsystemBase {
       case SHOOTING_FROM_DISTANCE:
         if (!hasCalculatedShooterSpeed) {
           if (tagLimelight.isSeeingValidTarget()) {
-            drivetrain.resetGlobalPose(tagLimelight.getLimelightPoseEstimateData().pose);
+            drivetrain.resetGlobalPose(
+              tagLimelight.getLimelightPoseEstimateData().pose
+            );
           }
           shooterCalculatedSpeed = shooter.calculateShooterSpeed(
             drivetrain.getDistanceFromHub()
@@ -162,6 +170,15 @@ public class RobotCore extends SubsystemBase {
           hopper.setWantedState(HopperSubsystem.WantedState.FEED);
           shooter.feedAndShoot(shooterCalculatedSpeed + 30);
         }
+        break;
+      case SHOOTING_WHILE_MOVING:
+        double setpoint = shooter.calculateShooterSpeed(drivetrain.getDistanceFromHub()) +
+          drivetrain.getRateOfChangeOfDistanceFromHubMetersPerSecond() * 200;
+        shooter.shoot(
+          setpoint
+        );
+        hopper.feed(0.5);
+        SmartDashboard.putNumber("Setpoint", setpoint);
         break;
       case REVVING_AUTO:
         shooter.setWantedState(ShooterSubsystem.WantedState.REV_TO_SPEED);
@@ -265,7 +282,10 @@ public class RobotCore extends SubsystemBase {
 
   private LEDs.WantedState computeLedState() {
     if (!DriverStation.isEnabled()) return LEDs.WantedState.DISABLED;
-    if (wantedSuperState == WantedSuperState.SHOOT || wantedSuperState == WantedSuperState.SHOOT_FROM_DISTANCE) {
+    if (
+      wantedSuperState == WantedSuperState.SHOOT ||
+      wantedSuperState == WantedSuperState.SHOOT_FROM_DISTANCE
+    ) {
       return shooter.isUpToSpeed()
         ? LEDs.WantedState.SHOOT_READY
         : LEDs.WantedState.SHOOT_SPINUP;
@@ -274,10 +294,13 @@ public class RobotCore extends SubsystemBase {
       currentSuperState == CurrentSuperState.INTAKING
     ) return LEDs.WantedState.INTAKE;
     if (
-      drivetrain.isInAllianceZone(DriverStation.getAlliance().get()) && drivetrain.getDistanceFromHub() < 2.6 && drivetrain.getDistanceFromHub() > 1.95
+      drivetrain.isInAllianceZone(DriverStation.getAlliance().get()) &&
+      drivetrain.getDistanceFromHub() < 2.6 &&
+      drivetrain.getDistanceFromHub() > 1.95
     ) return LEDs.WantedState.GREEN;
     if (
-      drivetrain.isInAllianceZone(DriverStation.getAlliance().get()) && drivetrain.getDistanceFromHub() < 1.95
+      drivetrain.isInAllianceZone(DriverStation.getAlliance().get()) &&
+      drivetrain.getDistanceFromHub() < 1.95
     ) return LEDs.WantedState.IDEAL;
     return LEDs.WantedState.IDLE;
   }
@@ -298,5 +321,9 @@ public class RobotCore extends SubsystemBase {
 
   public Pose2d getLimelightPose() {
     return tagLimelight.getLimelightPoseEstimateData().pose;
+  }
+
+  public Command shootWhileMoving() {
+    return new InstantCommand(() -> this.wantedSuperState = WantedSuperState.SHOOT_WHILE_MOVING);
   }
 }

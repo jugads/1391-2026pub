@@ -28,6 +28,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -73,7 +74,8 @@ public class CommandSwerveDrivetrain
   private final SwerveRequest.ApplyRobotSpeeds m_ApplyRobotSpeeds =
     new SwerveRequest.ApplyRobotSpeeds();
   private SwerveDrivePoseEstimator globalPose;
-
+  private double currentDistanceToHub = 0.0;
+  private double lastDistanceToHub = 0.0;
   /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
   private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
     new SysIdRoutine.Config(
@@ -276,6 +278,9 @@ public class CommandSwerveDrivetrain
           m_hasAppliedOperatorPerspective = true;
         });
     }
+    lastDistanceToHub = currentDistanceToHub;
+    currentDistanceToHub = getDistanceFromHub();
+    SmartDashboard.putNumber("Hub relative velocity", getRateOfChangeOfDistanceFromHubMetersPerSecond());
   }
 
   private void startSimThread() {
@@ -491,5 +496,9 @@ public class CommandSwerveDrivetrain
       .withMountPoseRoll(90.68478393554688);
 
     pigeon.getConfigurator().apply(cfg);
+  }
+
+  public double getRateOfChangeOfDistanceFromHubMetersPerSecond() {
+    return (currentDistanceToHub - lastDistanceToHub) * 50;
   }
 }

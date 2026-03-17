@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix6.controls.ControlRequest;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,11 +17,14 @@ public class TidalLockCommand extends Command {
 
   /** Creates a new TidalLockCommand. */
   CommandSwerveDrivetrain drivetrain;
-  SwerveRequest.RobotCentric request = new SwerveRequest.RobotCentric();
+  SwerveRequest.FieldCentric request = new SwerveRequest.FieldCentric();
   TidalLock tidalLock = new TidalLock();
-
-  public TidalLockCommand(CommandSwerveDrivetrain drivetrain) {
+  DoubleSupplier xControl;
+  DoubleSupplier yControl;
+  public TidalLockCommand(CommandSwerveDrivetrain drivetrain, DoubleSupplier xControl, DoubleSupplier yControl) {
     this.drivetrain = drivetrain;
+    this.xControl = xControl;
+    this.yControl = yControl;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivetrain);
   }
@@ -36,9 +41,11 @@ public class TidalLockCommand extends Command {
         tidalLock.getOutput(
           drivetrain.getGlobalPose().getRotation().getDegrees(),
           drivetrain.getAngleToHub().getDegrees(),
-          0
+          drivetrain.getFieldRelativeChassisSpeeds().vyMetersPerSecond
         )
       )
+      .withVelocityX(-xControl.getAsDouble())
+      .withVelocityY(-yControl.getAsDouble())
     );
   }
 

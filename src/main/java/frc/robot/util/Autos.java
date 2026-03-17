@@ -79,7 +79,7 @@ public class Autos {
 
     NamedCommands.registerCommand(
       "Tidal Lock",
-      new TidalLockCommand(drivetrain)
+      new TidalLockCommand(drivetrain, () -> 0, () -> 0)
     );
     NamedCommands.registerCommand(
       "reset odometry",

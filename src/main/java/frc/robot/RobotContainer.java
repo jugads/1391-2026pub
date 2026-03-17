@@ -72,10 +72,8 @@ public class RobotContainer {
       .withDeadband(MaxSpeed * 0.1)
       .withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-    
-    
-  private final SwerveRequest.SwerveDriveBrake brake = 
-  new SwerveDriveBrake();
+
+  private final SwerveRequest.SwerveDriveBrake brake = new SwerveDriveBrake();
 
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
@@ -144,18 +142,33 @@ public class RobotContainer {
     );
 
     operator.leftTrigger().onTrue(robotSuper.toggleIntake());
+    // driver
+    //   .rightTrigger()
+    //   .whileTrue(
+    //     new ParallelCommandGroup(
+    //       new TidalLockCommand(drivetrain),
+    //       new SequentialCommandGroup(
+    //         new WaitCommand(0.75),
+    //         robotSuper.shootFuel(false)
+    //       )
+    //     )
+    //   )
+    //   .whileFalse(robotSuper.setWantedSuperStateCommand(WantedSuperState.HOME));
     driver
       .rightTrigger()
       .whileTrue(
         new ParallelCommandGroup(
-          new TidalLockCommand(drivetrain),
-          new SequentialCommandGroup(
-            new WaitCommand(0.75),
-            robotSuper.shootFuel(false)
-          )
+        new TidalLockCommand(
+          drivetrain,
+          () -> driver.getLeftY(),
+          () -> driver.getLeftX()
+        ),
+        robotSuper.shootWhileMoving()
         )
       )
-      .whileFalse(robotSuper.setWantedSuperStateCommand(WantedSuperState.HOME));
+      .whileFalse(
+        robotSuper.setWantedSuperStateCommand(WantedSuperState.HOME)
+      );
     driver
       .rightBumper()
       .whileTrue(robotSuper.shootFuel(true))
@@ -213,11 +226,7 @@ public class RobotContainer {
         robotSuper.setWantedSuperStateCommand(WantedSuperState.REV_AUTO)
       )
       .whileFalse(robotSuper.setWantedSuperStateCommand(WantedSuperState.HOME));
-    operator.x().whileTrue(
-      drivetrain.applyRequest(
-        () -> brake
-      )
-    );
+    operator.x().whileTrue(drivetrain.applyRequest(() -> brake));
     operator.start().onTrue(robotSuper.toggleAutoRev());
     drivetrain.registerTelemetry(logger::telemeterize);
   }
@@ -283,9 +292,9 @@ public class RobotContainer {
   }
 
   public void resetGyro() {
-      double headingDeg = DriverStation.getAlliance().get() == Alliance.Blue
-        ? 0.0
-        : 180.0;
-      drivetrain.getPigeon2().setYaw(headingDeg);
+    double headingDeg = DriverStation.getAlliance().get() == Alliance.Blue
+      ? 0.0
+      : 180.0;
+    drivetrain.getPigeon2().setYaw(headingDeg);
   }
 }

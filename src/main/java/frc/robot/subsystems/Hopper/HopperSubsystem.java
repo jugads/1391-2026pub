@@ -29,6 +29,7 @@ public class HopperSubsystem extends SubsystemBase {
 
   public HopperSubsystem(HopperIO io) {
     this.io = io;
+    SmartDashboard.putNumber("Hopper speed", 0.5);
   }
 
   @Override
@@ -43,7 +44,7 @@ public class HopperSubsystem extends SubsystemBase {
 
     switch (systemState) {
       case FEEDING:
-        io.setBeltSpeed(0.50);
+        io.setBeltSpeed(SmartDashboard.getNumber("Hopper speed", 0.5));
         break;
       case REVERSING:
         io.setBeltSpeed(-0.75);
