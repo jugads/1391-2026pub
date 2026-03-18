@@ -7,8 +7,6 @@ package frc.robot;
 import static frc.robot.Constants.GroundIntakeConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
 
-import java.lang.constant.DirectMethodHandleDesc;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,6 +20,7 @@ import frc.robot.subsystems.Hopper.HopperSubsystem;
 import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Shooter.ShooterSubsystem;
 import frc.robot.util.Limelight;
+import java.lang.constant.DirectMethodHandleDesc;
 
 /** Add your docs here. */
 public class RobotCore extends SubsystemBase {
@@ -135,7 +134,9 @@ public class RobotCore extends SubsystemBase {
         currentSuperState = CurrentSuperState.REVVING_AUTO;
         break;
       case SHOOT_WHILE_MOVING:
-        currentSuperState = CurrentSuperState.SHOOTING_WHILE_MOVING;
+        if (drivetrain.getVelocityVector() < 0.25) currentSuperState =
+          CurrentSuperState.SHOOTING_FROM_DISTANCE;
+        else currentSuperState = CurrentSuperState.SHOOTING_WHILE_MOVING;
         break;
       default:
         currentSuperState = CurrentSuperState.HOMED;
@@ -186,11 +187,10 @@ public class RobotCore extends SubsystemBase {
           }
           hasCalculatedShooterSpeed = true;
         }
-        double setpoint = shooter.calculateShooterSpeed(drivetrain.getDistanceFromHub()) +
+        double setpoint =
+          shooter.calculateShooterSpeed(drivetrain.getDistanceFromHub()) +
           drivetrain.getRateOfChangeOfDistanceFromHubMetersPerSecond() * 200;
-        shooter.shoot(
-          setpoint
-        );
+        shooter.feedAndShoot(setpoint);
         hopper.feed(0.5);
         SmartDashboard.putNumber("Setpoint", setpoint);
         break;
@@ -338,10 +338,6 @@ public class RobotCore extends SubsystemBase {
   }
 
   public Command shootWhileMoving() {
-    SmartDashboard.putNumber("", );
-    if (drivetrain.getVelocityVector() < 0.1) {
-      return new InstantCommand(() -> this.wantedSuperState = WantedSuperState.SHOOT_FROM_DISTANCE);
-    }   
     return new InstantCommand(() -> this.wantedSuperState = WantedSuperState.SHOOT_WHILE_MOVING);
   }
 }

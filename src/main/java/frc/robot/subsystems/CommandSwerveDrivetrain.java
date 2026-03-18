@@ -28,9 +28,9 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -278,9 +278,17 @@ public class CommandSwerveDrivetrain
           m_hasAppliedOperatorPerspective = true;
         });
     }
+    SmartDashboard.putNumber(
+      "Velocity Magnitude",
+      this.getVelocityVector()
+    );
+
     lastDistanceToHub = currentDistanceToHub;
     currentDistanceToHub = getDistanceFromHub();
-    SmartDashboard.putNumber("Hub relative velocity", getRateOfChangeOfDistanceFromHubMetersPerSecond());
+    SmartDashboard.putNumber(
+      "Hub relative velocity",
+      getRateOfChangeOfDistanceFromHubMetersPerSecond()
+    );
   }
 
   private void startSimThread() {
@@ -355,13 +363,11 @@ public class CommandSwerveDrivetrain
 
   //HUB CALCS
   public double getDistanceFromHub() {
-    if (DriverStation.getAlliance().get() == Alliance.Blue) return getState().Pose
-      .getTranslation()
+    if (DriverStation.getAlliance().get() == Alliance.Blue) return getState()
+      .Pose.getTranslation()
       .getDistance(kBLUEHUBPOSE);
     else {
-      return getState().Pose
-        .getTranslation()
-        .getDistance(kREDHUBPOSE);
+      return getState().Pose.getTranslation().getDistance(kREDHUBPOSE);
     }
   }
 
