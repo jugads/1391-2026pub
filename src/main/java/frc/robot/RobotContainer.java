@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -158,17 +159,15 @@ public class RobotContainer {
       .rightTrigger()
       .whileTrue(
         new ParallelCommandGroup(
-        new TidalLockCommand(
-          drivetrain,
-          () -> driver.getLeftY(),
-          () -> driver.getLeftX()
-        ),
-        robotSuper.shootWhileMoving()
+          new TidalLockCommand(
+            drivetrain,
+            () -> driver.getLeftY(),
+            () -> driver.getLeftX()
+          ),
+          robotSuper.shootWhileMoving()
         )
       )
-      .whileFalse(
-        robotSuper.setWantedSuperStateCommand(WantedSuperState.HOME)
-      );
+      .whileFalse(robotSuper.setWantedSuperStateCommand(WantedSuperState.HOME));
     driver
       .rightBumper()
       .whileTrue(robotSuper.shootFuel(true))

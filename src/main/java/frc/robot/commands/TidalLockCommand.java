@@ -44,8 +44,8 @@ public class TidalLockCommand extends Command {
           drivetrain.getFieldRelativeChassisSpeeds().vyMetersPerSecond
         )
       )
-      .withVelocityX(-xControl.getAsDouble())
-      .withVelocityY(-yControl.getAsDouble())
+      .withVelocityX(-xControl.getAsDouble() * 0.7)
+      .withVelocityY(-yControl.getAsDouble() * 0.7)
     );
   }
 

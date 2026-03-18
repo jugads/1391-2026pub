@@ -501,4 +501,11 @@ public class CommandSwerveDrivetrain
   public double getRateOfChangeOfDistanceFromHubMetersPerSecond() {
     return (currentDistanceToHub - lastDistanceToHub) * 50;
   }
+
+  public double getVelocityVector() {
+    return Math.sqrt(
+      Math.pow(getChassisSpeeds().vxMetersPerSecond, 2) +
+      Math.pow(getChassisSpeeds().vyMetersPerSecond, 2)
+    );
+  }
 }

@@ -7,6 +7,8 @@ package frc.robot;
 import static frc.robot.Constants.GroundIntakeConstants.*;
 import static frc.robot.Constants.ShooterConstants.*;
 
+import java.lang.constant.DirectMethodHandleDesc;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -103,6 +105,10 @@ public class RobotCore extends SubsystemBase {
       "Has Calculated Shooter Speed",
       hasCalculatedShooterSpeed
     );
+    SmartDashboard.putString(
+      "Superstructure/Current State",
+      currentSuperState.toString()
+    );
   }
 
   public void handleStateTransitions() {
@@ -172,6 +178,14 @@ public class RobotCore extends SubsystemBase {
         }
         break;
       case SHOOTING_WHILE_MOVING:
+        if (!hasCalculatedShooterSpeed) {
+          if (tagLimelight.isSeeingValidTarget()) {
+            drivetrain.resetGlobalPose(
+              tagLimelight.getLimelightPoseEstimateData().pose
+            );
+          }
+          hasCalculatedShooterSpeed = true;
+        }
         double setpoint = shooter.calculateShooterSpeed(drivetrain.getDistanceFromHub()) +
           drivetrain.getRateOfChangeOfDistanceFromHubMetersPerSecond() * 200;
         shooter.shoot(
@@ -324,6 +338,10 @@ public class RobotCore extends SubsystemBase {
   }
 
   public Command shootWhileMoving() {
+    SmartDashboard.putNumber("", );
+    if (drivetrain.getVelocityVector() < 0.1) {
+      return new InstantCommand(() -> this.wantedSuperState = WantedSuperState.SHOOT_FROM_DISTANCE);
+    }   
     return new InstantCommand(() -> this.wantedSuperState = WantedSuperState.SHOOT_WHILE_MOVING);
   }
 }
