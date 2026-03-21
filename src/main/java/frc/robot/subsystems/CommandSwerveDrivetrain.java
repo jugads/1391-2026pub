@@ -260,6 +260,8 @@ public class CommandSwerveDrivetrain
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("Current Draw Stator", this.getModule(1).getDriveMotor().getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Current Draw Supply", this.getModule(1).getDriveMotor().getSupplyCurrent().getValueAsDouble());
     /*
      * Periodically try to apply the operator perspective.
      * If we haven't applied the operator perspective before, then we should apply it regardless of DS state.
@@ -491,7 +493,7 @@ public class CommandSwerveDrivetrain
    *
    * @param alliance The alliance to configure the mount pose for.
    */
-  public void configurePigeonMountPose(Alliance alliance) {
+  public void configurePigeonMountPose() {
     Pigeon2 pigeon = getPigeon2(); // however you access it
 
     Pigeon2Configuration cfg = new Pigeon2Configuration();

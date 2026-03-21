@@ -7,6 +7,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -26,11 +27,13 @@ public class Autos {
   CommandSwerveDrivetrain drivetrain;
   PathPlannerPath getFuelPath;
   RobotCore m_robot;
-
-  public Autos(RobotCore robotCore) {
+  Timer timer = new Timer();
+  SwerveRequest.FieldCentric fieldCentric = new SwerveRequest.FieldCentric();
+  public Autos(RobotCore robotCore, SwerveRequest.FieldCentric fieldCentric) {
     this.drivetrain = robotCore.fetchDrivetrain();
     drivetrain.configureAutoBuilder();
     m_robot = robotCore;
+    this.fieldCentric = fieldCentric;
     initiateNamedCommands();
   }
 
@@ -65,7 +68,8 @@ public class Autos {
           .withRotationalRate(0)
       )
     );
-
+    NamedCommands.registerCommand("start timer", new InstantCommand(() -> timer.restart()));
+    NamedCommands.registerCommand("stop timer", new InstantCommand(() -> SmartDashboard.putNumber("timer", timer.get())));
     NamedCommands.registerCommand("Tweak", new Tweak(drivetrain));
     NamedCommands.registerCommand(
       "stop",
@@ -79,7 +83,7 @@ public class Autos {
 
     NamedCommands.registerCommand(
       "Tidal Lock",
-      new TidalLockCommand(drivetrain, () -> 0, () -> 0)
+      new TidalLockCommand(drivetrain, () -> 0, () -> 0, fieldCentric)
     );
     NamedCommands.registerCommand(
       "reset odometry",

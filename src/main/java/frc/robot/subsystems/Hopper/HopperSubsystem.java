@@ -9,7 +9,7 @@ public class HopperSubsystem extends SubsystemBase {
 
   private final HopperIO io;
   private final HopperIO.HopperIOInputs inputs = new HopperIO.HopperIOInputs();
-
+  private boolean isRunningForwards = true;
   public enum WantedState {
     IDLE,
     FEED,
@@ -26,7 +26,8 @@ public class HopperSubsystem extends SubsystemBase {
   private SystemState systemState = SystemState.IDLED;
 
   private double beltSpeedSetpoint = 0.0;
-
+  private double cyclesSpentRunningForwards = 0.0;
+  private double cyclesSpentRunningBackwards = 0.0;
   public HopperSubsystem(HopperIO io) {
     this.io = io;
     SmartDashboard.putNumber("Hopper speed", 0.5);
@@ -41,10 +42,25 @@ public class HopperSubsystem extends SubsystemBase {
     if (newState != systemState) {
       systemState = newState;
     }
-
+    if (cyclesSpentRunningForwards > 10) {
+      isRunningForwards = false;
+    }
+    if (cyclesSpentRunningBackwards > 10) {
+      isRunningForwards = true;
+    }
     switch (systemState) {
       case FEEDING:
-        io.setBeltSpeed(SmartDashboard.getNumber("Hopper speed", 0.5));
+      // if (isRunningForwards) {
+      //   io.setBeltSpeed(SmartDashboard.getNumber("Hopper speed", 0.5));
+      //   cyclesSpentRunningForwards++;
+      //   cyclesSpentRunningBackwards = 0;
+      // }
+      // else {
+      //   io.setBeltSpeed(0.5 * SmartDashboard.getNumber("Hopper speed", 0.5));
+      //   cyclesSpentRunningBackwards++;
+      //   cyclesSpentRunningForwards = 0;
+      // }
+      io.setBeltSpeed(SmartDashboard.getNumber("Hopper speed", 0.5));
         break;
       case REVERSING:
         io.setBeltSpeed(-0.75);

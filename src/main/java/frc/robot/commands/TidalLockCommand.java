@@ -7,6 +7,7 @@ package frc.robot.commands;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.controls.ControlRequest;
+import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveRequest.FieldCentric;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -17,14 +18,15 @@ public class TidalLockCommand extends Command {
 
   /** Creates a new TidalLockCommand. */
   CommandSwerveDrivetrain drivetrain;
-  SwerveRequest.FieldCentric request = new SwerveRequest.FieldCentric();
+  SwerveRequest.FieldCentric request;
   TidalLock tidalLock = new TidalLock();
   DoubleSupplier xControl;
   DoubleSupplier yControl;
-  public TidalLockCommand(CommandSwerveDrivetrain drivetrain, DoubleSupplier xControl, DoubleSupplier yControl) {
+  public TidalLockCommand(CommandSwerveDrivetrain drivetrain, DoubleSupplier xControl, DoubleSupplier yControl, SwerveRequest.FieldCentric request) {
     this.drivetrain = drivetrain;
     this.xControl = xControl;
     this.yControl = yControl;
+    this.request = request;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivetrain);
   }
@@ -41,8 +43,8 @@ public class TidalLockCommand extends Command {
         tidalLock.getOutput(
           drivetrain.getGlobalPose().getRotation().getDegrees(),
           drivetrain.getAngleToHub().getDegrees(),
-          drivetrain.getFieldRelativeChassisSpeeds().vyMetersPerSecond
-        )
+          0// drivetrain.getFieldRelativeChassisSpeeds().vyMetersPerSecond
+        ) /*- (drivetrain.getVelocityVector() > 0.25 ? (drivetrain.getDistanceFromHub() - 1) : 0)*/
       )
       .withVelocityX(-xControl.getAsDouble() * 0.7)
       .withVelocityY(-yControl.getAsDouble() * 0.7)

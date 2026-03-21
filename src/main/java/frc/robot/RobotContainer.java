@@ -15,6 +15,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.ctre.phoenix6.swerve.SwerveRequest.SwerveDriveBrake;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -75,7 +76,8 @@ public class RobotContainer {
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
 
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveDriveBrake();
-
+  private final SlewRateLimiter rateLimiter1 = new SlewRateLimiter(13);
+  private final SlewRateLimiter rateLimiter2 = new SlewRateLimiter(13);
   private final Telemetry logger = new Telemetry(MaxSpeed);
 
   private final CommandXboxController driver = new CommandXboxController(0);
@@ -112,7 +114,7 @@ public class RobotContainer {
     tagLimelight
   );
 
-  private final Autos autos = new Autos(robotSuper);
+  private final Autos autos = new Autos(robotSuper, drive);
   private final SendableChooser<Command> autoChooser;
   StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
     .getStructTopic("Global Pose", Pose2d.struct)
@@ -122,7 +124,7 @@ public class RobotContainer {
     configureBindings();
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData(autoChooser);
-    drivetrain.configurePigeonMountPose(DriverStation.getAlliance().get());
+    drivetrain.configurePigeonMountPose();
     resetGyro();
     drivetrain.initializePoseEstimator();
   }
@@ -136,8 +138,12 @@ public class RobotContainer {
         () ->
           drive
             .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective)
-            .withVelocityX(-driver.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-            .withVelocityY(-driver.getLeftX() * MaxSpeed) // Drive left with negative X (left) // Drive left with negative X (left)
+            .withVelocityX(
+              rateLimiter1.calculate(-driver.getLeftY() * MaxSpeed)
+            ) // Drive forward with negative Y (forward)
+            .withVelocityY(
+              rateLimiter2.calculate(-driver.getLeftX() * MaxSpeed)
+            ) // Drive left with negative X (left) // Drive left with negative X (left)
             .withRotationalRate(-driver.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
       )
     );
@@ -162,7 +168,8 @@ public class RobotContainer {
           new TidalLockCommand(
             drivetrain,
             () -> driver.getLeftY(),
-            () -> driver.getLeftX()
+            () -> driver.getLeftX(),
+            drive
           ),
           robotSuper.shootWhileMoving()
         )
@@ -225,6 +232,9 @@ public class RobotContainer {
         robotSuper.setWantedSuperStateCommand(WantedSuperState.REV_AUTO)
       )
       .whileFalse(robotSuper.setWantedSuperStateCommand(WantedSuperState.HOME));
+    driver
+      .a()
+      .onTrue(robotSuper.toggleWiggle());
     operator.x().whileTrue(drivetrain.applyRequest(() -> brake));
     operator.start().onTrue(robotSuper.toggleAutoRev());
     drivetrain.registerTelemetry(logger::telemeterize);

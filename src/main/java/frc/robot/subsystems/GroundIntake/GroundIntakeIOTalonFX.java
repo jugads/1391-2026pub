@@ -37,8 +37,8 @@ public class GroundIntakeIOTalonFX implements GroundIntakeIO {
     slot0Configs.kG = kG;
     slot0Configs.kV = kV;
     CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
-    currentLimitsConfigs.StatorCurrentLimit = 90;
-    currentLimitsConfigs.SupplyCurrentLimit = 70;
+    currentLimitsConfigs.StatorCurrentLimit = 120;
+    currentLimitsConfigs.SupplyCurrentLimit = 90;
     pivotMotor.getConfigurator().apply(currentLimitsConfigs);
     pivotMotor.getConfigurator().apply(slot0Configs);
     SoftwareLimitSwitchConfigs limits = new SoftwareLimitSwitchConfigs();

@@ -39,6 +39,7 @@ public class RobotCore extends SubsystemBase {
   private double shooterCalculatedSpeed = 0.0;
   private boolean hasCalculatedShooterSpeed = false;
   private boolean toggleRevving = true;
+  private boolean wiggle = false;
 
   public RobotCore(
     ShooterSubsystem shooter,
@@ -108,6 +109,7 @@ public class RobotCore extends SubsystemBase {
       "Superstructure/Current State",
       currentSuperState.toString()
     );
+    SmartDashboard.putBoolean("wiggle", wiggle);
   }
 
   public void handleStateTransitions() {
@@ -219,10 +221,22 @@ public class RobotCore extends SubsystemBase {
         }
         break;
     }
-    if (intakeOverride && currentSuperState != CurrentSuperState.INTAKING) {
-      groundIntake.setWantedState(
-        GroundIntakeSubsystem.WantedState.HOLD_AT_ZERO
-      );
+    if (
+      (intakeOverride || wiggle) &&
+      currentSuperState != CurrentSuperState.INTAKING
+    ) {
+      if (!wiggle) {
+        groundIntake.setWantedState(
+          GroundIntakeSubsystem.WantedState.HOLD_AT_ZERO
+        );
+      } else {
+        if (
+          groundIntake.getWantedState() !=
+          GroundIntakeSubsystem.WantedState.HOLD_AT_ZERO
+        ) {
+          groundIntake.wiggle();
+        }
+      }
     } else {
       switch (currentSuperState) {
         case INTAKING:
@@ -338,6 +352,12 @@ public class RobotCore extends SubsystemBase {
   }
 
   public Command shootWhileMoving() {
-    return new InstantCommand(() -> this.wantedSuperState = WantedSuperState.SHOOT_WHILE_MOVING);
+    return new InstantCommand(() ->
+      this.wantedSuperState = WantedSuperState.SHOOT_WHILE_MOVING
+    );
+  }
+
+  public Command toggleWiggle() {
+    return new InstantCommand(() -> this.wiggle = !this.wiggle);
   }
 }

@@ -3,29 +3,45 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.622028469750891,
-        "y": 0.8448991696322663
+        "x": 3.5838333333333336,
+        "y": 0.4271555555555563
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.289098457888494,
-        "y": 0.4252906287069992
+        "x": 4.893944444444445,
+        "y": 0.5884000000000003
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 5.225148279952552,
-        "y": 0.6189561091340454
+        "x": 6.456,
+        "y": 0.8201888888888891
       },
       "prevControl": {
-        "x": 4.983644181482142,
-        "y": 0.5543359077880681
+        "x": 5.720322222222222,
+        "y": 0.5984777777777788
+      },
+      "nextControl": {
+        "x": 7.4134645398596195,
+        "y": 1.1087398461068554
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.352922222222223,
+        "y": 3.188466666666667
+      },
+      "prevControl": {
+        "x": 7.354072222222223,
+        "y": 1.9237055555555553
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "End of RS-getFuel1"
+      "linkedName": "p1"
     }
   ],
   "rotationTargets": [],
@@ -33,16 +49,16 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 5.0,
+    "maxAcceleration": 6.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 3.0,
-    "rotation": 0.0
+    "velocity": 0,
+    "rotation": 88.02506598911805
   },
   "reversed": false,
   "folder": null,
