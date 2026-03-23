@@ -77,7 +77,7 @@ public class ShooterSubsystem extends SubsystemBase {
         break;
       case SHOOTING_AT_HUB:
         io.setShooterSpeed(motorsSetpoint);
-        io.setFeederSpeed(0.85);
+        io.setFeederSpeed(1.);
         break;
       case REVERSING:
         io.setShooterSpeed(kREVERSING_SPEED);

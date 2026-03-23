@@ -9,6 +9,7 @@ import static frc.robot.Constants.ShooterConstants.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -40,6 +41,8 @@ public class RobotCore extends SubsystemBase {
   private boolean hasCalculatedShooterSpeed = false;
   private boolean toggleRevving = true;
   private boolean wiggle = false;
+  double timeOfStartedShooting;
+  private boolean hasCalculatedTimeOfShooting = false;
 
   public RobotCore(
     ShooterSubsystem shooter,
@@ -102,8 +105,8 @@ public class RobotCore extends SubsystemBase {
       shootingAtHub
     );
     SmartDashboard.putBoolean(
-      "Has Calculated Shooter Speed",
-      hasCalculatedShooterSpeed
+      "Has Calculated time",
+      hasCalculatedTimeOfShooting
     );
     SmartDashboard.putString(
       "Superstructure/Current State",
@@ -131,6 +134,8 @@ public class RobotCore extends SubsystemBase {
         break;
       case HOME:
         currentSuperState = CurrentSuperState.HOMED;
+        intakeOverride = false;
+        hasCalculatedTimeOfShooting = false;
         break;
       case REV_AUTO:
         currentSuperState = CurrentSuperState.REVVING_AUTO;
@@ -176,6 +181,13 @@ public class RobotCore extends SubsystemBase {
         }
         shooter.shoot(shooterCalculatedSpeed + 250);
         if (shooter.isUpToSpeed()) {
+          if (!hasCalculatedTimeOfShooting) {
+            hasCalculatedTimeOfShooting = true;
+            timeOfStartedShooting = Timer.getFPGATimestamp();
+          }
+          if ((Timer.getFPGATimestamp() - timeOfStartedShooting) > 1.5) {
+            intakeOverride = true;
+          }
           hopper.setWantedState(HopperSubsystem.WantedState.FEED);
           shooter.feedAndShoot(shooterCalculatedSpeed + 30);
         }

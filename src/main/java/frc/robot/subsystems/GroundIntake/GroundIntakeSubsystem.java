@@ -86,11 +86,12 @@ public class GroundIntakeSubsystem extends SubsystemBase {
         break;
       case WIGGLING:
         io.setPivotSpeed(
-          0.35 *
-          0.8 *
-          Math.signum(
-            Math.cos(4 * Math.PI * (Timer.getFPGATimestamp() - startingTime))
-          )
+          (0.35 *
+            0.8 *
+            Math.signum(
+              Math.cos(8 * Math.PI * (Timer.getFPGATimestamp() - startingTime))
+            )) +
+          0.05
         );
         break;
       default:
