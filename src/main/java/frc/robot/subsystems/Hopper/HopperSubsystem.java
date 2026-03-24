@@ -30,7 +30,7 @@ public class HopperSubsystem extends SubsystemBase {
   private double cyclesSpentRunningBackwards = 0.0;
   public HopperSubsystem(HopperIO io) {
     this.io = io;
-    SmartDashboard.putNumber("Hopper speed", 0.5);
+    SmartDashboard.putNumber("Hopper speed", 1);
   }
 
   @Override

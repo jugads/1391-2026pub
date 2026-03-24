@@ -179,15 +179,15 @@ public class RobotCore extends SubsystemBase {
           );
           hasCalculatedShooterSpeed = true;
         }
+        if (!hasCalculatedTimeOfShooting) {
+          hasCalculatedTimeOfShooting = true;
+          timeOfStartedShooting = Timer.getFPGATimestamp();
+        }
+        if ((Timer.getFPGATimestamp() - timeOfStartedShooting) > 1.5) {
+          intakeOverride = true;
+        }
         shooter.shoot(shooterCalculatedSpeed + 250);
         if (shooter.isUpToSpeed()) {
-          if (!hasCalculatedTimeOfShooting) {
-            hasCalculatedTimeOfShooting = true;
-            timeOfStartedShooting = Timer.getFPGATimestamp();
-          }
-          if ((Timer.getFPGATimestamp() - timeOfStartedShooting) > 1.5) {
-            intakeOverride = true;
-          }
           hopper.setWantedState(HopperSubsystem.WantedState.FEED);
           shooter.feedAndShoot(shooterCalculatedSpeed + 30);
         }
