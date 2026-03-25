@@ -3,45 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5838333333333336,
-        "y": 0.4271555555555563
+        "x": 2.6466000000000003,
+        "y": 2.825666666666666
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.893944444444445,
-        "y": 0.5884000000000003
+        "x": 1.8706111111111112,
+        "y": 1.9589777777777773
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "RS5-2"
     },
     {
       "anchor": {
-        "x": 6.456,
-        "y": 0.8201888888888891
+        "x": 3.9063222222222223,
+        "y": 0.5279333333333329
       },
       "prevControl": {
-        "x": 5.720322222222222,
-        "y": 0.5984777777777788
-      },
-      "nextControl": {
-        "x": 7.4134645398596195,
-        "y": 1.1087398461068554
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 7.352922222222223,
-        "y": 3.188466666666667
-      },
-      "prevControl": {
-        "x": 7.354072222222223,
-        "y": 1.9237055555555553
+        "x": 2.807844444444445,
+        "y": 0.3566111111111094
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "p1"
+      "linkedName": "RS5"
     }
   ],
   "rotationTargets": [],
@@ -57,14 +41,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 88.02506598911805
+    "velocity": 1.5,
+    "rotation": 0.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": 30.191622960957638
   },
   "useDefaultConstraints": false
 }

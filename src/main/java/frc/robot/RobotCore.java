@@ -134,8 +134,7 @@ public class RobotCore extends SubsystemBase {
         break;
       case HOME:
         currentSuperState = CurrentSuperState.HOMED;
-        intakeOverride = false;
-        hasCalculatedTimeOfShooting = false;
+
         break;
       case REV_AUTO:
         currentSuperState = CurrentSuperState.REVVING_AUTO;
@@ -178,13 +177,6 @@ public class RobotCore extends SubsystemBase {
             drivetrain.getDistanceFromHub()
           );
           hasCalculatedShooterSpeed = true;
-        }
-        if (!hasCalculatedTimeOfShooting) {
-          hasCalculatedTimeOfShooting = true;
-          timeOfStartedShooting = Timer.getFPGATimestamp();
-        }
-        if ((Timer.getFPGATimestamp() - timeOfStartedShooting) > 1.5) {
-          intakeOverride = true;
         }
         shooter.shoot(shooterCalculatedSpeed + 250);
         if (shooter.isUpToSpeed()) {
@@ -276,7 +268,7 @@ public class RobotCore extends SubsystemBase {
           break;
         case SHOOTING_FROM_DISTANCE:
           groundIntake.setWantedState(
-            GroundIntakeSubsystem.WantedState.HOLD_AT_DEFAULT
+            GroundIntakeSubsystem.WantedState.COMPRESS
           );
           break;
         default:

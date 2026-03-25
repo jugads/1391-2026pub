@@ -302,8 +302,8 @@ public class RobotContainer {
 
   public void resetGyro() {
     double headingDeg = DriverStation.getAlliance().get() == Alliance.Blue
-      ? 0.0
-      : 180.0;
+      ? 180.0
+      : 0.0;
     drivetrain.getPigeon2().setYaw(headingDeg);
   }
 }

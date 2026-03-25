@@ -15,7 +15,7 @@ public class GroundIntakeSubsystem extends SubsystemBase {
   private final GroundIntakeIO io;
   private final GroundIntakeIO.GroundIntakeIOInputs inputs =
     new GroundIntakeIO.GroundIntakeIOInputs();
-  double setpoint = 0.4;
+  double setpoint = 0.7;
   double startingTime = 0;
   boolean hasSetStartingWiggleTime = false;
 
@@ -26,6 +26,7 @@ public class GroundIntakeSubsystem extends SubsystemBase {
     HOLD_AT_ZERO,
     REVERSE,
     WIGGLE,
+    COMPRESS
   }
 
   private enum SystemState {
@@ -35,6 +36,7 @@ public class GroundIntakeSubsystem extends SubsystemBase {
     HOLDING_AT_ZERO,
     REVERSING,
     WIGGLING,
+    COMPRESSING
   }
 
   private WantedState wantedState = WantedState.IDLE;
@@ -84,6 +86,10 @@ public class GroundIntakeSubsystem extends SubsystemBase {
         io.setPivotSpeed(0.);
         hasSetStartingWiggleTime = false;
         break;
+      case COMPRESSING:
+        double speed = inputs.encoderPosition / 5.35;
+        io.setPivotSpeed(-0.15 * speed);
+        break;
       case WIGGLING:
         io.setPivotSpeed(
           (0.35 *
@@ -113,6 +119,13 @@ public class GroundIntakeSubsystem extends SubsystemBase {
         return SystemState.HOLDING_AT_ZERO;
       case WIGGLE:
         return SystemState.WIGGLING;
+      case COMPRESS:
+        if (inputs.encoderPosition < 0.5) {
+          return SystemState.HOLDING_AT_ZERO;
+        }
+        else {
+          return SystemState.COMPRESSING;
+        }
       case IDLE:
       default:
         return SystemState.IDLED;

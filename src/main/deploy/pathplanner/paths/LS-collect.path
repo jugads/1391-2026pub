@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.614066666666667,
-        "y": 7.2095
+        "x": 7.473855555555556,
+        "y": 7.018022222222222
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.631922222222222,
-        "y": 7.370744444444444
+        "x": 7.85681111111111,
+        "y": 6.594755555555555
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "LS2"
     },
     {
       "anchor": {
-        "x": 5.680011111111112,
-        "y": 7.380822222222222
+        "x": 6.828877777777778,
+        "y": 4.438111111111112
       },
       "prevControl": {
-        "x": 4.680011111111112,
-        "y": 7.380822222222222
+        "x": 8.814200000000001,
+        "y": 4.8513
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "fuelelft"
+      "linkedName": "LS3"
     }
   ],
   "rotationTargets": [],
@@ -33,7 +33,7 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 1.5,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -41,14 +41,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 2.5,
-    "rotation": 0.0
+    "velocity": 0,
+    "rotation": -151.02029230207123
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
-    "velocity": 0,
-    "rotation": 0.0
+    "velocity": 1.0,
+    "rotation": -86.90594194108307
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

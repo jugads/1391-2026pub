@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.516466666666666,
-        "y": 3.3093999999999992
+        "x": 6.828877777777778,
+        "y": 4.438111111111112
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.6328,
-        "y": 0.2659111111111092
+        "x": 8.471555555555558,
+        "y": 5.163711111111111
       },
       "isLocked": false,
-      "linkedName": "collectedagain"
+      "linkedName": "LS3"
     },
     {
       "anchor": {
-        "x": 3.472977777777778,
-        "y": 0.6085555555555562
+        "x": 5.891644444444445,
+        "y": 5.6071333333333335
       },
       "prevControl": {
-        "x": 4.259044444444445,
-        "y": 0.4473111111111121
+        "x": 6.879266666666666,
+        "y": 5.798611111111112
       },
       "nextControl": null,
       "isLocked": false,
@@ -34,21 +34,21 @@
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 5.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 820.0,
+    "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 0.0
+    "velocity": 2.5,
+    "rotation": -41.3086140135487
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 153.43494882292194
+    "rotation": -151.02029230207123
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

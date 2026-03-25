@@ -1,0 +1,83 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.992422222222221,
+        "y": 3.0675333333333334
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.3854555555555566,
+        "y": 4.3978
+      },
+      "isLocked": false,
+      "linkedName": "RS6"
+    },
+    {
+      "anchor": {
+        "x": 8.431244444444443,
+        "y": 3.0675333333333334
+      },
+      "prevControl": {
+        "x": 8.094193370508076,
+        "y": 4.287337219960174
+      },
+      "nextControl": {
+        "x": 8.642877777777779,
+        "y": 2.3016222222222225
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 5.5590777777777785,
+        "y": 0.5380111111111103
+      },
+      "prevControl": {
+        "x": 6.859111111111112,
+        "y": 0.5178555555555546
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "RS6-2"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 0.9894736842105236,
+      "rotationDegrees": -90.0
+    },
+    {
+      "waypointRelativePos": 1.463157894736842,
+      "rotationDegrees": 180.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 2.5,
+    "rotation": 179.3489396197705
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 2.0,
+    "rotation": 92.12109639666133
+  },
+  "useDefaultConstraints": true
+}

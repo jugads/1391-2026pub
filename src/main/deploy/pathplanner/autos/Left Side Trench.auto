@@ -1,0 +1,85 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "ROB-state_HOME"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LS-start"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LS-turn"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ROB-state_INTAKE"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LS-collect"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ROB-state_HOME"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LS-returnUnderTrench"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot-from-range"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 4.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ROB-state_HOME"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LS-goBackToCenter"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LS-loop"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

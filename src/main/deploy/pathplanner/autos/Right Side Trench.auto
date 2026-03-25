@@ -7,7 +7,13 @@
         {
           "type": "named",
           "data": {
-            "name": "Reset gyro"
+            "name": "ROB-state_HOME"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RS-start"
           }
         },
         {
@@ -17,27 +23,21 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "RS-turn"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of RS-collect"
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "INT-wait_trench"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "LS-getFuel1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "LS-doStuff"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "LS-getFuel2"
+            "name": "reset odometry"
           }
         },
         {
@@ -49,13 +49,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LS-returnToAlliance1"
+            "pathName": "RS-returnUnderTrench"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "LS-returnToAlliance2"
+            "pathName": "RS-shootTrench"
           }
         },
         {
@@ -67,25 +67,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 3.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "int-OVERRIDE"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "int-NORMAL"
+            "waitTime": 4.0
           }
         },
         {
@@ -97,13 +79,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LS-returnToCenter1"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "LS-returnToCenter2"
+            "pathName": "Copy of RS-secondPassTrench"
           }
         },
         {
@@ -115,7 +91,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LS-getFuelAgain"
+            "pathName": "RS-collect2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of RS-loop"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ROB-state_HOME"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of RS-shootTrench"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot-from-range"
           }
         }
       ]
