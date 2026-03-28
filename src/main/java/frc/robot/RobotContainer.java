@@ -23,6 +23,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -32,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.RobotCore.CurrentSuperState;
 import frc.robot.RobotCore.WantedSuperState;
 import frc.robot.commands.BumpLock;
 import frc.robot.commands.TidalLockCommand;
@@ -49,6 +51,7 @@ import frc.robot.subsystems.LEDs.WantedState;
 import frc.robot.subsystems.Shooter.ShooterIOSim;
 import frc.robot.subsystems.Shooter.ShooterIOTalonFX;
 import frc.robot.subsystems.Shooter.ShooterSubsystem;
+import frc.robot.util.AlliancePhaseDisplay;
 import frc.robot.util.Autos;
 import frc.robot.util.Limelight;
 import frc.robot.util.SubsurfaceDash;
@@ -119,6 +122,8 @@ public class RobotContainer {
   StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
     .getStructTopic("Global Pose", Pose2d.struct)
     .publish();
+  private final AlliancePhaseDisplay alliancePhaseDisplay =
+    new AlliancePhaseDisplay();
 
   public RobotContainer() {
     configureBindings();
@@ -212,16 +217,16 @@ public class RobotContainer {
           drive
         )
       );
-    driver.start().onTrue(new InstantCommand(() -> MaxSpeed *= -1));
-    //////OPERATOR CONTROLS ----------------------------------------------------
-    operator.y().onTrue(groundIntake.increaseIntakeSpeedSetpoint());
-    operator.a().whileTrue(new Tweak(drivetrain));
-    operator
+    driver
       .b()
       .whileTrue(
         robotSuper.setWantedSuperStateCommand(WantedSuperState.REVERSE_INTAKE)
       )
       .whileFalse(robotSuper.setWantedSuperStateCommand(WantedSuperState.HOME));
+    driver.start().onTrue(new InstantCommand(() -> MaxSpeed *= -1));
+    //////OPERATOR CONTROLS ----------------------------------------------------
+    operator.y().onTrue(groundIntake.increaseIntakeSpeedSetpoint());
+    operator.a().whileTrue(new Tweak(drivetrain));
     operator
       .leftBumper()
       .whileTrue(robotSuper.setIntakeOverrideCommand(true))
@@ -232,9 +237,6 @@ public class RobotContainer {
         robotSuper.setWantedSuperStateCommand(WantedSuperState.REV_AUTO)
       )
       .whileFalse(robotSuper.setWantedSuperStateCommand(WantedSuperState.HOME));
-    driver
-      .a()
-      .onTrue(robotSuper.toggleWiggle());
     operator.x().whileTrue(drivetrain.applyRequest(() -> brake));
     operator.start().onTrue(robotSuper.toggleAutoRev());
     drivetrain.registerTelemetry(logger::telemeterize);
@@ -245,11 +247,25 @@ public class RobotContainer {
     return autoChooser.getSelected();
   }
 
+/**
+ * Periodic function that updates various dashboard values and
+ * performs actions based on the current state of the robot.
+ * 
+ * @note This function is called periodically by the CommandScheduler.
+ */
+
   public void dashboardUpdates() {
     tagLimelight.uploadGyro(
       drivetrain.getPigeon2().getRotation2d().getDegrees()
     );
-
+    if (groundIntake.isFull() && groundIntake.hasStartedIntaking()) {
+      operator.setRumble(RumbleType.kBothRumble, 1);
+      driver.setRumble(RumbleType.kBothRumble, 1);
+    }
+    if (robotSuper.getCurrentSuperState() != CurrentSuperState.INTAKING) {
+      operator.setRumble(RumbleType.kBothRumble, 0);
+      driver.setRumble(RumbleType.kBothRumble, 0);
+    }
     // publisher.set(drivetrain.getGlobalPose());
 
     if (
@@ -286,10 +302,7 @@ public class RobotContainer {
       drivetrain.getPigeon2().getRotation2d().getDegrees()
     );
 
-    SmartDashboard.putString(
-      "Active Alliance",
-      DriverStation.getGameSpecificMessage() == "R" ? "Red" : "Blue"
-    );
+    alliancePhaseDisplay.periodic();
   }
 
   public void onTeleopInit() {
@@ -298,12 +311,14 @@ public class RobotContainer {
 
   public void onDisabledInit() {
     leds.setWantedState(WantedState.DISABLED);
+    operator.setRumble(RumbleType.kBothRumble, 0);
   }
 
   public void resetGyro() {
     double headingDeg = DriverStation.getAlliance().get() == Alliance.Blue
       ? 180.0
       : 0.0;
+    // double headingDeg = 180;
     drivetrain.getPigeon2().setYaw(headingDeg);
   }
 }

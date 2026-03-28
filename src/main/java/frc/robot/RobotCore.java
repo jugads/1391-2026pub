@@ -58,7 +58,7 @@ public class RobotCore extends SubsystemBase {
     this.drivetrain = drivetrain;
     this.leds = leds;
     this.tagLimelight = tagLimelight;
-    SmartDashboard.putNumber("shooter speed", 0);
+    SmartDashboard.putNumber("shooter speed", kSHOOTER_SPEED_AT_HUB);
   }
 
   public enum WantedSuperState {
@@ -177,11 +177,12 @@ public class RobotCore extends SubsystemBase {
             drivetrain.getDistanceFromHub()
           );
           hasCalculatedShooterSpeed = true;
-        }
-        shooter.shoot(shooterCalculatedSpeed + 250);
-        if (shooter.isUpToSpeed()) {
-          hopper.setWantedState(HopperSubsystem.WantedState.FEED);
-          shooter.feedAndShoot(shooterCalculatedSpeed + 30);
+        } else {
+          shooter.shoot(shooterCalculatedSpeed + 260);
+          if (shooter.isUpToSpeed()) {
+            hopper.setWantedState(HopperSubsystem.WantedState.FEED);
+            shooter.feedAndShoot(shooterCalculatedSpeed + 50);
+          }
         }
         break;
       case SHOOTING_WHILE_MOVING:
@@ -244,6 +245,13 @@ public class RobotCore extends SubsystemBase {
     } else {
       switch (currentSuperState) {
         case INTAKING:
+          // if (groundIntake.isFull()) {
+          //   groundIntake.setWantedState(GroundIntakeSubsystem.WantedState.IDLE);
+          // } else {
+          //   groundIntake.setWantedState(
+          //     GroundIntakeSubsystem.WantedState.INTAKE
+          //   );
+          // }
           groundIntake.setWantedState(GroundIntakeSubsystem.WantedState.INTAKE);
           break;
         case REVERSING_INTAKE:
@@ -312,19 +320,23 @@ public class RobotCore extends SubsystemBase {
     );
   }
 
+  public CurrentSuperState getCurrentSuperState() {
+    return currentSuperState;
+  }
+
   private LEDs.WantedState computeLedState() {
     if (!DriverStation.isEnabled()) return LEDs.WantedState.DISABLED;
     if (
-      wantedSuperState == WantedSuperState.SHOOT ||
-      wantedSuperState == WantedSuperState.SHOOT_FROM_DISTANCE
+      currentSuperState == CurrentSuperState.SHOOTING ||
+      currentSuperState == CurrentSuperState.SHOOTING_FROM_DISTANCE
     ) {
-      return shooter.isUpToSpeed()
-        ? LEDs.WantedState.SHOOT_READY
-        : LEDs.WantedState.SHOOT_SPINUP;
+      return LEDs.WantedState.SHOOT_READY;
     }
     if (
       currentSuperState == CurrentSuperState.INTAKING
-    ) return LEDs.WantedState.INTAKE;
+    ) return !groundIntake.isFull()
+      ? LEDs.WantedState.INTAKE
+      : LEDs.WantedState.INTAKE_FULL;
     if (
       drivetrain.isInAllianceZone(DriverStation.getAlliance().get()) &&
       drivetrain.getDistanceFromHub() < 2.6 &&

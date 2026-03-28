@@ -54,7 +54,7 @@ public class Constants {
     };
     public static final Double[] kSHOOTER_ENTRY_01 = new Double[] {
       1.7,
-      4160.,
+      4360.,
     };
     public static final Double[] kSHOOTER_ENTRY_02 = new Double[] {
       1.8,

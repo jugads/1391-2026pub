@@ -3,6 +3,7 @@ package frc.robot.subsystems.Shooter;
 import static frc.robot.Constants.ShooterConstants.*;
 import static frc.robot.Constants.kCANBUSNAME;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
@@ -33,6 +34,9 @@ public class ShooterIOTalonFX implements ShooterIO {
     feederMotorFollower = new TalonFX(feederFollowerID, kCANBUSNAME);
     TalonFXConfiguration shooterConfig = new TalonFXConfiguration();
     Slot0Configs slot0 = new Slot0Configs();
+    CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
+    currentLimitsConfigs.StatorCurrentLimit = 100;
+    currentLimitsConfigs.SupplyCurrentLimit = 50;
     slot0.kP = kP;
     slot0.kI = kI;
     slot0.kD = kD;

@@ -18,7 +18,9 @@ public class GroundIntakeSubsystem extends SubsystemBase {
   double setpoint = 0.7;
   double startingTime = 0;
   boolean hasSetStartingWiggleTime = false;
-
+  int cyclesOverLimit = 0;
+  boolean isFull = false;
+  boolean hasStartedIntaking = false;
   public enum WantedState {
     IDLE,
     INTAKE,
@@ -26,7 +28,7 @@ public class GroundIntakeSubsystem extends SubsystemBase {
     HOLD_AT_ZERO,
     REVERSE,
     WIGGLE,
-    COMPRESS
+    COMPRESS,
   }
 
   private enum SystemState {
@@ -36,7 +38,7 @@ public class GroundIntakeSubsystem extends SubsystemBase {
     HOLDING_AT_ZERO,
     REVERSING,
     WIGGLING,
-    COMPRESSING
+    COMPRESSING,
   }
 
   private WantedState wantedState = WantedState.IDLE;
@@ -49,6 +51,24 @@ public class GroundIntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    if (cyclesOverLimit > 17) {
+      isFull = true;
+    }
+    if (this.systemState == SystemState.INTAKING) {
+      if (!hasStartedIntaking) {
+        hasStartedIntaking = true;
+        isFull = false;
+      }
+      if (io.getIntakeCurrentAverage() > 80) {
+        cyclesOverLimit++;
+      } else {
+        cyclesOverLimit = 0;
+      }
+    }
+    else {
+      cyclesOverLimit = 0;
+      hasStartedIntaking = false;
+    }
     io.updateInputs(inputs);
     io.refreshData();
     SmartDashboard.putString("Intake/Current State", systemState.toString());
@@ -56,6 +76,8 @@ public class GroundIntakeSubsystem extends SubsystemBase {
       "time elapsed",
       Timer.getFPGATimestamp() - startingTime
     );
+    SmartDashboard.putNumber("cycles over limit", cyclesOverLimit);
+    SmartDashboard.putNumber("Average Current Draw", io.getIntakeCurrentAverage());
     SystemState newState = handleStateTransition();
     if (newState != systemState) {
       systemState = newState;
@@ -77,7 +99,7 @@ public class GroundIntakeSubsystem extends SubsystemBase {
         hasSetStartingWiggleTime = false;
         break;
       case HOLDING_AT_ZERO:
-        io.setIntakeSpeed(0.);
+        io.setIntakeSpeed(0.15);
         io.runIntakePivotToSetpoint(kZERO_SETPOINT);
         hasSetStartingWiggleTime = false;
         break;
@@ -120,10 +142,9 @@ public class GroundIntakeSubsystem extends SubsystemBase {
       case WIGGLE:
         return SystemState.WIGGLING;
       case COMPRESS:
-        if (inputs.encoderPosition < 0.5) {
+        if (inputs.encoderPosition < 3.6) {
           return SystemState.HOLDING_AT_ZERO;
-        }
-        else {
+        } else {
           return SystemState.COMPRESSING;
         }
       case IDLE:
@@ -177,6 +198,14 @@ public class GroundIntakeSubsystem extends SubsystemBase {
       hasSetStartingWiggleTime = true;
     }
     this.wantedState = WantedState.WIGGLE;
+  }
+
+  public boolean isFull() {
+    return isFull;
+  }
+
+  public boolean hasStartedIntaking() {
+    return hasStartedIntaking;
   }
 }
 /* public enum GroundIntakeSubsystem {

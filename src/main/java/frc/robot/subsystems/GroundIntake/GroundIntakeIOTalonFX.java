@@ -37,9 +37,12 @@ public class GroundIntakeIOTalonFX implements GroundIntakeIO {
     slot0Configs.kG = kG;
     slot0Configs.kV = kV;
     CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
-    currentLimitsConfigs.StatorCurrentLimit = 120;
-    currentLimitsConfigs.SupplyCurrentLimit = 90;
-    pivotMotor.getConfigurator().apply(currentLimitsConfigs);
+    currentLimitsConfigs.StatorCurrentLimit = 90;
+    currentLimitsConfigs.SupplyCurrentLimit = 60;
+    CurrentLimitsConfigs currentLimitsConfigsPivot = new CurrentLimitsConfigs();
+    currentLimitsConfigsPivot.StatorCurrentLimit = 100;
+    currentLimitsConfigsPivot.SupplyCurrentLimit = 50;
+    pivotMotor.getConfigurator().apply(currentLimitsConfigsPivot);
     pivotMotor.getConfigurator().apply(slot0Configs);
     SoftwareLimitSwitchConfigs limits = new SoftwareLimitSwitchConfigs();
 
@@ -97,7 +100,7 @@ public class GroundIntakeIOTalonFX implements GroundIntakeIO {
     SmartDashboard.putNumber("GroundIntake/PivotSpeed", pivotMotor.get());
     SmartDashboard.putNumber("GroundIntake/Current Draw", intakeMotor.getStatorCurrent().getValueAsDouble());
     SmartDashboard.putNumber("GroundIntake/Current Draw Other", intakeMotorFollower.getStatorCurrent().getValueAsDouble());
-
+    SmartDashboard.putNumber("Average Supply Current", (intakeMotor.getSupplyCurrent().getValueAsDouble() + intakeMotorFollower.getSupplyCurrent().getValueAsDouble()) / 2);
   }
 
   /* @Override
@@ -118,5 +121,10 @@ public class GroundIntakeIOTalonFX implements GroundIntakeIO {
 
   public double getAbsEncoderVal() {
     return absEncoder.get() - kENCODER_OFFSET;
+  }
+
+  @Override
+  public double getIntakeCurrentAverage() {
+    return (intakeMotor.getStatorCurrent().getValueAsDouble() + intakeMotorFollower.getStatorCurrent().getValueAsDouble()) / 2;
   }
 }

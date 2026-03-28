@@ -321,7 +321,7 @@ public class CommandSwerveDrivetrain
     double timestampSeconds
   ) {
     super.addVisionMeasurement(
-      visionRobotPoseMeters,
+      new Pose2d(visionRobotPoseMeters.getTranslation(), getPigeon2().getRotation2d()),
       Utils.fpgaToCurrentTime(timestampSeconds)
     );
   }
@@ -346,7 +346,7 @@ public class CommandSwerveDrivetrain
     Matrix<N3, N1> visionMeasurementStdDevs
   ) {
     super.addVisionMeasurement(
-      visionRobotPoseMeters,
+      new Pose2d(visionRobotPoseMeters.getTranslation(), getPigeon2().getRotation2d()),
       Utils.fpgaToCurrentTime(timestampSeconds),
       visionMeasurementStdDevs
     );
@@ -411,7 +411,7 @@ public class CommandSwerveDrivetrain
   }
 
   public void resetGlobalPose(Pose2d pose) {
-    resetPose(pose);
+    resetTranslation(pose.getTranslation());
   }
 
   public void updateGlobalPoseWithVisionMeasurements(
@@ -499,9 +499,9 @@ public class CommandSwerveDrivetrain
     Pigeon2Configuration cfg = new Pigeon2Configuration();
 
     cfg.MountPose = new MountPoseConfigs()
-      .withMountPoseYaw(-178.35812377929688)
-      .withMountPosePitch(0.5538748502731323)
-      .withMountPoseRoll(90.68478393554688);
+      .withMountPoseYaw(87.25459289550781)
+      .withMountPosePitch(-2.1938366889953613)
+      .withMountPoseRoll(0.3822725713253021);
 
     pigeon.getConfigurator().apply(cfg);
   }

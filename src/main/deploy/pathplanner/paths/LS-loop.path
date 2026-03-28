@@ -48,16 +48,16 @@
     },
     {
       "anchor": {
-        "x": 6.042811111111112,
-        "y": 7.411055555555556
+        "x": 6.118161328588376,
+        "y": 7.257378410438909
       },
       "prevControl": {
-        "x": 6.702330555555556,
-        "y": 7.166669444444445
+        "x": 6.77768077303282,
+        "y": 7.012992299327798
       },
       "nextControl": {
-        "x": 5.3832916666666675,
-        "y": 7.655441666666667
+        "x": 5.4586418841439315,
+        "y": 7.50176452155002
       },
       "isLocked": false,
       "linkedName": null
@@ -81,11 +81,11 @@
     {
       "anchor": {
         "x": 3.1001,
-        "y": 5.3350333333333335
+        "y": 5.093166666666666
       },
       "prevControl": {
         "x": 2.112477777777777,
-        "y": 6.5746
+        "y": 6.332733333333333
       },
       "nextControl": null,
       "isLocked": false,
@@ -122,14 +122,7 @@
     }
   ],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "ROB-state_HOME",
-      "waypointRelativePos": 3.0,
-      "endWaypointRelativePos": null,
-      "command": null
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -140,7 +133,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -42.35745470593532
+    "rotation": -38.480198248342965
   },
   "reversed": false,
   "folder": null,

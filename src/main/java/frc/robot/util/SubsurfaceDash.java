@@ -1,6 +1,8 @@
 package frc.robot.util;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
@@ -25,6 +27,14 @@ public class SubsurfaceDash {
   }
 
   public double calculateRotationalVelocity() {
+    double angle = drivetrain.getGlobalPose().getRotation().getDegrees();
+    double distTo0 = Math.abs(MathUtil.inputModulus(angle - 0, -180, 180));
+    double distTo180 = Math.abs(MathUtil.inputModulus(angle - 180, -180, 180));
+    if (distTo0 < distTo180) {
+      lockedHeadingDeg = 0;
+    } else {
+      lockedHeadingDeg = 180;
+    }
     double speed = thetaController.calculate(
       drivetrain.getGlobalPose().getRotation().getDegrees(),
       lockedHeadingDeg

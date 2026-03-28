@@ -4,28 +4,28 @@
     {
       "anchor": {
         "x": 3.1001,
-        "y": 5.3350333333333335
+        "y": 5.093166666666666
       },
       "prevControl": null,
       "nextControl": {
         "x": 2.243488888888889,
-        "y": 6.5746
+        "y": 6.332733333333333
       },
       "isLocked": false,
       "linkedName": "LS-shootingpoint"
     },
     {
       "anchor": {
-        "x": 3.1001,
-        "y": 7.330433333333333
+        "x": 2.979166666666667,
+        "y": 7.451366666666667
       },
       "prevControl": {
-        "x": 2.1001,
-        "y": 7.330433333333333
+        "x": 1.979166666666667,
+        "y": 7.451366666666667
       },
       "nextControl": {
-        "x": 4.100099999999999,
-        "y": 7.330433333333333
+        "x": 3.9791666666666665,
+        "y": 7.451366666666667
       },
       "isLocked": false,
       "linkedName": null
@@ -100,7 +100,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -42.35745470593532
+    "rotation": -38.480198248342965
   },
   "useDefaultConstraints": false
 }

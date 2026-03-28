@@ -17,12 +17,6 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "LS-turn"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "ROB-state_INTAKE"
@@ -31,7 +25,19 @@
         {
           "type": "path",
           "data": {
+            "pathName": "LS-turn"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
             "pathName": "LS-collect"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "reset odometry"
           }
         },
         {
@@ -61,7 +67,7 @@
         {
           "type": "named",
           "data": {
-            "name": "ROB-state_HOME"
+            "name": "ROB-state_INTAKE"
           }
         },
         {
@@ -74,6 +80,12 @@
           "type": "path",
           "data": {
             "pathName": "LS-loop"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot-from-range"
           }
         }
       ]

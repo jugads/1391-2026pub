@@ -18,6 +18,9 @@ public interface GroundIntakeIO {
 
   default void setPivotSpeed(double speed) {}
 
+  default double getIntakeCurrentAverage() {
+    return 0;
+  }
   default double getIntakePosition() {
     return 0;
   }
