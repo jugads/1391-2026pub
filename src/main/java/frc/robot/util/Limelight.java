@@ -1,5 +1,6 @@
 package frc.robot.util;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.util.LimelightHelpers.PoseEstimate;
@@ -61,5 +62,9 @@ public class Limelight {
 
   public int getTID() {
     return (int) table.getEntry("tid").getInteger(0);
+  }
+
+  public Pose2d getMegatag1Pose() {
+    return LimelightHelpers.getBotPose2d_wpiBlue(name);
   }
 }

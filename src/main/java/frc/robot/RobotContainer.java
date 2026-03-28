@@ -278,7 +278,16 @@ public class RobotContainer {
         tagLimelight.getLimelightPoseEstimateData().timestampSeconds
       );
     }
-
+    if (drivetrain.getChassisSpeeds().omegaRadiansPerSecond > 0.5) {
+      System.out.println("not turning");
+      if (tagLimelight.getLimelightPoseEstimateData().tagCount > 1) {
+        System.out.println("seeing multiple tags");
+        if (Math.abs(drivetrain.getPigeon2().getRotation2d().getDegrees() - tagLimelight.getMegatag1Pose().getRotation().getDegrees()) > 4) {
+          System.out.println("should update pigeon with rotation: " + tagLimelight.getMegatag1Pose().getRotation().getDegrees());
+          drivetrain.getPigeon2().setYaw(tagLimelight.getMegatag1Pose().getRotation().getDegrees());
+        }
+      }
+    }
     publisher.set(drivetrain.getGlobalPose());
     // if (!DriverStation.getAlliance().isEmpty()) {
     //   if (drivetrain.isInAllianceZone(DriverStation.getAlliance().get())) {
