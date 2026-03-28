@@ -15,6 +15,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest.ForwardPerspectiveValue;
 import com.ctre.phoenix6.swerve.SwerveRequest.SwerveDriveBrake;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -247,12 +248,12 @@ public class RobotContainer {
     return autoChooser.getSelected();
   }
 
-/**
- * Periodic function that updates various dashboard values and
- * performs actions based on the current state of the robot.
- * 
- * @note This function is called periodically by the CommandScheduler.
- */
+  /**
+   * Periodic function that updates various dashboard values and
+   * performs actions based on the current state of the robot.
+   *
+   * @note This function is called periodically by the CommandScheduler.
+   */
 
   public void dashboardUpdates() {
     tagLimelight.uploadGyro(
@@ -278,15 +279,27 @@ public class RobotContainer {
         tagLimelight.getLimelightPoseEstimateData().timestampSeconds
       );
     }
-    if (drivetrain.getChassisSpeeds().omegaRadiansPerSecond > 0.5) {
-      System.out.println("not turning");
-      if (tagLimelight.getLimelightPoseEstimateData().tagCount > 1) {
-        System.out.println("seeing multiple tags");
-        if (Math.abs(drivetrain.getPigeon2().getRotation2d().getDegrees() - tagLimelight.getMegatag1Pose().getRotation().getDegrees()) > 4) {
-          System.out.println("should update pigeon with rotation: " + tagLimelight.getMegatag1Pose().getRotation().getDegrees());
-          drivetrain.getPigeon2().setYaw(tagLimelight.getMegatag1Pose().getRotation().getDegrees());
-        }
-      }
+    double gyroDeg = drivetrain.getPigeon2().getRotation2d().getDegrees();
+    double mt1Deg = tagLimelight.getMegatag1Pose().getRotation().getDegrees();
+
+    double headingErrorDeg = Math.abs(
+      MathUtil.inputModulus(gyroDeg - mt1Deg, -180, 180)
+    );
+
+    boolean robotStill =
+      Math.abs(drivetrain.getChassisSpeeds().omegaRadiansPerSecond) < 0.1 &&
+      Math.hypot(
+        drivetrain.getChassisSpeeds().vxMetersPerSecond,
+        drivetrain.getChassisSpeeds().vyMetersPerSecond
+      ) <
+      0.2;
+
+    boolean goodVision =
+      tagLimelight.getLimelightPoseEstimateData().tagCount >= 2;
+    // also add ambiguity/confidence check if you have it
+
+    if (robotStill && goodVision && headingErrorDeg > 3.0) {
+      drivetrain.getPigeon2().setYaw(mt1Deg);
     }
     publisher.set(drivetrain.getGlobalPose());
     // if (!DriverStation.getAlliance().isEmpty()) {
