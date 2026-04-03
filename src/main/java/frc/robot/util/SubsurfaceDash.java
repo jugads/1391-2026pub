@@ -27,7 +27,7 @@ public class SubsurfaceDash {
   }
 
   public double calculateRotationalVelocity() {
-    double angle = drivetrain.getGlobalPose().getRotation().getDegrees();
+    double angle = drivetrain.getPigeon2().getRotation2d().getDegrees();
     double distTo0 = Math.abs(MathUtil.inputModulus(angle - 0, -180, 180));
     double distTo180 = Math.abs(MathUtil.inputModulus(angle - 180, -180, 180));
     if (distTo0 < distTo180) {
@@ -36,7 +36,7 @@ public class SubsurfaceDash {
       lockedHeadingDeg = 180;
     }
     double speed = thetaController.calculate(
-      drivetrain.getGlobalPose().getRotation().getDegrees(),
+      drivetrain.getPigeon2().getRotation2d().getDegrees(),
       lockedHeadingDeg
     );
     SmartDashboard.putNumber("Theta calculation", speed);

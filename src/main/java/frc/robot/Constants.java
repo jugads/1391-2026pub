@@ -48,9 +48,21 @@ public class Constants {
     public static final double kMIN_DISTANCE_FROM_HUB = 1.51;
     public static final InterpolatingDoubleTreeMap kSHOOTER_SPEEDS =
       new InterpolatingDoubleTreeMap();
+    public static final Double[] kSHOOTER_ENTRY_000 = new Double[] {
+      1.3,
+      3850.,
+    };
+    public static final Double[] kSHOOTER_ENTRY_001 = new Double[] {
+      1.4,
+      3870.,
+    };
+    public static final Double[] kSHOOTER_ENTRY_0002 = new Double[] {
+      1.5,
+      3900.,
+    };
     public static final Double[] kSHOOTER_ENTRY_00 = new Double[] {
       1.6,
-      4020.,
+      4100.,
     };
     public static final Double[] kSHOOTER_ENTRY_01 = new Double[] {
       1.7,
@@ -138,10 +150,14 @@ public class Constants {
     );
 
     public static final double[] kTRENCH_GOING_OUT_SETPOINTS = new double[] {
-      -18,-1,0
+      -18,
+      -1,
+      0,
     };
     public static final double[] kTRENCH_GOING_IN_SETPOINTS = new double[] {
-      0,0,180
+      0,
+      0,
+      180,
     };
 
     public class TidalLockConstants {

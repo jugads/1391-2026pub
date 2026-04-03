@@ -61,7 +61,25 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 4.0
+            "waitTime": 2.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "int-OVERRIDE"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "int-NORMAL"
           }
         },
         {
@@ -80,6 +98,18 @@
           "type": "path",
           "data": {
             "pathName": "LS-loop"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "reset odometry"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LS-secondPass"
           }
         },
         {

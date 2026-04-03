@@ -22,6 +22,7 @@ public class Robot extends LoggedRobot {
   private final RobotContainer m_robotContainer;
   PowerDistribution pd = new PowerDistribution(1, ModuleType.kRev);
   boolean hasSetGyro = false;
+
   public Robot() {
     m_robotContainer = new RobotContainer();
     Logger.addDataReceiver(new NT4Publisher());
@@ -41,9 +42,7 @@ public class Robot extends LoggedRobot {
   }
 
   @Override
-  public void disabledPeriodic() {
-
-  }
+  public void disabledPeriodic() {}
 
   @Override
   public void disabledExit() {}

@@ -18,6 +18,6 @@ public class TidalLock {
     }
 
     public boolean isLocked(double robotAngle, double desiredAngle) {
-        return Math.abs(robotAngle - desiredAngle) < 5.0;
+        return Math.abs(robotAngle - desiredAngle) < 3.0;
     }
 }

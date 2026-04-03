@@ -25,14 +25,17 @@ import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.RobotCore.CurrentSuperState;
 import frc.robot.RobotCore.WantedSuperState;
@@ -86,7 +89,8 @@ public class RobotContainer {
 
   private final CommandXboxController driver = new CommandXboxController(0);
   private final CommandXboxController operator = new CommandXboxController(1);
-
+  double dTheta = 0;
+  double lastThetaEdit = 0;
   public final CommandSwerveDrivetrain drivetrain =
     TunerConstants.createDrivetrain();
   private final ShooterSubsystem shooter = new ShooterSubsystem(
@@ -155,38 +159,47 @@ public class RobotContainer {
     );
 
     operator.leftTrigger().onTrue(robotSuper.toggleIntake());
-    // driver
-    //   .rightTrigger()
-    //   .whileTrue(
-    //     new ParallelCommandGroup(
-    //       new TidalLockCommand(drivetrain),
-    //       new SequentialCommandGroup(
-    //         new WaitCommand(0.75),
-    //         robotSuper.shootFuel(false)
-    //       )
-    //     )
-    //   )
-    //   .whileFalse(robotSuper.setWantedSuperStateCommand(WantedSuperState.HOME));
     driver
       .rightTrigger()
       .whileTrue(
         new ParallelCommandGroup(
           new TidalLockCommand(
             drivetrain,
-            () -> driver.getLeftY(),
-            () -> driver.getLeftX(),
-            drive
+            () -> 0,
+            () -> 0,
+            drive,
+            () -> dTheta
           ),
-          robotSuper.shootWhileMoving()
+          new SequentialCommandGroup(
+            new ParallelRaceGroup(
+              new WaitCommand(0.75),
+              new WaitUntilCommand(() -> tagLimelight.isSeeingValidTarget())
+            ),
+            robotSuper.shootFuel(false)
+          )
         )
       )
       .whileFalse(robotSuper.setWantedSuperStateCommand(WantedSuperState.HOME));
+    // driver
+    //   .rightTrigger()
+    //   .whileTrue(
+    //     new ParallelCommandGroup(
+    //       new TidalLockCommand(
+    //         drivetrain,
+    //         () -> driver.getLeftY(),
+    //         () -> driver.getLeftX(),
+    //         drive
+    //       ),
+    //       robotSuper.shootWhileMoving()
+    //     )
+    //   )
+    //   .whileFalse(robotSuper.setWantedSuperStateCommand(WantedSuperState.HOME));
     driver
-      .rightBumper()
+      .y()
       .whileTrue(robotSuper.shootFuel(true))
       .whileFalse(robotSuper.setWantedSuperStateCommand(WantedSuperState.HOME));
     driver
-      .y()
+      .rightBumper()
       .whileTrue(
         drivetrain.applyRequest(() ->
           drive
@@ -226,20 +239,25 @@ public class RobotContainer {
       .whileFalse(robotSuper.setWantedSuperStateCommand(WantedSuperState.HOME));
     driver.start().onTrue(new InstantCommand(() -> MaxSpeed *= -1));
     //////OPERATOR CONTROLS ----------------------------------------------------
-    operator.y().onTrue(groundIntake.increaseIntakeSpeedSetpoint());
-    operator.a().whileTrue(new Tweak(drivetrain));
+    operator.b().whileTrue(new Tweak(drivetrain));
     operator
       .leftBumper()
       .whileTrue(robotSuper.setIntakeOverrideCommand(true))
       .whileFalse(robotSuper.setIntakeOverrideCommand(false));
-    operator
-      .rightBumper()
-      .whileTrue(
-        robotSuper.setWantedSuperStateCommand(WantedSuperState.REV_AUTO)
-      )
-      .whileFalse(robotSuper.setWantedSuperStateCommand(WantedSuperState.HOME));
     operator.x().whileTrue(drivetrain.applyRequest(() -> brake));
     operator.start().onTrue(robotSuper.toggleAutoRev());
+    operator.a().onTrue(new InstantCommand(() -> dTheta += 8)); //it's unclear if this does anything
+    operator.y().whileTrue(
+      new InstantCommand(() -> dTheta = -1)
+    ).whileFalse(
+      new InstantCommand(() -> dTheta = 0)
+    );
+    operator.a().whileTrue(
+      new InstantCommand(() -> dTheta = 1)
+    ).whileFalse(
+      new InstantCommand(() -> dTheta = 0)
+    );
+    operator.povDown().onTrue(new InstantCommand(() -> dTheta = 0));
     drivetrain.registerTelemetry(logger::telemeterize);
   }
 
@@ -299,7 +317,7 @@ public class RobotContainer {
     // also add ambiguity/confidence check if you have it
 
     if (robotStill && goodVision && headingErrorDeg > 3.0) {
-      drivetrain.getPigeon2().setYaw(mt1Deg);
+      // drivetrain.getPigeon2().setYaw(mt1Deg);
     }
     publisher.set(drivetrain.getGlobalPose());
     // if (!DriverStation.getAlliance().isEmpty()) {
@@ -307,6 +325,7 @@ public class RobotContainer {
     //     leds.setWantedState(LEDs.WantedState.ZONE_ASSIST);
     //   }
     // }
+
     SmartDashboard.putNumber(
       "Angle to Hub",
       drivetrain.getAngleToHub().getDegrees()
@@ -343,4 +362,19 @@ public class RobotContainer {
     // double headingDeg = 180;
     drivetrain.getPigeon2().setYaw(headingDeg);
   }
+
+  // public void fixTidalLockInput() {
+  //   double controllerInput = operator.getRightX();
+  //   if (
+  //     Timer.getFPGATimestamp() - lastThetaEdit > 0.5
+  //   ) {
+  //     if (controllerInput > 0.2) {
+  //       lastThetaEdit = Timer.getFPGATimestamp();
+  //       dTheta += 5;
+  //     } else if (controllerInput < -0.2) {
+  //       lastThetaEdit = Timer.getFPGATimestamp();
+  //       dTheta -= 5;
+  //     }
+  //   }
+  // }
 }

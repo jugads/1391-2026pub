@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.5590777777777785,
-        "y": 0.5380111111111103
+        "x": 6.6374,
+        "y": 2.5737222222222216
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.289277777777778,
-        "y": 0.4372333333333339
+        "x": 8.5421,
+        "y": -0.2883666666666671
       },
       "isLocked": false,
       "linkedName": "RS6-2"
@@ -69,7 +69,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 179.3489396197705
+    "rotation": 143.97262661489637
   },
   "useDefaultConstraints": false
 }

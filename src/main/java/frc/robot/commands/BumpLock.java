@@ -100,11 +100,11 @@ public class BumpLock extends Command {
     drivetrain.setControl(
       request
         .withForwardPerspective(ForwardPerspectiveValue.OperatorPerspective)
-        .withVelocityX(snap(yControl.getAsDouble()) * 2.0)
+        .withVelocityX(snap(yControl.getAsDouble()) * 2.6)
         .withVelocityY(xControl.getAsDouble() * 5.12 * 0.25)
         .withRotationalRate(
           thetaController.calculate(
-            drivetrain.getGlobalPose().getRotation().getDegrees(),
+            drivetrain.getPigeon2().getRotation2d().getDegrees(),
             lockedBumpAngleDeg
           )
         )

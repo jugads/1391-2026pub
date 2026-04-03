@@ -1,0 +1,91 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 6.304833333333334,
+        "y": 5.123399999999999
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 7.332766666666666,
+        "y": 6.342811111111112
+      },
+      "isLocked": false,
+      "linkedName": "Lsloop"
+    },
+    {
+      "anchor": {
+        "x": 5.7404777777777785,
+        "y": 7.461444444444444
+      },
+      "prevControl": {
+        "x": 6.758333333333334,
+        "y": 7.431211111111111
+      },
+      "nextControl": {
+        "x": 4.274850795385379,
+        "y": 7.504977919168971
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.3644222222222226,
+        "y": 6.8668555555555555
+      },
+      "prevControl": {
+        "x": 2.696751621229378,
+        "y": 7.554700125593621
+      },
+      "nextControl": {
+        "x": 1.9310777777777783,
+        "y": 5.9699333333333335
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.1001,
+        "y": 5.093166666666666
+      },
+      "prevControl": {
+        "x": 2.581094444444445,
+        "y": 6.141255555555555
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "LS-shootingpoint"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 1.2421052631578924,
+      "rotationDegrees": 0.0
+    }
+  ],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 4.5,
+    "maxAcceleration": 5.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -38.480198248342965
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -136.39718102729643
+  },
+  "useDefaultConstraints": false
+}
