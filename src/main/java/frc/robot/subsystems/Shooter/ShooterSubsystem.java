@@ -40,11 +40,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private WantedState wantedState = WantedState.IDLE;
   private SystemState systemState = SystemState.IDLED;
 
-  private double shooterSpeedSetpoint = 0.0;
-
   public ShooterSubsystem(ShooterIO io) {
     this.io = io;
-    populateInterpolatingDoubleTreeMap();
   }
 
   @Override
@@ -155,44 +152,7 @@ public class ShooterSubsystem extends SubsystemBase {
     return wantedState;
   }
 
-  public double calculateShooterSpeed(double distance) {
-    return kSHOOTER_SPEEDS.get(distance);
-  }
-
-  public void populateInterpolatingDoubleTreeMap() {
-    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_00[0], kSHOOTER_ENTRY_00[1]);
-    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_01[0], kSHOOTER_ENTRY_01[1]);
-    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_02[0], kSHOOTER_ENTRY_02[1]);
-    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_03[0], kSHOOTER_ENTRY_03[1]);
-    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_04[0], kSHOOTER_ENTRY_04[1]);
-    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_05[0], kSHOOTER_ENTRY_05[1]);
-    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_06[0], kSHOOTER_ENTRY_06[1]);
-    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_07[0], kSHOOTER_ENTRY_07[1]);
-    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_08[0], kSHOOTER_ENTRY_08[1]);
-    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_09[0], kSHOOTER_ENTRY_09[1]);
-    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_10[0], kSHOOTER_ENTRY_10[1]);
-    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_11[0], kSHOOTER_ENTRY_11[1]);
-    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_12[0], kSHOOTER_ENTRY_12[1]);
-    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_000[0], kSHOOTER_ENTRY_000[1]);
-    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_001[0], kSHOOTER_ENTRY_001[1]);
-    kSHOOTER_SPEEDS.put(kSHOOTER_ENTRY_0002[0], kSHOOTER_ENTRY_0002[1]);
-  }
-
   public boolean isUpToSpeed() {
     return cyclesOfShooterUpToSpeed > 10;
-  }
-
-  public boolean isJammed() {
-    // Replace with your actual sensor logic or return false to test
-    return false;
-  }
-
-  public boolean hasBall() {
-    // Replace with sensor or switch input
-    return true;
-  }
-
-  public Pose3d getShooterPose() {
-    return new Pose3d(0, 0, 0, new Rotation3d());
   }
 }

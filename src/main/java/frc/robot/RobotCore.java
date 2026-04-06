@@ -21,6 +21,7 @@ import frc.robot.subsystems.Hopper.HopperSubsystem;
 import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Shooter.ShooterSubsystem;
 import frc.robot.util.Limelight;
+import frc.robot.util.ShooterAlgorithm;
 import java.lang.constant.DirectMethodHandleDesc;
 
 /** Add your docs here. */
@@ -32,18 +33,20 @@ public class RobotCore extends SubsystemBase {
   CommandSwerveDrivetrain drivetrain;
   LEDs leds;
   Limelight tagLimelight;
+  ShooterAlgorithm shooterAlgorithm = new ShooterAlgorithm();
   private WantedSuperState wantedSuperState = WantedSuperState.IDLE;
   private CurrentSuperState currentSuperState = CurrentSuperState.IDLING;
   private boolean readyToShoot = false;
   private boolean intakeOverride = false;
   private boolean shootingAtHub = true;
   private double shooterCalculatedSpeed = 0.0;
-  private boolean hasCalculatedShooterSpeed = false;
+  private boolean hasResetPoseToShoot = false;
   private boolean toggleRevving = true;
   private boolean wiggle = false;
   double timeOfStartedShooting;
   private boolean hasCalculatedTimeOfShooting = false;
   double manualAdjust = 0;
+
   public RobotCore(
     ShooterSubsystem shooter,
     GroundIntakeSubsystem groundIntake,
@@ -167,35 +170,41 @@ public class RobotCore extends SubsystemBase {
         }
         break;
       case SHOOTING_FROM_DISTANCE:
-        if (!hasCalculatedShooterSpeed) {
-          if (tagLimelight.isSeeingValidTarget()) {
-            drivetrain.resetGlobalPose(
-              tagLimelight.getLimelightPoseEstimateData().pose
-            );
-          }
-          shooterCalculatedSpeed = shooter.calculateShooterSpeed(
-            drivetrain.getDistanceFromHub()
+        double distance = drivetrain.getDistanceFromHub();
+
+        if (tagLimelight.isSeeingValidTarget() && !hasResetPoseToShoot) {
+          drivetrain.resetGlobalPose(
+            tagLimelight.getLimelightPoseEstimateData().pose
           );
-          hasCalculatedShooterSpeed = true;
-        } else {
-          shooter.shoot(shooterCalculatedSpeed + 260);
-          if (shooter.isUpToSpeed()) {
-            hopper.setWantedState(HopperSubsystem.WantedState.FEED);
-            shooter.feedAndShoot(shooterCalculatedSpeed + 50 + manualAdjust);
-          }
+          hasResetPoseToShoot = true;
+        }
+
+        double baseTargetRPM = shooterAlgorithm.calculateShooterSpeed(distance);
+        double revTargetRPM =
+          baseTargetRPM + 250;
+        double fireTargetRPM =
+          baseTargetRPM + manualAdjust;
+
+        shooter.shoot(revTargetRPM);
+
+        boolean readyToFeed = shooter.isUpToSpeed();
+
+        if (readyToFeed) {
+          hopper.setWantedState(HopperSubsystem.WantedState.FEED);
+          shooter.feedAndShoot(fireTargetRPM);
         }
         break;
       case SHOOTING_WHILE_MOVING:
-        if (!hasCalculatedShooterSpeed) {
+        if (!hasResetPoseToShoot) {
           if (tagLimelight.isSeeingValidTarget()) {
             drivetrain.resetGlobalPose(
               tagLimelight.getLimelightPoseEstimateData().pose
             );
           }
-          hasCalculatedShooterSpeed = true;
+          hasResetPoseToShoot = true;
         }
         double setpoint =
-          shooter.calculateShooterSpeed(drivetrain.getDistanceFromHub()) +
+          shooterAlgorithm.calculateShooterSpeed(drivetrain.getDistanceFromHub()) +
           drivetrain.getRateOfChangeOfDistanceFromHubMetersPerSecond() * 200;
         shooter.feedAndShoot(setpoint);
         hopper.feed(0.5);
@@ -214,7 +223,7 @@ public class RobotCore extends SubsystemBase {
         shooter.stop();
         break;
       case HOMED:
-        hasCalculatedShooterSpeed = false;
+        hasResetPoseToShoot = false;
         hopper.setWantedState(HopperSubsystem.WantedState.IDLE);
         if (
           drivetrain.isInAllianceZone(DriverStation.getAlliance().get()) &&
@@ -311,7 +320,7 @@ public class RobotCore extends SubsystemBase {
   }
 
   public Command shootFuel(boolean atHub) {
-    hasCalculatedShooterSpeed = false;
+    hasResetPoseToShoot = false;
     if (atHub) return new InstantCommand(() ->
       wantedSuperState = WantedSuperState.SHOOT
     );
