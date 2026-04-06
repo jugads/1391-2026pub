@@ -8,52 +8,52 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.496311111111111,
-        "y": 4.286944444444445
+        "x": 6.355219274395212,
+        "y": 4.629588588099105
       },
       "isLocked": false,
       "linkedName": "LS5"
     },
     {
       "anchor": {
-        "x": 7.393233333333334,
-        "y": 4.276866666666667
+        "x": 7.443622222222222,
+        "y": 3.9946888888888887
       },
       "prevControl": {
-        "x": 6.393233333333334,
-        "y": 4.276866666666667
+        "x": 6.443622222222222,
+        "y": 3.9946888888888887
       },
       "nextControl": {
-        "x": 8.393233333333335,
-        "y": 4.276866666666667
+        "x": 8.443622222222224,
+        "y": 3.9946888888888887
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.068444444444445,
-        "y": 5.859077777777778
+        "x": 8.673111111111112,
+        "y": 5.738144444444445
       },
       "prevControl": {
-        "x": 8.23083888888889,
-        "y": 5.067972222222222
+        "x": 8.835505555555557,
+        "y": 4.947038888888889
       },
       "nextControl": {
-        "x": 7.9060500000000005,
-        "y": 6.6501833333333344
+        "x": 8.510716666666667,
+        "y": 6.529250000000001
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.304833333333334,
-        "y": 5.123399999999999
+        "x": 6.59708888888889,
+        "y": 5.3249555555555546
       },
       "prevControl": {
-        "x": 6.476155555555556,
-        "y": 5.717988888888888
+        "x": 6.768411111111112,
+        "y": 5.919544444444443
       },
       "nextControl": null,
       "isLocked": false,
@@ -92,8 +92,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 4.0,
+    "maxVelocity": 5.0,
+    "maxAcceleration": 6.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -107,7 +107,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -89.18154453831136
+    "rotation": -49.93921554212617
   },
   "useDefaultConstraints": false
 }

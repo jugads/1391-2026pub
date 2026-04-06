@@ -175,7 +175,11 @@ public class RobotContainer {
               new WaitCommand(0.75),
               new WaitUntilCommand(() -> tagLimelight.isSeeingValidTarget())
             ),
-            robotSuper.shootFuel(false)
+            new ConditionalCommand(
+            robotSuper.shootFuel(true),
+            robotSuper.shootFuel(false),
+            () -> drivetrain.getDistanceFromHub() < 1.5
+            )
           )
         )
       )
@@ -246,18 +250,23 @@ public class RobotContainer {
       .whileFalse(robotSuper.setIntakeOverrideCommand(false));
     operator.x().whileTrue(drivetrain.applyRequest(() -> brake));
     operator.start().onTrue(robotSuper.toggleAutoRev());
-    operator.a().onTrue(new InstantCommand(() -> dTheta += 8)); //it's unclear if this does anything
-    operator.y().whileTrue(
-      new InstantCommand(() -> dTheta = -1)
-    ).whileFalse(
-      new InstantCommand(() -> dTheta = 0)
+    operator
+      .y()
+      .onTrue(new InstantCommand(() -> dTheta = -1))
+      .onFalse(new InstantCommand(() -> dTheta = 0));
+    operator
+      .a()
+      .onTrue(new InstantCommand(() -> dTheta = 1))
+      .onFalse(new InstantCommand(() -> dTheta = 0));
+    operator.povUp().onTrue(
+      robotSuper.editManualAdjust(50)
     );
-    operator.a().whileTrue(
-      new InstantCommand(() -> dTheta = 1)
-    ).whileFalse(
-      new InstantCommand(() -> dTheta = 0)
+    operator.povDown().onTrue(
+      robotSuper.editManualAdjust(-50)
     );
-    operator.povDown().onTrue(new InstantCommand(() -> dTheta = 0));
+    operator.rightBumper().onTrue(
+      robotSuper.resetManualAdjust()
+    );
     drivetrain.registerTelemetry(logger::telemeterize);
   }
 
@@ -362,7 +371,6 @@ public class RobotContainer {
     // double headingDeg = 180;
     drivetrain.getPigeon2().setYaw(headingDeg);
   }
-
   // public void fixTidalLockInput() {
   //   double controllerInput = operator.getRightX();
   //   if (

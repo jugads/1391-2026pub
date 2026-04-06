@@ -35,7 +35,7 @@ public class ShooterIOTalonFX implements ShooterIO {
     TalonFXConfiguration shooterConfig = new TalonFXConfiguration();
     Slot0Configs slot0 = new Slot0Configs();
     CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
-    currentLimitsConfigs.StatorCurrentLimit = 100;
+    currentLimitsConfigs.StatorCurrentLimit = 90;
     currentLimitsConfigs.SupplyCurrentLimit = 50;
     slot0.kP = kP;
     slot0.kI = kI;
@@ -44,8 +44,8 @@ public class ShooterIOTalonFX implements ShooterIO {
     slot0.kV = kV;
     slot0.kA = kA;
     shooterConfig.Slot0 = slot0;
-
     shooterMotor.getConfigurator().apply(shooterConfig);
+    feederMotor.getConfigurator().apply(shooterConfig);
   }
 
   @Override

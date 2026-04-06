@@ -51,21 +51,36 @@ public class TidalLockCommand extends Command {
   @Override
   public void execute() {
     SmartDashboard.putNumber("Dtheta", dTheta.getAsDouble());
-    drivetrain.setControl(
-      request
-        .withRotationalRate(
-          tidalLock.getOutput(
-            drivetrain.getPigeon2().getRotation2d().getDegrees(),
-            drivetrain.getAngleToHub().getDegrees(),
-            0 // drivetrain.getFieldRelativeChassisSpeeds().vyMetersPerSecond
-          ) +
-          dTheta.getAsDouble() *
-          0.1 *
-          RotationsPerSecond.of(0.75).in(RadiansPerSecond)
-        )
-        .withVelocityX(-xControl.getAsDouble() * 0.7)
-        .withVelocityY(-yControl.getAsDouble() * 0.7)
-    );
+    double setpoint;
+    if (dTheta.getAsDouble() == 0) {
+      setpoint = drivetrain.getAngleToHub().getDegrees();
+      drivetrain.setControl(
+        request
+          .withRotationalRate(
+            tidalLock.getOutput(
+              drivetrain.getPigeon2().getRotation2d().getDegrees(),
+              setpoint,
+              0 // drivetrain.getFieldRelativeChassisSpeeds().vyMetersPerSecond
+            )
+          )
+          .withVelocityX(-xControl.getAsDouble() * 0.7)
+          .withVelocityY(-yControl.getAsDouble() * 0.7)
+      );
+    } else {
+      if (Math.abs(dTheta.getAsDouble()) == 1) {
+        setpoint = drivetrain.getPigeon2().getRotation2d().getDegrees();
+        drivetrain.setControl(
+          request
+            .withRotationalRate(
+              dTheta.getAsDouble() *
+              0.15 *
+              RotationsPerSecond.of(0.75).in(RadiansPerSecond)
+            )
+            .withVelocityX(-xControl.getAsDouble() * 0.7)
+            .withVelocityY(-yControl.getAsDouble() * 0.7)
+        );
+      }
+    }
   }
 
   // Called once the command ends or is interrupted.

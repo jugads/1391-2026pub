@@ -3,52 +3,57 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.180722222222222,
-        "y": 2.8659777777777777
+        "x": 5.992422222222221,
+        "y": 7.491677777777777
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.4047333333333327,
-        "y": 1.9992888888888891
+        "x": 8.259922222222222,
+        "y": 7.652922222222223
       },
       "isLocked": false,
-      "linkedName": "RS5-2"
+      "linkedName": "LS1"
     },
     {
       "anchor": {
-        "x": 3.9063222222222223,
-        "y": 0.5279333333333329
+        "x": 6.828877777777778,
+        "y": 4.438111111111112
       },
       "prevControl": {
-        "x": 2.807844444444445,
-        "y": 0.3566111111111094
+        "x": 9.025833333333333,
+        "y": 4.6094333333333335
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "RS5"
+      "linkedName": "LS3"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.336842105263159,
+      "rotationDegrees": -90.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 5.0,
-    "maxAcceleration": 6.0,
+    "maxAcceleration": 9.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 1.5,
-    "rotation": 0.0
+    "velocity": 0,
+    "rotation": -151.02029230207123
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
-    "velocity": 0,
-    "rotation": 39.55966796899446
+    "velocity": 5.0,
+    "rotation": -179.59651526494125
   },
   "useDefaultConstraints": false
 }

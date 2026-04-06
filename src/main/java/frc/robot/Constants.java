@@ -62,15 +62,15 @@ public class Constants {
     };
     public static final Double[] kSHOOTER_ENTRY_00 = new Double[] {
       1.6,
-      4100.,
+      4080.,
     };
     public static final Double[] kSHOOTER_ENTRY_01 = new Double[] {
       1.7,
-      4360.,
+      4300.,
     };
     public static final Double[] kSHOOTER_ENTRY_02 = new Double[] {
       1.8,
-      4570.,
+      4500.,
     };
     public static final Double[] kSHOOTER_ENTRY_03 = new Double[] {
       1.9,
@@ -138,7 +138,7 @@ public class Constants {
 
   public class VisionConstants {
 
-    public static final int kLED_PORT = 9;
+    public static final int kLED_PORT = 3;
     public static final String kAPRILTAG_LL_NAME = "limelight-intake";
     public static final Translation2d kBLUEHUBPOSE = new Translation2d(
       4.634,

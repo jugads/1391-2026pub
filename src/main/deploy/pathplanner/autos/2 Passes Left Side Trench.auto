@@ -13,7 +13,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LS-start"
+            "pathName": "2LS-start"
           }
         },
         {
@@ -25,13 +25,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LS-turn"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "LS-collect"
+            "pathName": "2LS-collect"
           }
         },
         {
@@ -49,7 +43,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LS-returnUnderTrench"
+            "pathName": "2LS-returnUnderTrench"
           }
         },
         {
@@ -73,7 +67,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 2.5
+            "waitTime": 1.5
           }
         },
         {
@@ -91,7 +85,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LS-goBackToCenter"
+            "pathName": "2LS-goBackToCenter"
           }
         },
         {
@@ -109,7 +103,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LS-secondPass"
+            "pathName": "2LS-secondPass"
           }
         },
         {

@@ -43,7 +43,7 @@ public class RobotCore extends SubsystemBase {
   private boolean wiggle = false;
   double timeOfStartedShooting;
   private boolean hasCalculatedTimeOfShooting = false;
-
+  double manualAdjust = 0;
   public RobotCore(
     ShooterSubsystem shooter,
     GroundIntakeSubsystem groundIntake,
@@ -181,7 +181,7 @@ public class RobotCore extends SubsystemBase {
           shooter.shoot(shooterCalculatedSpeed + 260);
           if (shooter.isUpToSpeed()) {
             hopper.setWantedState(HopperSubsystem.WantedState.FEED);
-            shooter.feedAndShoot(shooterCalculatedSpeed + 50);
+            shooter.feedAndShoot(shooterCalculatedSpeed + 50 + manualAdjust);
           }
         }
         break;
@@ -375,5 +375,13 @@ public class RobotCore extends SubsystemBase {
 
   public Command toggleWiggle() {
     return new InstantCommand(() -> this.wiggle = !this.wiggle);
+  }
+
+  public Command editManualAdjust(double adjustment) {
+    return new InstantCommand(() -> this.manualAdjust += adjustment);
+  }
+
+  public Command resetManualAdjust() {
+    return new InstantCommand(() -> this.manualAdjust = 0);
   }
 }
