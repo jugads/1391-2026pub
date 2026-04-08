@@ -72,7 +72,7 @@ public class ShooterSubsystem extends SubsystemBase {
         io.setShooterSpeed(motorsSetpoint);
         break;
       case WARMING_UP:
-        io.setShooterSpeed(4000);
+        io.setShooterSpeed(DriverStation.isAutonomous() ? 5000 : 4000);
         io.setFeederSpeed(0.0);
         break;
       case SHOOTING_AT_HUB:
