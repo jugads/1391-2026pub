@@ -9,19 +9,17 @@ import static frc.robot.Constants.ShooterConstants.*;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.GroundIntake.GroundIntakeSubsystem;
-import frc.robot.subsystems.GroundIntake.GroundIntakeSubsystem.WantedState;
 import frc.robot.subsystems.Hopper.HopperSubsystem;
 import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.Shooter.ShooterSubsystem;
 import frc.robot.util.Limelight;
-import java.lang.constant.DirectMethodHandleDesc;
+import frc.robot.util.ShooterAlgorithm;
 
 /** Add your docs here. */
 public class RobotCore extends SubsystemBase {
@@ -32,18 +30,20 @@ public class RobotCore extends SubsystemBase {
   CommandSwerveDrivetrain drivetrain;
   LEDs leds;
   Limelight tagLimelight;
+  ShooterAlgorithm shooterAlgorithm = new ShooterAlgorithm();
   private WantedSuperState wantedSuperState = WantedSuperState.IDLE;
   private CurrentSuperState currentSuperState = CurrentSuperState.IDLING;
   private boolean readyToShoot = false;
   private boolean intakeOverride = false;
   private boolean shootingAtHub = true;
   private double shooterCalculatedSpeed = 0.0;
-  private boolean hasCalculatedShooterSpeed = false;
+  private boolean hasResetPoseToShoot = false;
   private boolean toggleRevving = true;
   private boolean wiggle = false;
   double timeOfStartedShooting;
   private boolean hasCalculatedTimeOfShooting = false;
   double manualAdjust = 0;
+
   public RobotCore(
     ShooterSubsystem shooter,
     GroundIntakeSubsystem groundIntake,
@@ -67,7 +67,6 @@ public class RobotCore extends SubsystemBase {
     SHOOT_FROM_DISTANCE,
     INTAKE,
     REVERSE_INTAKE,
-    LOAD,
     HOME,
     REV_AUTO,
     SHOOT_WHILE_MOVING,
@@ -79,7 +78,6 @@ public class RobotCore extends SubsystemBase {
     SHOOTING_FROM_DISTANCE,
     INTAKING,
     REVERSING_INTAKE,
-    LOADING,
     HOMED,
     REVVING_AUTO,
     SHOOTING_WHILE_MOVING,
@@ -167,35 +165,39 @@ public class RobotCore extends SubsystemBase {
         }
         break;
       case SHOOTING_FROM_DISTANCE:
-        if (!hasCalculatedShooterSpeed) {
-          if (tagLimelight.isSeeingValidTarget()) {
-            drivetrain.resetGlobalPose(
-              tagLimelight.getLimelightPoseEstimateData().pose
-            );
-          }
-          shooterCalculatedSpeed = shooter.calculateShooterSpeed(
-            drivetrain.getDistanceFromHub()
+        double distance = drivetrain.getDistanceFromHub();
+
+        if (tagLimelight.isSeeingValidTarget() && !hasResetPoseToShoot) {
+          drivetrain.resetGlobalPose(
+            tagLimelight.getLimelightPoseEstimateData().pose
           );
-          hasCalculatedShooterSpeed = true;
-        } else {
-          shooter.shoot(shooterCalculatedSpeed + 260);
-          if (shooter.isUpToSpeed()) {
-            hopper.setWantedState(HopperSubsystem.WantedState.FEED);
-            shooter.feedAndShoot(shooterCalculatedSpeed + 50 + manualAdjust);
-          }
+          hasResetPoseToShoot = true;
+        }
+
+        double baseTargetRPM = shooterAlgorithm.calculateShooterSpeedRegular(distance);
+        double revTargetRPM =
+          baseTargetRPM + kSHOOTER_REV_ADJUSTMENT;
+        double fireTargetRPM =
+          baseTargetRPM + manualAdjust;
+
+        shooter.shoot(revTargetRPM);
+
+        if (shooter.isUpToSpeed()) {
+          hopper.setWantedState(HopperSubsystem.WantedState.FEED);
+          shooter.feedAndShoot(fireTargetRPM);
         }
         break;
       case SHOOTING_WHILE_MOVING:
-        if (!hasCalculatedShooterSpeed) {
+        if (!hasResetPoseToShoot) {
           if (tagLimelight.isSeeingValidTarget()) {
             drivetrain.resetGlobalPose(
               tagLimelight.getLimelightPoseEstimateData().pose
             );
           }
-          hasCalculatedShooterSpeed = true;
+          hasResetPoseToShoot = true;
         }
         double setpoint =
-          shooter.calculateShooterSpeed(drivetrain.getDistanceFromHub()) +
+          shooterAlgorithm.calculateShooterSpeedRegular(drivetrain.getDistanceFromHub()) +
           drivetrain.getRateOfChangeOfDistanceFromHubMetersPerSecond() * 200;
         shooter.feedAndShoot(setpoint);
         hopper.feed(0.5);
@@ -214,7 +216,7 @@ public class RobotCore extends SubsystemBase {
         shooter.stop();
         break;
       case HOMED:
-        hasCalculatedShooterSpeed = false;
+        hasResetPoseToShoot = false;
         hopper.setWantedState(HopperSubsystem.WantedState.IDLE);
         if (
           drivetrain.isInAllianceZone(DriverStation.getAlliance().get()) &&
@@ -310,8 +312,13 @@ public class RobotCore extends SubsystemBase {
     return new InstantCommand(() -> this.toggleRevving = (!toggleRevving));
   }
 
+  /**
+   * Instant command to set the wanted superstate to SHOOT or SHOOT_FROM_DISTANCE based on whether the robot is currently at the hub or not.
+   * @param atHub whether the robot is currently at the hub
+   * @return an InstantCommand to set the wanted superstate
+   */
   public Command shootFuel(boolean atHub) {
-    hasCalculatedShooterSpeed = false;
+    hasResetPoseToShoot = false;
     if (atHub) return new InstantCommand(() ->
       wantedSuperState = WantedSuperState.SHOOT
     );
@@ -324,6 +331,10 @@ public class RobotCore extends SubsystemBase {
     return currentSuperState;
   }
 
+  /**
+   * Computes the wanted state of the LEDs based on the robot's current state
+   * @return the wanted state of the LEDs
+   */
   private LEDs.WantedState computeLedState() {
     if (!DriverStation.isEnabled()) return LEDs.WantedState.DISABLED;
     if (
@@ -349,6 +360,11 @@ public class RobotCore extends SubsystemBase {
     return LEDs.WantedState.IDLE;
   }
 
+  /**
+   * Toggle the wanted superstate between INTAKE and HOME.
+   *
+   * @return an InstantCommand that toggles the wanted superstate
+   */
   public Command toggleIntake() {
     return new InstantCommand(() -> {
       if (wantedSuperState == WantedSuperState.INTAKE) {
