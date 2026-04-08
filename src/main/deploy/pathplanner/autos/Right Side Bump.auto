@@ -13,7 +13,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "RS-start"
+            "pathName": "2RS-start"
           }
         },
         {
@@ -25,13 +25,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "RS-turn"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "RS-collect"
+            "pathName": "2RS-collect"
           }
         },
         {
@@ -112,7 +106,25 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 3.5
+            "waitTime": 2.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "int-OVERRIDE"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "int-NORMAL"
           }
         },
         {

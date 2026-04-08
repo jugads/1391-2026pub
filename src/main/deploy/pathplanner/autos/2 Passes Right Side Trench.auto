@@ -1,0 +1,164 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "ROB-state_HOME"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2RS-start"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ROB-state_INTAKE"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "2RS-collect"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.25
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "reset odometry"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ROB-state_HOME"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RS-returnUnderTrench"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RS-shootTrench"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot-from-range"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Tidal Lock"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 2.5
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "int-OVERRIDE"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "int-NORMAL"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ROB-state_HOME"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of RS-secondPassTrench"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ROB-state_INTAKE"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RS-collect2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of RS-loop"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "reset odometry"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ROB-state_HOME"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of RS-shootTrench"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "shoot-from-range"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
