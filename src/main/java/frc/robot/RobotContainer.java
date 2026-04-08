@@ -184,6 +184,9 @@ public class RobotContainer {
         )
       )
       .whileFalse(robotSuper.setWantedSuperStateCommand(WantedSuperState.HOME));
+      driver.leftTrigger().whileTrue(
+        new TidalLockCommand(drivetrain, () -> driver.getLeftY(), () -> driver.getLeftX(), drive, () -> 0)
+      );
     // driver
     //   .rightTrigger()
     //   .whileTrue(

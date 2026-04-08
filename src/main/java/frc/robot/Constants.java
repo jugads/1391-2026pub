@@ -123,6 +123,14 @@ public class Constants {
       6100.0,
     };
 
+    public static final InterpolatingDoubleTreeMap k_SHOOTER_SPEED_MAP_DCMP = new InterpolatingDoubleTreeMap();
+    public static final Double[] kSHOOTER_ENTRY_HUB_DCMP = new Double[] {
+      1.3, 4000.
+    };
+    public static final Double[] k_SHOOTER_ENTRY_FAR_DCMP = new Double[] {
+      3.0, 6100.
+    };
+    public static final double kSHOOTER_REV_ADJUSTMENT = 250.;
     public static final double kP = 0.4;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
