@@ -174,7 +174,7 @@ public class RobotCore extends SubsystemBase {
           hasResetPoseToShoot = true;
         }
 
-        double baseTargetRPM = shooterAlgorithm.calculateShooterSpeedRegular(distance);
+        double baseTargetRPM = shooterAlgorithm.calculateShooterSpeedDCMP(distance);
         double revTargetRPM =
           baseTargetRPM + kSHOOTER_REV_ADJUSTMENT;
         double fireTargetRPM =
