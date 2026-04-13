@@ -142,7 +142,7 @@ public class GroundIntakeSubsystem extends SubsystemBase {
       case WIGGLE:
         return SystemState.WIGGLING;
       case COMPRESS:
-        if (inputs.encoderPosition < 3.6) {
+        if (inputs.encoderPosition < 3.) {
           return SystemState.HOLDING_AT_ZERO;
         } else {
           return SystemState.COMPRESSING;

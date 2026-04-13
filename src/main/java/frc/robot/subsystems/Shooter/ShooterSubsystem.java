@@ -5,6 +5,7 @@ import static frc.robot.Constants.ShooterConstants.*;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -17,7 +18,9 @@ public class ShooterSubsystem extends SubsystemBase {
     new ShooterIO.ShooterIOInputs();
   public int cyclesOfShooterUpToSpeed;
   public double motorsSetpoint = 0.0;
-
+  public double hoodSetpoint = 0.0;
+  public double timeOfStartedShooting = 0.;
+  public boolean hasSetTimeOfShooting = false;
 
   public enum WantedState {
     IDLE,
@@ -25,7 +28,7 @@ public class ShooterSubsystem extends SubsystemBase {
     SHOOT_AT_HUB,
     REVERSE,
     FEED_AND_SHOOT,
-    WARM_UP
+    WARM_UP,
   }
 
   private enum SystemState {
@@ -34,7 +37,7 @@ public class ShooterSubsystem extends SubsystemBase {
     SHOOTING_AT_HUB,
     REVERSING,
     FEEDING_AND_SHOOTING,
-    WARMING_UP
+    WARMING_UP,
   }
 
   private WantedState wantedState = WantedState.IDLE;
@@ -51,7 +54,8 @@ public class ShooterSubsystem extends SubsystemBase {
     if (
       Math.abs(inputs.shooterSpeed - motorsSetpoint) <
         kSHOOTER_SPEED_TOLERANCE &&
-      motorsSetpoint != 0
+      motorsSetpoint != 0 &&
+      Math.abs(inputs.hoodAngle - hoodSetpoint) < 0.05
     ) {
       cyclesOfShooterUpToSpeed++;
     } else {
@@ -59,22 +63,37 @@ public class ShooterSubsystem extends SubsystemBase {
     }
     SmartDashboard.putString("Shooter/WantedState", wantedState.toString());
     SmartDashboard.putNumber("Shooter/MotorsSetpoint", motorsSetpoint);
+    SmartDashboard.putNumber("Shooter/Hood Setpoint", hoodSetpoint);
+
     SystemState newState = handleStateTransition();
     if (newState != systemState) {
       systemState = newState;
+      if (newState == SystemState.SHOOTING_AT_HUB) {
+        hasSetTimeOfShooting = false;
+      }
     }
 
     switch (systemState) {
       case REVVING_TO_SPEED:
         io.setShooterSpeed(motorsSetpoint);
+        io.hoodToAngle(hoodSetpoint);
         break;
       case WARMING_UP:
-        io.setShooterSpeed(DriverStation.isAutonomous() ? 5000 : 4000);
+        io.setShooterSpeed(DriverStation.isAutonomous() ? 5500 : 4000);
+        io.hoodToAngle(0.2);
         io.setFeederSpeed(0.0);
         break;
       case SHOOTING_AT_HUB:
-        io.setShooterSpeed(motorsSetpoint);
+        if (!hasSetTimeOfShooting) {
+          timeOfStartedShooting = Timer.getFPGATimestamp();
+          hasSetTimeOfShooting = true;
+        }
+        io.setShooterSpeed(
+          motorsSetpoint -
+          ((motorsSetpoint > 5700) ? 10 * (Timer.getFPGATimestamp() - timeOfStartedShooting) : 0)
+        );
         io.setFeederSpeed(1.);
+        io.hoodToAngle(hoodSetpoint);
         break;
       case REVERSING:
         io.setShooterSpeed(kREVERSING_SPEED);
@@ -83,11 +102,13 @@ public class ShooterSubsystem extends SubsystemBase {
       case FEEDING_AND_SHOOTING:
         io.setShooterSpeed(motorsSetpoint);
         io.setFeederSpeed(1);
+        io.hoodToAngle(hoodSetpoint);
         break;
       case IDLED:
       default:
         io.stopShooter();
         io.setFeederSpeed(0.0);
+        io.stopHood();
         break;
     }
   }
@@ -115,23 +136,30 @@ public class ShooterSubsystem extends SubsystemBase {
     return new InstantCommand(() -> setWantedState(WantedState.REV_TO_SPEED));
   }
 
-  public void shoot(double shooterSpeed) {
+  public void shoot(double shooterSpeed, double hoodAngle) {
     this.motorsSetpoint = shooterSpeed;
+    this.hoodSetpoint = hoodAngle;
     setWantedState(WantedState.REV_TO_SPEED);
   }
 
   public void shootAtHub() {
     this.motorsSetpoint = SmartDashboard.getNumber("shooter speed", 5000) + 150;
+    this.hoodSetpoint = 0.;
     setWantedState(WantedState.SHOOT_AT_HUB);
   }
+
   public void shootAtHubRegular() {
     this.motorsSetpoint = kSHOOTER_SPEED_AT_HUB;
+    this.hoodSetpoint = 0.;
     setWantedState(WantedState.SHOOT_AT_HUB);
   }
-  public void feedAndShoot(double setpoint) {
+
+  public void feedAndShoot(double setpoint, double hoodAngle) {
     this.motorsSetpoint = setpoint;
+    this.hoodSetpoint = hoodAngle;
     setWantedState(WantedState.FEED_AND_SHOOT);
   }
+
   public Command reverse() {
     return new InstantCommand(() -> setWantedState(WantedState.REVERSE));
   }

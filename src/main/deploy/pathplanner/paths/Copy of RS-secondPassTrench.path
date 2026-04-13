@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.180722222222222,
-        "y": 2.8659777777777777
+        "x": 3.1605666666666665,
+        "y": 2.392322222222223
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.4047333333333327,
-        "y": 1.9992888888888891
+        "x": 2.3845777777777775,
+        "y": 1.5256333333333343
       },
       "isLocked": false,
       "linkedName": "RS5-2"
@@ -48,7 +48,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 42.27368900609368
+    "rotation": 47.935673446421134
   },
   "useDefaultConstraints": false
 }

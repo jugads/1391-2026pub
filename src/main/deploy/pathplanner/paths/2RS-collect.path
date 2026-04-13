@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.625022222222222,
-        "y": 1.0721333333333336
+        "x": 4.238888888888889,
+        "y": 0.4271555555555563
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.864588888888889,
-        "y": 2.3117
+        "x": 5.972266666666667,
+        "y": 0.4674666666666667
       },
       "isLocked": false,
       "linkedName": "RS2"
@@ -20,8 +20,8 @@
         "y": 3.5008777777777773
       },
       "prevControl": {
-        "x": 7.94751111111111,
-        "y": 3.662122222222222
+        "x": 10.95068888888889,
+        "y": 0.46746666666666714
       },
       "nextControl": null,
       "isLocked": false,
@@ -31,14 +31,32 @@
   "rotationTargets": [
     {
       "waypointRelativePos": 0.336842105263155,
-      "rotationDegrees": 90.0
+      "rotationDegrees": 180.0
     },
     {
       "waypointRelativePos": 0.5789473684210562,
       "rotationDegrees": 90.0
+    },
+    {
+      "waypointRelativePos": 0.9228070175438601,
+      "rotationDegrees": 135.0
     }
   ],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.6400885935769668,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 2.0,
+        "maxAcceleration": 7.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -57,7 +75,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 5.0,
-    "rotation": 103.39249775375102
+    "rotation": 180.0
   },
   "useDefaultConstraints": false
 }

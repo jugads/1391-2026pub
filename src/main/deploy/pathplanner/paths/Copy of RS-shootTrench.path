@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.6374,
-        "y": 2.5737222222222216
+        "x": 7.242066666666667,
+        "y": 3.0675333333333334
       },
       "prevControl": null,
       "nextControl": {
-        "x": 8.5421,
-        "y": -0.2883666666666671
+        "x": 9.146766666666666,
+        "y": 0.20544444444444476
       },
       "isLocked": false,
       "linkedName": "RS6-2"
@@ -32,12 +32,12 @@
     },
     {
       "anchor": {
-        "x": 3.180722222222222,
-        "y": 2.8659777777777777
+        "x": 3.1605666666666665,
+        "y": 2.392322222222223
       },
       "prevControl": {
-        "x": 2.7272222222222213,
-        "y": 2.261311111111112
+        "x": 2.707066666666666,
+        "y": 1.787655555555557
       },
       "nextControl": null,
       "isLocked": false,
@@ -67,13 +67,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 42.27368900609368
+    "rotation": 47.935673446421134
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 143.9726266148964
+    "rotation": 151.92751306414712
   },
   "useDefaultConstraints": false
 }

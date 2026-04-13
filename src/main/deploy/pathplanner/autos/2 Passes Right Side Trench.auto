@@ -11,12 +11,6 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "2RS-start"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "ROB-state_INTAKE"

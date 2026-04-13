@@ -98,7 +98,8 @@ public class RobotContainer {
       kSHOOTER_ID,
       kLOADER_ID,
       kSHOOTER_FOLLOWER_ID,
-      kLOADER_FOLLOWER_ID
+      kLOADER_FOLLOWER_ID,
+      kHOOD_ID
     )
   );
 
@@ -175,11 +176,7 @@ public class RobotContainer {
               new WaitCommand(0.75),
               new WaitUntilCommand(() -> tagLimelight.isSeeingValidTarget())
             ),
-            new ConditionalCommand(
-            robotSuper.shootFuel(true),
-            robotSuper.shootFuel(false),
-            () -> drivetrain.getDistanceFromHub() < 1.5
-            )
+            robotSuper.shootFuel(false)
           )
         )
       )
@@ -309,39 +306,12 @@ public class RobotContainer {
         tagLimelight.getLimelightPoseEstimateData().timestampSeconds
       );
     }
-    double gyroDeg = drivetrain.getPigeon2().getRotation2d().getDegrees();
-    double mt1Deg = tagLimelight.getMegatag1Pose().getRotation().getDegrees();
-
-    double headingErrorDeg = Math.abs(
-      MathUtil.inputModulus(gyroDeg - mt1Deg, -180, 180)
-    );
-
-    boolean robotStill =
-      Math.abs(drivetrain.getChassisSpeeds().omegaRadiansPerSecond) < 0.1 &&
-      Math.hypot(
-        drivetrain.getChassisSpeeds().vxMetersPerSecond,
-        drivetrain.getChassisSpeeds().vyMetersPerSecond
-      ) <
-      0.2;
-
-    boolean goodVision =
-      tagLimelight.getLimelightPoseEstimateData().tagCount >= 2;
-    // also add ambiguity/confidence check if you have it
-
-    if (robotStill && goodVision && headingErrorDeg > 3.0) {
-      // drivetrain.getPigeon2().setYaw(mt1Deg);
-    }
     publisher.set(drivetrain.getGlobalPose());
     // if (!DriverStation.getAlliance().isEmpty()) {
     //   if (drivetrain.isInAllianceZone(DriverStation.getAlliance().get())) {
     //     leds.setWantedState(LEDs.WantedState.ZONE_ASSIST);
     //   }
     // }
-
-    SmartDashboard.putNumber(
-      "Angle to Hub",
-      drivetrain.getAngleToHub().getDegrees()
-    );
     SmartDashboard.putNumber(
       "Distance to Hub",
       drivetrain.getDistanceFromHub()
@@ -354,8 +324,6 @@ public class RobotContainer {
       "PIGEOn",
       drivetrain.getPigeon2().getRotation2d().getDegrees()
     );
-
-    alliancePhaseDisplay.periodic();
   }
 
   public void onTeleopInit() {

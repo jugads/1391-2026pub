@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.59708888888889,
-        "y": 5.3249555555555546
+        "x": 6.748255555555557,
+        "y": 4.740444444444445
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.625022222222222,
-        "y": 6.544366666666667
+        "x": 7.776188888888889,
+        "y": 5.959855555555557
       },
       "isLocked": false,
       "linkedName": "Lsloop"
@@ -32,28 +32,12 @@
     },
     {
       "anchor": {
-        "x": 2.888466666666667,
-        "y": 7.07848888888889
+        "x": 2.8683111111111117,
+        "y": 6.2118
       },
       "prevControl": {
-        "x": 3.082012843199309,
-        "y": 7.81748338110443
-      },
-      "nextControl": {
-        "x": 2.6667555555555555,
-        "y": 6.231955555555556
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
-        "x": 3.1001,
-        "y": 5.093166666666666
-      },
-      "prevControl": {
-        "x": 2.888466666666667,
-        "y": 6.131177777777777
+        "x": 1.7093666666666667,
+        "y": 7.965333333333334
       },
       "nextControl": null,
       "isLocked": false,
@@ -62,11 +46,15 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 1.0315789473684167,
+      "waypointRelativePos": 1.0,
       "rotationDegrees": 0.0
     },
     {
-      "waypointRelativePos": 1.5421052631578998,
+      "waypointRelativePos": 1.25,
+      "rotationDegrees": 0.0
+    },
+    {
+      "waypointRelativePos": 1.6070175438596535,
       "rotationDegrees": 0.0
     }
   ],
@@ -83,13 +71,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -38.480198248342965
+    "rotation": -49.86451443776061
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -136.39718102729643
+    "rotation": -152.15242174021188
   },
   "useDefaultConstraints": false
 }

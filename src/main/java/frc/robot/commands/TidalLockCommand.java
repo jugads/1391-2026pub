@@ -63,8 +63,8 @@ public class TidalLockCommand extends Command {
               0 // drivetrain.getFieldRelativeChassisSpeeds().vyMetersPerSecond
             )
           )
-          .withVelocityX(-xControl.getAsDouble() * 0.7)
-          .withVelocityY(-yControl.getAsDouble() * 0.7)
+          .withVelocityX(-xControl.getAsDouble())
+          .withVelocityY(-yControl.getAsDouble())
       );
     } else {
       if (Math.abs(dTheta.getAsDouble()) == 1) {
@@ -76,8 +76,8 @@ public class TidalLockCommand extends Command {
               0.15 *
               RotationsPerSecond.of(0.75).in(RadiansPerSecond)
             )
-            .withVelocityX(-xControl.getAsDouble() * 0.7)
-            .withVelocityY(-yControl.getAsDouble() * 0.7)
+            .withVelocityX(-xControl.getAsDouble())
+            .withVelocityY(-yControl.getAsDouble())
         );
       }
     }

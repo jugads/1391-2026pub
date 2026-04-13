@@ -41,7 +41,7 @@ public class Constants {
 
   public class ShooterConstants {
 
-    public static final double kSHOOTER_SPEED_AT_HUB = 4250.0;
+    public static final double kSHOOTER_SPEED_AT_HUB = 5300.0;
     public static final double kSHOOTER_SPEED_TOLERANCE = 100.;
     public static final double kREVERSING_SPEED = 0.0;
     public static final double kMAX_DISTANCE_FROM_HUB = 2.8;
@@ -125,18 +125,29 @@ public class Constants {
 
     public static final InterpolatingDoubleTreeMap k_SHOOTER_SPEED_MAP_DCMP = new InterpolatingDoubleTreeMap();
     public static final Double[] kSHOOTER_ENTRY_HUB_DCMP = new Double[] {
-      1.3, 4000.
+      1.75, 4300.
     };
     public static final Double[] k_SHOOTER_ENTRY_FAR_DCMP = new Double[] {
-      3.0, 6100.
+      3.5, 6100.
     };
-    public static final double kSHOOTER_REV_ADJUSTMENT = 250.;
+    public static final double kSHOOTER_REV_ADJUSTMENT = 80.;
     public static final double kP = 0.4;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
     public static final double kV = 0.105;
     public static final double kS = 0.0;
     public static final double kA = 0.0;
+
+    public static final double kHOOD_P = 2.;
+    public static final double kHOOD_I = 0;
+    public static final double kHOOD_D = 0;
+    public static final double kHOOD_V = 1.85;
+    public static final double kHOOD_S = 0.05;
+    public static final double kHOOD_A = 0;
+
+    public static final double kHOOD_UP_ROTATIONS = 0.276;
+
+    public static final InterpolatingDoubleTreeMap kHOOD_SPEED_MAP = new InterpolatingDoubleTreeMap();
   }
 
   public class HopperConstants {
@@ -187,5 +198,6 @@ public class Constants {
     public static final int kLOADER_ID = 50;
     public static final int kSHOOTER_FOLLOWER_ID = 52;
     public static final int kLOADER_FOLLOWER_ID = 53;
+    public static final int kHOOD_ID = 55;
   }
 }

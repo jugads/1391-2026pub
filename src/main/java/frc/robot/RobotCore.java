@@ -38,6 +38,7 @@ public class RobotCore extends SubsystemBase {
   private boolean shootingAtHub = true;
   private double shooterCalculatedSpeed = 0.0;
   private boolean hasResetPoseToShoot = false;
+  private boolean hasCalculatedShooterSpeed = false;
   private boolean toggleRevving = true;
   private boolean wiggle = false;
   double timeOfStartedShooting;
@@ -154,7 +155,7 @@ public class RobotCore extends SubsystemBase {
         shooter.stop();
         break;
       case SHOOTING:
-        shooter.shoot(SmartDashboard.getNumber("shooter speed", 5000));
+      shooter.shootAtHub();
         if (shooter.isUpToSpeed()) {
           if (!intakeOverride) {
             shooter.shootAtHub();
@@ -176,15 +177,15 @@ public class RobotCore extends SubsystemBase {
 
         double baseTargetRPM = shooterAlgorithm.calculateShooterSpeedDCMP(distance);
         double revTargetRPM =
-          baseTargetRPM + kSHOOTER_REV_ADJUSTMENT;
+          baseTargetRPM + kSHOOTER_REV_ADJUSTMENT + (DriverStation.isAutonomous() ? 0 : 0);
         double fireTargetRPM =
           baseTargetRPM + manualAdjust;
-
-        shooter.shoot(revTargetRPM);
+        double hoodAngle = shooterAlgorithm.calculateHoodAngle(distance);
+        shooter.shoot(revTargetRPM, hoodAngle);
 
         if (shooter.isUpToSpeed()) {
           hopper.setWantedState(HopperSubsystem.WantedState.FEED);
-          shooter.feedAndShoot(fireTargetRPM);
+          shooter.feedAndShoot(fireTargetRPM, hoodAngle);
         }
         break;
       case SHOOTING_WHILE_MOVING:
@@ -197,9 +198,12 @@ public class RobotCore extends SubsystemBase {
           hasResetPoseToShoot = true;
         }
         double setpoint =
-          shooterAlgorithm.calculateShooterSpeedRegular(drivetrain.getDistanceFromHub()) +
+          shooterAlgorithm.calculateShooterSpeedRegular(
+            drivetrain.getDistanceFromHub()
+          ) +
           drivetrain.getRateOfChangeOfDistanceFromHubMetersPerSecond() * 200;
-        shooter.feedAndShoot(setpoint);
+        double hoodAngleMoving = shooterAlgorithm.calculateHoodAngle(setpoint);
+        shooter.feedAndShoot(setpoint, hoodAngleMoving);
         hopper.feed(0.5);
         SmartDashboard.putNumber("Setpoint", setpoint);
         break;
@@ -219,8 +223,8 @@ public class RobotCore extends SubsystemBase {
         hasResetPoseToShoot = false;
         hopper.setWantedState(HopperSubsystem.WantedState.IDLE);
         if (
-          drivetrain.isInAllianceZone(DriverStation.getAlliance().get()) &&
-          toggleRevving
+          (drivetrain.isInAllianceZone(DriverStation.getAlliance().get()) &&
+          toggleRevving) || DriverStation.isAutonomous()
         ) {
           shooter.setWantedState(ShooterSubsystem.WantedState.WARM_UP);
         } else {
@@ -350,12 +354,13 @@ public class RobotCore extends SubsystemBase {
       : LEDs.WantedState.INTAKE_FULL;
     if (
       drivetrain.isInAllianceZone(DriverStation.getAlliance().get()) &&
-      drivetrain.getDistanceFromHub() < 2.6 &&
-      drivetrain.getDistanceFromHub() > 1.95
+      drivetrain.getDistanceFromHub() < 3.6 &&
+      drivetrain.getDistanceFromHub() > 2.6
     ) return LEDs.WantedState.GREEN;
     if (
       drivetrain.isInAllianceZone(DriverStation.getAlliance().get()) &&
-      drivetrain.getDistanceFromHub() < 1.95
+      drivetrain.getDistanceFromHub() < 2.6 &&
+      drivetrain.getDistanceFromHub() > 1.75
     ) return LEDs.WantedState.IDEAL;
     return LEDs.WantedState.IDLE;
   }
