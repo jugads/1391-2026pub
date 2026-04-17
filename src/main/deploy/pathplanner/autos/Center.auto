@@ -11,15 +11,96 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "center"
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "ROB-state_INTAKE"
+            "name": "shoot-from-range"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Tidal Lock"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 2.0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ROB-state_HOME"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "2LS-collect"
+            "pathName": "center-goToBump"
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "runrobotforwards"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.35
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "race",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "stop"
+                }
+              },
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.1
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "reset odometry"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "centercollect"
           }
         },
         {
@@ -37,7 +118,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2LS-returnOverBump"
+            "pathName": "center-return"
           }
         },
         {
@@ -85,159 +166,9 @@
           }
         },
         {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Tidal Lock"
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 2.5
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "int-OVERRIDE"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 1.0
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "int-NORMAL"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ROB-state_INTAKE"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Bump-2LS-goBackToCenter"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "LS-loop"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "reset odometry"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Copy of 2LS-returnOverBump"
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "runRobotBackwards"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 1.5
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "stop"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.1
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "shoot-from-range"
-          }
-        },
-        {
-          "type": "race",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Tidal Lock"
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 2.5
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "int-OVERRIDE"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 1.5
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
+            "name": "Tidal Lock"
           }
         }
       ]

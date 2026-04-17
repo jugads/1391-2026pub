@@ -128,6 +128,9 @@ public class RobotContainer {
   StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
     .getStructTopic("Global Pose", Pose2d.struct)
     .publish();
+    StructPublisher<Pose2d> publisherLL = NetworkTableInstance.getDefault()
+    .getStructTopic("Limelight Pose", Pose2d.struct)
+    .publish();
   private final AlliancePhaseDisplay alliancePhaseDisplay =
     new AlliancePhaseDisplay();
 
@@ -307,6 +310,7 @@ public class RobotContainer {
       );
     }
     publisher.set(drivetrain.getGlobalPose());
+    // publisherLL.set(tagLimelight.getLimelightPoseEstimateData().pose);
     // if (!DriverStation.getAlliance().isEmpty()) {
     //   if (drivetrain.isInAllianceZone(DriverStation.getAlliance().get())) {
     //     leds.setWantedState(LEDs.WantedState.ZONE_ASSIST);

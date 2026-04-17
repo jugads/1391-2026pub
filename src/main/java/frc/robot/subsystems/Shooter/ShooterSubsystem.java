@@ -55,7 +55,7 @@ public class ShooterSubsystem extends SubsystemBase {
       Math.abs(inputs.shooterSpeed - motorsSetpoint) <
         kSHOOTER_SPEED_TOLERANCE &&
       motorsSetpoint != 0 &&
-      Math.abs(inputs.hoodAngle - hoodSetpoint) < 0.05
+      (Math.abs(inputs.hoodAngle - hoodSetpoint) < 0.1 || DriverStation.isAutonomous())
     ) {
       cyclesOfShooterUpToSpeed++;
     } else {

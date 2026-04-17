@@ -125,10 +125,10 @@ public class Constants {
 
     public static final InterpolatingDoubleTreeMap k_SHOOTER_SPEED_MAP_DCMP = new InterpolatingDoubleTreeMap();
     public static final Double[] kSHOOTER_ENTRY_HUB_DCMP = new Double[] {
-      1.75, 4300.
+      1.75, 4200.
     };
     public static final Double[] k_SHOOTER_ENTRY_FAR_DCMP = new Double[] {
-      3.5, 6100.
+      3.5, 6000.
     };
     public static final double kSHOOTER_REV_ADJUSTMENT = 80.;
     public static final double kP = 0.4;
@@ -138,11 +138,11 @@ public class Constants {
     public static final double kS = 0.0;
     public static final double kA = 0.0;
 
-    public static final double kHOOD_P = 2.;
+    public static final double kHOOD_P = 2.35;
     public static final double kHOOD_I = 0;
     public static final double kHOOD_D = 0;
     public static final double kHOOD_V = 1.85;
-    public static final double kHOOD_S = 0.05;
+    public static final double kHOOD_S = 0.025;
     public static final double kHOOD_A = 0;
 
     public static final double kHOOD_UP_ROTATIONS = 0.276;

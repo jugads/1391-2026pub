@@ -70,6 +70,15 @@ public class Autos {
       )
     );
     NamedCommands.registerCommand(
+      "runrobotforwards",
+      drivetrain.applyRequest(() ->
+        new SwerveRequest.FieldCentric()
+          .withVelocityX(2.5)
+          .withVelocityY(0)
+          .withRotationalRate(0)
+      )
+    );
+    NamedCommands.registerCommand(
       "start timer",
       new InstantCommand(() -> timer.restart())
     );

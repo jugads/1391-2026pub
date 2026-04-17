@@ -41,6 +41,10 @@ public class RobotCore extends SubsystemBase {
   private boolean hasCalculatedShooterSpeed = false;
   private boolean toggleRevving = true;
   private boolean wiggle = false;
+  private boolean shouldSetStaticPoseAuto = false;
+  double cyclesStill = 0;
+  Pose2d lastCyclePose;
+  double hoodAngle = 0;
   double timeOfStartedShooting;
   private boolean hasCalculatedTimeOfShooting = false;
   double manualAdjust = 0;
@@ -155,7 +159,7 @@ public class RobotCore extends SubsystemBase {
         shooter.stop();
         break;
       case SHOOTING:
-      shooter.shootAtHub();
+        shooter.shootAtHub();
         if (shooter.isUpToSpeed()) {
           if (!intakeOverride) {
             shooter.shootAtHub();
@@ -166,26 +170,31 @@ public class RobotCore extends SubsystemBase {
         }
         break;
       case SHOOTING_FROM_DISTANCE:
-        double distance = drivetrain.getDistanceFromHub();
-
-        if (tagLimelight.isSeeingValidTarget() && !hasResetPoseToShoot) {
-          drivetrain.resetGlobalPose(
-            tagLimelight.getLimelightPoseEstimateData().pose
+        if (!hasCalculatedShooterSpeed || DriverStation.isAutonomous() || DriverStation.isTeleop()) {
+          var cameraPose = tagLimelight.getLimelightPoseEstimateData().pose;
+          if (cameraPose != null && cameraPose.getTranslation().getNorm() > 0.1) {
+            drivetrain.resetGlobalPose(
+              cameraPose
+            );
+          }
+          shooterCalculatedSpeed = shooterAlgorithm.calculateShooterSpeedDCMP(
+            drivetrain.getDistanceFromHub()
           );
-          hasResetPoseToShoot = true;
+          hoodAngle = shooterAlgorithm.calculateHoodAngle(
+            drivetrain.getDistanceFromHub()
+          );
+          hasCalculatedShooterSpeed = true;
         }
-
-        double baseTargetRPM = shooterAlgorithm.calculateShooterSpeedDCMP(distance);
-        double revTargetRPM =
-          baseTargetRPM + kSHOOTER_REV_ADJUSTMENT + (DriverStation.isAutonomous() ? 0 : 0);
-        double fireTargetRPM =
-          baseTargetRPM + manualAdjust;
-        double hoodAngle = shooterAlgorithm.calculateHoodAngle(distance);
-        shooter.shoot(revTargetRPM, hoodAngle);
-
+        shooter.shoot(
+          shooterCalculatedSpeed + kSHOOTER_REV_ADJUSTMENT,
+          hoodAngle
+        );
         if (shooter.isUpToSpeed()) {
           hopper.setWantedState(HopperSubsystem.WantedState.FEED);
-          shooter.feedAndShoot(fireTargetRPM, hoodAngle);
+          shooter.feedAndShoot(
+            shooterCalculatedSpeed + manualAdjust,
+            hoodAngle
+          );
         }
         break;
       case SHOOTING_WHILE_MOVING:
@@ -221,10 +230,12 @@ public class RobotCore extends SubsystemBase {
         break;
       case HOMED:
         hasResetPoseToShoot = false;
+        hasCalculatedShooterSpeed = false;
         hopper.setWantedState(HopperSubsystem.WantedState.IDLE);
         if (
           (drivetrain.isInAllianceZone(DriverStation.getAlliance().get()) &&
-          toggleRevving) || DriverStation.isAutonomous()
+            toggleRevving) ||
+          DriverStation.isAutonomous()
         ) {
           shooter.setWantedState(ShooterSubsystem.WantedState.WARM_UP);
         } else {
@@ -386,6 +397,10 @@ public class RobotCore extends SubsystemBase {
 
   public Pose2d getLimelightPose() {
     return tagLimelight.getLimelightPoseEstimateData().pose;
+  }
+
+  public double getLimelightPoseTimestamp() {
+    return tagLimelight.getLimelightPoseEstimateData().timestampSeconds;
   }
 
   public Command shootWhileMoving() {
