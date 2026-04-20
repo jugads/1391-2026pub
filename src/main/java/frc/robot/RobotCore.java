@@ -159,7 +159,7 @@ public class RobotCore extends SubsystemBase {
         shooter.stop();
         break;
       case SHOOTING:
-        shooter.shootAtHub();
+        shooter.shoot(5300, 0);
         if (shooter.isUpToSpeed()) {
           if (!intakeOverride) {
             shooter.shootAtHub();
@@ -283,7 +283,7 @@ public class RobotCore extends SubsystemBase {
           break;
         case SHOOTING:
           groundIntake.setWantedState(
-            GroundIntakeSubsystem.WantedState.HOLD_AT_DEFAULT
+            GroundIntakeSubsystem.WantedState.REVERSE
           );
           break;
         case REVVING_AUTO:
@@ -399,6 +399,9 @@ public class RobotCore extends SubsystemBase {
     return tagLimelight.getLimelightPoseEstimateData().pose;
   }
 
+  public Command pass() {
+    return new InstantCommand(() -> wantedSuperState = WantedSuperState.SHOOT);
+  }
   public double getLimelightPoseTimestamp() {
     return tagLimelight.getLimelightPoseEstimateData().timestampSeconds;
   }

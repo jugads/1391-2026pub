@@ -166,6 +166,7 @@ public class RobotContainer {
     driver
       .rightTrigger()
       .whileTrue(
+        new ConditionalCommand(
         new ParallelCommandGroup(
           new TidalLockCommand(
             drivetrain,
@@ -181,6 +182,9 @@ public class RobotContainer {
             ),
             robotSuper.shootFuel(false)
           )
+        ),
+        robotSuper.pass(),
+        () -> drivetrain.isInAllianceZone(DriverStation.getAlliance().get())
         )
       )
       .whileFalse(robotSuper.setWantedSuperStateCommand(WantedSuperState.HOME));
