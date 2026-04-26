@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.788566666666667,
-        "y": 5.123399999999999
+        "x": 6.752953736654805,
+        "y": 4.750486358244364
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.131211111111111,
-        "y": 6.040477777777776
+        "x": 7.376986951364176,
+        "y": 5.86944246737841
       },
       "isLocked": false,
       "linkedName": "Lsloop"
@@ -28,7 +28,12 @@
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.6678507992895231,
+      "rotationDegrees": 0.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],
@@ -42,7 +47,7 @@
   },
   "goalEndState": {
     "velocity": 2.5,
-    "rotation": -47.56377021146502
+    "rotation": -0.7653117067978014
   },
   "reversed": false,
   "folder": null,
